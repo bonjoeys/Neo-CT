@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
     <title>Priorisons le projet Neo-CT</title>
-    <!-- Sortable for Drag and Drop -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         :root {
@@ -75,7 +75,7 @@
             height: 12px;
             border-radius: 50%;
             background-color: var(--grey);
-            transition: background-color 0.3s;
+            transition: background-color: 0.3s;
         }
         #db-status-indicator.status-ok {
             background-color: var(--nord14);
@@ -111,6 +111,16 @@
         }
         .tab-link:hover { 
             background-color: #3b4252;
+        }
+
+        .sidebar-section-header {
+            color: var(--nord8);
+            font-size: 0.9em;
+            font-weight: 600;
+            text-transform: uppercase;
+            padding: 15px 15px 5px 15px;
+            margin-top: 10px;
+            border-bottom: 1px solid var(--grey);
         }
         
         .top-bar {
@@ -160,8 +170,113 @@
         h1 { text-align: left; color: var(--nord12); font-weight: 600; margin: 0; flex-grow: 1; font-size: 1.7em; }
         .logo-group-right { display: flex; align-items: center; gap: 20px; }
         .page-container { display: flex; flex-direction: column; gap: 30px; max-width: 1800px; margin: 20px auto 0 auto; }
-        .controls-container, .accueil-container, .mvp-container, .dnd-container, .admin-container, .mindmap-container { background-color: #ffffff; padding: 30px; box-shadow: 0 6px 20px rgba(0,0,0,0.08); border-radius: 12px; border: 1px solid var(--nord4); }
-        .controls-container h2, .mvp-container h2, .dnd-container h2, .admin-container h2, .mindmap-container h2 { margin-top: 0; font-size: 1.4em; color: var(--nord0); }
+        .controls-container, .accueil-container, .mvp-container, .dnd-container, .admin-container, .mindmap-container, .static-mindmap-container, .priority-mindmap-container { background-color: #ffffff; padding: 30px; box-shadow: 0 6px 20px rgba(0,0,0,0.08); border-radius: 12px; border: 1px solid var(--nord4); }
+        .controls-container h2, .mvp-container h2, .dnd-container h2, .admin-container h2, .mindmap-container h2, .static-mindmap-container h2, .priority-mindmap-container h2 { margin-top: 0; font-size: 1.4em; color: var(--nord0); }
+
+        /* === DASHBOARD STYLES === */
+        #kpi-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .kpi-card {
+            background-color: var(--nord6);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 5px solid var(--nord9);
+        }
+        .kpi-card .value {
+            font-size: 2.2em;
+            font-weight: 600;
+            color: var(--nord0);
+            margin: 0;
+        }
+        .kpi-card .label {
+            font-size: 0.9em;
+            color: var(--grey);
+            margin: 5px 0 0 0;
+        }
+        #charts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+        }
+        .chart-wrapper {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+        }
+        .chart-wrapper h3 {
+            margin-top: 0;
+            text-align: center;
+            color: var(--grey);
+        }
+        .chart-legend-filter {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 0.9em;
+            color: var(--grey);
+        }
+        .legend-item-box {
+            width: 12px;
+            height: 12px;
+            margin-right: 8px;
+            border-radius: 2px;
+            opacity: 0.5;
+            transition: opacity 0.2s;
+        }
+        .legend-item.active .legend-item-box, .legend-item:hover .legend-item-box {
+            opacity: 1;
+        }
+        .legend-item.active {
+            font-weight: 600;
+            color: var(--nord0);
+        }
+        .kpi-tooltip {
+            visibility: hidden;
+            opacity: 0;
+            position: fixed; /* Utilise 'fixed' pour être au-dessus de tout */
+            transform: translate(-50%, -100%); /* Centre horizontalement et positionne au-dessus */
+            margin-bottom: -10px; /* Petite marge pour décoller du curseur */
+            background-color: var(--nord0);
+            color: var(--nord6);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            width: auto;
+            min-width: 200px;
+            max-width: 400px;
+            max-height: 300px; /* Hauteur max plus grande */
+            overflow-y: auto; /* Ascenseur standard si nécessaire */
+            z-index: 9999; /* Au-dessus de tout */
+            transition: opacity 0.2s, visibility 0.2s;
+            pointer-events: none; /* Pour ne pas gêner la souris */
+        }
+        .kpi-tooltip.visible {
+            visibility: visible;
+            opacity: 1;
+        }
+        .kpi-tooltip ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            text-align: left;
+        }
+        .kpi-tooltip li {
+            padding: 3px 0;
+            white-space: nowrap;
+        }
+
 
         .planning-header { 
             display: flex; 
@@ -223,8 +338,8 @@
         .add-button { background-color: var(--nord10); } .add-button:hover:not(:disabled) { background-color: var(--nord9); }
         .button-group { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
         
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; z-index: 1000; }
-        .modal-content { background: #fff; padding: 30px; border-radius: 12px; width: 90%; max-width: 600px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; z-index: 1000; overflow-y: auto; }
+        .modal-content { background: #fff; padding: 30px; border-radius: 12px; width: 90%; max-width: 600px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); margin: 20px 0; }
         .modal-content h3 { margin-top: 0; }
         .modal-content label, .modal-content p { display: block; margin-top: 15px; font-weight: 500; color: #4c566a; }
         .modal-content input, .modal-content select, .modal-content textarea { width: 100%; padding: 10px; font-size: 1em; margin-top: 5px; border: 1px solid var(--nord4); border-radius: 6px; box-sizing: border-box; }
@@ -233,6 +348,10 @@
         .modal-actions .delete-button { margin-right: auto; }
         .hidden { display: none; }
         
+        #sub-features-view-modal .modal-content, #info-modal .modal-content {
+            max-width: 900px;
+        }
+
         .accueil-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; margin-top: 20px; }
         .accueil-card { background-color: var(--nord6); padding: 25px; border-radius: 10px; text-align: center; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; border: 1px solid var(--nord4); position: relative; }
         .accueil-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
@@ -250,11 +369,11 @@
         }
         .accueil-card:hover .tooltip-text-accueil { visibility: visible; opacity: 1; }
 
-        #features-section { margin-top: 20px; border-top: 1px solid var(--nord4); padding-top: 15px; }
-        #features-section h4 { margin-top: 0; margin-bottom: 15px; color: var(--grey); font-size: 1.1em; }
+        #features-section, #sub-features-section-modal { margin-top: 20px; border-top: 1px solid var(--nord4); padding-top: 15px; }
+        #features-section h4, #sub-features-section-modal h4 { margin-top: 0; margin-bottom: 15px; color: var(--grey); font-size: 1.1em; }
         .feature-inputs { display: flex; gap: 10px; margin-top: 10px; }
         .feature-inputs input { flex-grow: 1; }
-        #add-feature-btn { padding: 10px 15px; font-size: 14px; align-self: center; margin-top: 0; }
+        #add-feature-btn, #add-sub-feature-btn { padding: 10px 15px; font-size: 14px; align-self: center; margin-top: 0; }
         
         .feature-action-btn { background: none; border: none; font-size: 1.2em; cursor: pointer; opacity: 0.7; padding: 4px;}
         .feature-action-btn:hover { opacity: 1; }
@@ -282,6 +401,88 @@
             background-color: var(--nord6);
         }
 
+        /* Sub-features styles */
+        .view-sub-features-btn {
+            background-color: var(--nord8);
+            color: var(--nord0);
+            border: none;
+            border-radius: 10px;
+            padding: 2px 8px;
+            font-size: 0.8em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color: 0.2s;
+        }
+        .view-sub-features-btn:hover {
+            background-color: var(--nord9);
+        }
+
+        #sub-features-view-modal-content {
+            max-height: 65vh;
+            overflow-y: auto;
+            padding: 5px 15px 5px 5px;
+            margin: 0 -15px;
+        }
+
+        #sub-features-view-modal-content .sub-features-list {
+            list-style: none;
+            padding: 10px 0;
+            margin: 0;
+        }
+        #sub-features-view-modal-content .sub-features-list li {
+            display: grid;
+            grid-template-columns: 30% 70%;
+            gap: 15px;
+            align-items: start;
+            padding: 15px 0;
+            font-size: 0.9em;
+            border-bottom: 1px solid var(--nord4);
+        }
+         #sub-features-view-modal-content .sub-features-list li:last-child {
+            border-bottom: none;
+        }
+        .sub-feature-name {
+            font-weight: 500;
+            color: var(--nord0);
+        }
+        .sub-feature-description {
+            color: var(--grey);
+            font-style: normal;
+            font-size: 1em;
+            padding-left: 15px;
+            border-left: 2px solid var(--nord4);
+        }
+
+
+        #edit-sub-features-list {
+            list-style: none;
+            padding: 5px;
+            box-sizing: border-box;
+            max-height: 250px;
+            overflow-y: auto;
+            margin-top: 10px;
+            background-color: var(--nord6);
+            border-radius: 4px;
+        }
+        #edit-sub-features-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--nord4);
+        }
+        #edit-sub-features-list li:last-child { border-bottom: none; }
+        #edit-sub-features-list .sub-feature-details p {
+            font-size: 0.85em; color: var(--grey); margin: 2px 0 0 0; font-weight: 400;
+        }
+        .delete-sub-feature-btn {
+            background: none; border: none; color: var(--nord11);
+            font-size: 1.3em; cursor: pointer; opacity: 0.7;
+            flex-shrink: 0;
+            margin-left: 10px;
+        }
+        .delete-sub-feature-btn:hover { opacity: 1; }
+
         .priority-badge { 
             font-size: 0.8em; 
             padding: 3px 8px; 
@@ -294,7 +495,7 @@
         .priority-p2 { background-color: var(--nord12); }
         .priority-p3 { background-color: var(--nord13); }
         .priority-adefinir { background-color: var(--grey); }
-        #tasks-table .features-list-display { list-style: none; padding: 0; margin: 0; }
+        #tasks-table .features-list-display, #tasks-table .sub-features-list { list-style: none; padding: 0; margin: 0; }
         
         .status-message {
             text-align: center;
@@ -430,10 +631,95 @@
             font-size: 0.85em;
             color: var(--grey);
         }
+        .dnd-item .sub-features-count {
+            font-size: 0.8em;
+            color: var(--nord0);
+            font-weight: 600;
+            margin-top: 8px;
+            display: inline-block;
+            background-color: var(--nord8);
+            border-radius: 10px;
+            padding: 2px 8px;
+            cursor: pointer;
+            transition: background-color: 0.2s;
+        }
+        .dnd-item .sub-features-count:hover {
+             background-color: var(--nord9);
+        }
         .dnd-item.sortable-ghost {
             opacity: 0.4;
             background-color: var(--nord8);
         }
+
+        .dnd-item.sub-feature-item {
+            background-color: #e5e9f0;
+        }
+        .dnd-item.sub-feature-item .parent-feature-name {
+            font-size: 0.8em;
+            color: var(--nord9);
+            font-weight: bold;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        /* DnD View Switcher */
+        .view-switch-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .switch-label {
+            font-weight: 500;
+            color: var(--grey);
+            cursor: pointer;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 28px;
+        }
+        .switch input { 
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--nord9);
+            transition: .4s;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+        }
+        input:checked + .slider {
+            background-color: var(--nord10);
+        }
+        input:focus + .slider {
+            box-shadow: 0 0 1px var(--nord10);
+        }
+        input:checked + .slider:before {
+            transform: translateX(22px);
+        }
+        .slider.round {
+            border-radius: 28px;
+        }
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
 
         /* Styles for MVP View */
         .mvp-filter-grid {
@@ -615,8 +901,8 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 30px;
-            margin-bottom: 30px;
         }
+        .admin-section { margin-bottom: 30px; }
         .admin-section h3 {
             color: var(--nord9);
             border-bottom: 2px solid var(--nord6);
@@ -682,6 +968,115 @@
             color: var(--grey);
         }
 
+        /* Interactive Mindmap */
+        .interactive-mindmap-container {
+            padding-left: 20px;
+            overflow-x: auto;
+        }
+        .mindmap-list {
+            list-style: none;
+            padding-left: 25px;
+            position: relative;
+        }
+        .mindmap-root > li {
+            margin-bottom: 20px;
+        }
+        .mindmap-list li {
+            padding: 5px 0;
+            position: relative;
+        }
+        .mindmap-node-container {
+            display: flex;
+            align-items: center;
+        }
+        .mindmap-node {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            border-radius: 8px;
+            transition: background-color: 0.2s;
+            font-weight: 500;
+            border: 1px solid var(--nord4);
+            background-color: #fff;
+            min-width: 150px;
+            text-align: left;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+            white-space: nowrap;
+        }
+        .mindmap-node:hover {
+            background-color: var(--nord6);
+        }
+        .mindmap-node.brick, .mindmap-node.priority {
+            font-size: 1.2em;
+            background-color: var(--nord8);
+            color: var(--nord0);
+            border-color: var(--nord9);
+        }
+        .mindmap-node.feature {
+            font-size: 1.0em;
+            background-color: var(--nord13);
+             color: var(--nord0);
+        }
+        .mindmap-node.sub-feature {
+            font-size: 0.9em;
+            color: var(--grey);
+            font-weight: 400;
+             background-color: var(--nord6);
+        }
+        .mindmap-node.sub-feature:hover {
+            text-decoration: underline;
+        }
+
+        .mindmap-toggle {
+            display: inline-block;
+            width: 20px;
+            text-align: center;
+            margin-right: 5px;
+            font-family: monospace;
+            transition: transform 0.2s ease-in-out;
+        }
+        .mindmap-toggle.hidden {
+            visibility: hidden;
+        }
+
+        /* Connecting lines */
+        .mindmap-list {
+            padding-left: 40px;
+        }
+        .mindmap-node-container {
+            position: relative;
+        }
+        .mindmap-node-container::before {
+            content: '';
+            position: absolute;
+            left: -20px;
+            top: 50%;
+            border-top: 2px solid var(--nord4);
+            width: 20px;
+            height: 0;
+        }
+        .mindmap-list > li {
+            position: relative;
+        }
+        .mindmap-list > li::before {
+            content: '';
+            position: absolute;
+            left: -20px;
+            top: 0;
+            border-left: 2px solid var(--nord4);
+            width: 0;
+            height: 100%;
+        }
+        .mindmap-list > li:last-child::before {
+            height: 50%;
+        }
+        .mindmap-root {
+            padding-left: 0;
+        }
+        .mindmap-root > li::before, .mindmap-root > li > .mindmap-node-container::before {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -689,11 +1084,18 @@
         <h2><span id="db-status-indicator" title="Statut de la connexion"></span> Navigation</h2>
         <div class="tabs-nav">
             <button class="tab-link active" data-tab="accueil-container">🏠 Accueil</button>
-            <button class="tab-link" data-tab="controls-container">📝 Saisie briques / fonctionnalités</button>
+
+            <div class="sidebar-section-header">Gestion & Saisie</div>
+            <button class="tab-link" data-tab="controls-container">📝 Gestion des briques, fonctionnalités et S-F</button>
             <button class="tab-link" data-tab="dnd-container">⚖️ Priorisation</button>
-            <button class="tab-link" data-tab="mvp-container">🚀 MVP (P1)</button>
-            <button class="tab-link" data-tab="mindmap-container">🗺️ Carte Mentale</button>
+            <button class="tab-link" data-tab="reorg-container">🏗️ Réorganisation S-F</button>
             <button class="tab-link" data-tab="admin-container">⚙️ Administration</button>
+
+            <div class="sidebar-section-header">Analyse & Visualisation</div>
+            <button class="tab-link" data-tab="mvp-container">🚀 Vue MVP (P1)</button>
+            <button class="tab-link" data-tab="mindmap-container">🧱 Carte Structurelle</button>
+            <button class="tab-link" data-tab="priority-mindmap-container">📊 Carte par Priorité</button>
+            <button class="tab-link" data-tab="static-mindmap-container">🖼️ Carte Statique</button>
         </div>
     </div>
 
@@ -713,32 +1115,28 @@
 
         <div class="page-container">
             <div id="accueil-container" class="accueil-container content-tab">
-                 <div class="accueil-grid">
-                    <div class="accueil-card" data-tab="controls-container">
-                        <div class="accueil-card-icon">📝</div>
-                        <h3>Saisie briques / fonctionnalités</h3>
+                <h2>📊 Tableau de Bord Synthétique</h2>
+                <div id="kpi-container"></div>
+                <div id="charts-container">
+                    <div class="chart-wrapper">
+                        <h3>Répartition par Priorité</h3>
+                        <canvas id="priorityChart"></canvas>
                     </div>
-                     <div class="accueil-card" data-tab="dnd-container">
-                        <div class="accueil-card-icon">⚖️</div>
-                        <h3>Priorisation</h3>
+                    <div class="chart-wrapper">
+                        <h3 id="p1ByBrickChartTitle">Fonctionnalités par Brique</h3>
+                        <div id="p1ByBrickFilter" class="chart-legend-filter">
+                            </div>
+                        <canvas id="p1ByBrickChart"></canvas>
                     </div>
-                     <div class="accueil-card" data-tab="mvp-container">
-                        <div class="accueil-card-icon">🚀</div>
-                        <h3>Vue MVP (P1)</h3>
-                    </div>
-                    <div class="accueil-card" data-tab="mindmap-container">
-                        <div class="accueil-card-icon">🗺️</div>
-                        <h3>Carte Mentale</h3>
-                    </div>
-                     <div class="accueil-card" data-tab="admin-container">
-                        <div class="accueil-card-icon">⚙️</div>
-                        <h3>Administration</h3>
+                    <div class="chart-wrapper">
+                        <h3>Fonctionnalités par Étiquette</h3>
+                        <canvas id="featuresByTagChart"></canvas>
                     </div>
                 </div>
             </div>
             
             <div id="controls-container" class="controls-container content-tab hidden">
-                <h2>Gestion des briques et fonctionnalités</h2>
+                <h2>Gestion des briques, fonctionnalités et S-F</h2>
                  <div class="planning-header">
                     <div class="filter-controls">
                         <div class="filter-group">
@@ -802,6 +1200,14 @@
                             <input type="text" id="feature-filter-dnd" class="header-filter" placeholder="Contient...">
                         </div>
                     </div>
+                    <div class="view-switch-container">
+                        <label for="dnd-view-switch" class="switch-label">Fonctionnalités</label>
+                        <label class="switch">
+                            <input type="checkbox" id="dnd-view-switch">
+                            <span class="slider round"></span>
+                        </label>
+                        <label for="dnd-view-switch" class="switch-label">Sous-fonctionnalités</label>
+                    </div>
                 </div>
                 <div class="dnd-board">
                     <div class="dnd-column">
@@ -823,6 +1229,13 @@
                 </div>
             </div>
 
+            <div id="reorg-container" class="dnd-container content-tab hidden">
+                <h2>Réorganisation des sous-fonctionnalités</h2>
+                <p style="margin-top: -15px; margin-bottom: 25px; color: var(--grey);">Glissez-déposez une sous-fonctionnalité d'une fonctionnalité à une autre pour la ré-assigner.</p>
+                <div id="reorg-board" class="dnd-board">
+                    </div>
+            </div>
+
             <div id="mvp-container" class="mvp-container content-tab hidden">
                 <h2>MVP (P1)</h2>
                  <div id="mvp-filter-grid" class="mvp-filter-grid">
@@ -840,8 +1253,7 @@
                     </div>
                 </div>
                 <div id="mvp-view-content">
-                    <!-- Le contenu sera injecté ici -->
-                </div>
+                    </div>
             </div>
 
              <div id="admin-container" class="admin-container content-tab hidden">
@@ -863,24 +1275,43 @@
                         </form>
                          <ul id="tags-list" class="admin-list"></ul>
                     </div>
+                     <div id="admin-export" class="admin-section">
+                        <h3>Exporter les Données</h3>
+                        <p>Sauvegardez l'ensemble des données du projet.</p>
+                        <div class="button-group" style="justify-content: flex-start;">
+                            <button id="export-json-btn" class="button add-button">Exporter en JSON</button>
+                            <button id="export-csv-btn" class="button add-button">Exporter en CSV</button>
+                        </div>
+                    </div>
                 </div>
                 <div id="admin-anomalies" class="admin-section">
                     <h3>Supervision des Données (Anomalies)</h3>
                     <p>Cette section liste les incohérences potentielles dans les données. Cliquez sur un élément pour le corriger.</p>
                     <div id="anomalies-container">
-                        <!-- Anomalies will be injected here by JS -->
-                    </div>
+                        </div>
                 </div>
             </div>
 
             <div id="mindmap-container" class="mindmap-container content-tab hidden">
-                <h2>Carte Mentale</h2>
+                <h2>🧱 Carte Structurelle</h2>
+                <div id="interactive-mindmap-container" class="interactive-mindmap-container"></div>
+            </div>
+
+            <div id="priority-mindmap-container" class="priority-mindmap-container content-tab hidden">
+                <h2>📊 Carte par Priorité</h2>
+                <div id="priority-mindmap-view" class="interactive-mindmap-container"></div>
+            </div>
+            
+            <div id="static-mindmap-container" class="static-mindmap-container content-tab hidden">
+                <h2>🖼️ Carte Statique</h2>
                 <img src="Map.png" alt="Carte Mentale du Projet" style="width: 100%; height: auto; border-radius: 8px;">
             </div>
 
         </div>
     </div>
     
+    <div id="kpi-tooltip-container"></div>
+
     <div id="project-modal" class="modal-overlay hidden">
         <div class="modal-content">
             <h3 id="project-modal-title">Ajouter une brique</h3>
@@ -923,8 +1354,7 @@
                 <div>
                     <label for="quick-feature-priority">Priorité pour ce lot</label>
                     <select id="quick-feature-priority">
-                        <!-- Options will be populated dynamically -->
-                    </select>
+                        </select>
                 </div>
                  <div class="modal-actions">
                     <button type="submit" class="button save-button">Ajouter les fonctionnalités</button>
@@ -949,6 +1379,7 @@
         <div class="modal-content">
             <h3 id="edit-feature-modal-title">Modifier la fonctionnalité</h3>
             <form id="edit-feature-form">
+                <input type="file" id="sub-feature-json-import" accept=".json" class="hidden">
                 <div>
                     <label for="edit-feature-name">Nom de la fonctionnalité</label>
                     <input type="text" id="edit-feature-name" required>
@@ -956,25 +1387,58 @@
                 <div>
                     <label for="edit-feature-priority">Priorité</label>
                     <select id="edit-feature-priority">
-                       <!-- Options will be populated dynamically -->
-                    </select>
+                       </select>
                 </div>
                 <div>
                     <label>Étiquettes</label>
                     <div class="tags-container-modal-edit" id="edit-feature-tags-container"></div>
                     <div class="tags-editor">
                          <select class="tag-select" id="edit-feature-tag-select">
-                            <!-- Options populated by JS -->
-                        </select>
+                            </select>
                         <button type="button" class="add-tag-btn" id="edit-feature-add-new-tag-btn" title="Créer une nouvelle étiquette">+</button>
                     </div>
                 </div>
+                
+                <div id="sub-features-section-modal">
+                    <h4>Sous-fonctionnalités</h4>
+                    <ul id="edit-sub-features-list"></ul>
+                    <div class="feature-inputs" style="flex-direction: column; align-items: stretch; gap: 5px;">
+                        <input type="text" id="sub-feature-name" placeholder="Nom de la sous-fonctionnalité">
+                        <input type="text" id="sub-feature-description" placeholder="Description (optionnel)">
+                    </div>
+                     <div style="text-align: right; margin-top: 10px; display: flex; justify-content: flex-end; gap: 10px;">
+                        <button type="button" id="import-sub-features-btn" class="button add-button" style="background-color: var(--nord13); color: var(--nord0);">Importer JSON</button>
+                        <button type="button" id="add-sub-feature-btn" class="button add-button">Ajouter</button>
+                    </div>
+                </div>
+
                  <div class="modal-actions">
                     <button type="button" id="delete-feature-btn-modal" class="button delete-button">Supprimer</button>
                     <button type="submit" class="button save-button">Sauvegarder</button>
                     <button type="button" id="cancel-edit-feature-modal-btn" class="button cancel-button">Annuler</button>
                 </div>
             </form>
+        </div>
+    </div>
+    
+    <div id="sub-features-view-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h3 id="sub-features-view-modal-title">Sous-fonctionnalités</h3>
+            <div id="sub-features-view-modal-content">
+                </div>
+            <div class="modal-actions">
+                <button type="button" id="cancel-sub-features-view-btn" class="button cancel-button">Fermer</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="info-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h3 id="info-modal-title"></h3>
+            <p id="info-modal-body" style="white-space: pre-wrap;"></p>
+            <div class="modal-actions">
+                <button id="cancel-info-btn" class="button cancel-button">Fermer</button>
+            </div>
         </div>
     </div>
 
@@ -1106,10 +1570,13 @@
                 featureFilterDnd: '',
                 selectedBricksDnd: [],
                 filterDebounceTimer: null,
+                dndViewMode: 'features', // 'features' or 'subFeatures'
+                charts: {}, // Pour stocker les instances des graphiques
+                dashboardBrickChartFilter: 'P1', // Filtre actif pour le graph par brique
             };
             
             let currentFeatures = [];
-            let currentEditingFeature = { brickId: null, featureIndex: -1, tags: [] };
+            let currentEditingFeature = { brickId: null, featureIndex: -1, tags: [], subFeatures: [] };
             let currentBulkTags = [];
             let currentAdminEditing = { type: null, originalName: null };
 
@@ -1136,7 +1603,7 @@
 
             const showToast = (message, type = 'success') => {
                 elements.toast.textContent = message;
-                elements.toast.className = type;
+                elements.toast.style.backgroundColor = type === 'error' ? 'var(--nord11)' : 'var(--nord14)';
                 elements.toast.classList.add('show');
                 setTimeout(() => {
                     elements.toast.classList.remove('show');
@@ -1169,65 +1636,99 @@
                     content.classList.toggle('hidden', content.id !== targetId);
                 });
 
+                if (targetId === 'accueil-container') renderDashboard();
                 if (targetId === 'mvp-container') renderMvpView();
                 if (targetId === 'dnd-container') renderDndView();
+                if (targetId === 'reorg-container') renderReorgView();
                 if (targetId === 'admin-container') {
                     renderAdminPage();
                     runAnomaliesCheck();
                 }
+                if (targetId === 'mindmap-container') renderInteractiveMindMap();
+                if (targetId === 'priority-mindmap-container') renderPriorityMindMap();
             };
 
             const applyFilters = (tasks) => {
-                let filtered = [...tasks];
+                let initialData = [...tasks];
+                let filteredData;
+
+                // --- FILTRE PAR BRIQUE ---
                 if (appState.selectedBricksPlanning.length > 0) {
-                    filtered = filtered.filter(task => appState.selectedBricksPlanning.includes(task.name));
+                    filteredData = initialData.filter(task => appState.selectedBricksPlanning.includes(task.name));
+                } else {
+                    filteredData = initialData; // On prend tout si aucune sélection
                 }
+
+                // --- FILTRE PAR ÉTIQUETTE ---
                 if (appState.selectedTagsPlanning.length > 0) {
-                    filtered = filtered.filter(task => 
+                    filteredData = filteredData.filter(task => 
                         task.features && task.features.some(f => 
                             f.tags && f.tags.some(tag => appState.selectedTagsPlanning.includes(tag))
                         )
                     );
                 }
+                
+                // --- FILTRE PAR RECHERCHE TEXTUELLE ---
                 const searchTerm = appState.featureFilterPlanning.toLowerCase().trim();
                 if (searchTerm) {
-                    filtered = filtered.filter(task => {
-                        const featureMatch = task.features && task.features.some(f => f.name.toLowerCase().includes(searchTerm));
-                        const taskNameMatch = task.name.toLowerCase().includes(searchTerm);
-                        return taskNameMatch || featureMatch;
-                    });
+                    filteredData = filteredData.map(task => {
+                        const matchingFeatures = (task.features || []).filter(f => 
+                            f.name.toLowerCase().includes(searchTerm) || 
+                            (f.subFeatures || []).some(sf => sf.name.toLowerCase().includes(searchTerm) || (sf.description || '').toLowerCase().includes(searchTerm))
+                        );
+                        if(task.name.toLowerCase().includes(searchTerm)) {
+                            return task;
+                        }
+                        if(matchingFeatures.length > 0){
+                            return {...task, features: matchingFeatures};
+                        }
+                        return null;
+                    }).filter(Boolean);
                 }
-                return filtered;
+                return filteredData;
             };
 
             const refreshUI = () => {
                 const filteredTasks = applyFilters(appState.currentTasks);
                 renderTable(filteredTasks);
                 updateCounter(filteredTasks);
-                renderDndView();
-                if (document.getElementById('mvp-container') && !document.getElementById('mvp-container').classList.contains('hidden')) {
-                    renderMvpView();
+                const activeTab = document.querySelector('.content-tab:not(.hidden)');
+                if (activeTab) {
+                    switch(activeTab.id) {
+                        case 'accueil-container': renderDashboard(); break;
+                        case 'dnd-container': renderDndView(); break;
+                        case 'reorg-container': renderReorgView(); break;
+                        case 'mvp-container': renderMvpView(); break;
+                        case 'mindmap-container': renderInteractiveMindMap(); break;
+                        case 'priority-mindmap-container': renderPriorityMindMap(); break;
+                    }
                 }
             };
 
             const updateCounter = (tasks) => {
                 const brickCount = tasks.length;
-                const featureCount = tasks.reduce((sum, task) => {
+                let featureCount = 0;
+                let subFeatureCount = 0;
+
+                tasks.forEach(task => {
                     const featuresToCount = (task.features || []).filter(f => {
-                        if (appState.selectedTagsPlanning.length > 0) {
+                         if (appState.selectedTagsPlanning.length > 0) {
                             return f.tags && f.tags.some(tag => appState.selectedTagsPlanning.includes(tag));
                         }
                         return true;
                     });
-                    return sum + featuresToCount.length;
-                }, 0);
+                    featureCount += featuresToCount.length;
+                    subFeatureCount += featuresToCount.reduce((sum, f) => sum + (f.subFeatures?.length || 0), 0);
+                });
 
                 const counter = document.getElementById('planning-counter');
-                counter.innerHTML = `<strong>${brickCount}</strong> brique${brickCount > 1 ? 's' : ''} <span class="counter-separator">|</span> <strong>${featureCount}</strong> fonctionnalité${featureCount > 1 ? 's' : ''}`;
+                counter.innerHTML = `<strong>${brickCount}</strong> brique${brickCount > 1 ? 's' : ''} 
+                <span class="counter-separator">|</span> <strong>${featureCount}</strong> fonctionnalité${featureCount > 1 ? 's' : ''}
+                <span class="counter-separator">|</span> <strong>${subFeatureCount}</strong> sous-fonctionnalité${subFeatureCount > 1 ? 's' : ''}`;
             };
 
             const getPriorityClass = (priority) => {
-                const priorityLower = priority.toLowerCase();
+                const priorityLower = (priority || '').toLowerCase();
                 if (priorityLower.includes('p1')) return 'priority-p1';
                 if (priorityLower.includes('p2')) return 'priority-p2';
                 if (priorityLower.includes('p3')) return 'priority-p3';
@@ -1240,7 +1741,6 @@
             };
             
             const renderTable = (tasks) => {
-                const searchTerm = appState.featureFilterPlanning.toLowerCase().trim();
                 let tableHTML = `<table id="tasks-table">
                     <thead>
                         <tr>
@@ -1257,50 +1757,46 @@
                     tasks.forEach((task) => {
                         let featuresHTML = '<ul class="features-list-display">';
                         let featuresToRender = task.features || [];
-                        const taskNameMatches = task.name.toLowerCase().includes(searchTerm);
-                        if (searchTerm && !taskNameMatches) {
-                             featuresToRender = featuresToRender.filter(f => f.name.toLowerCase().includes(searchTerm));
-                        }
-                        if (appState.selectedTagsPlanning.length > 0) {
-                            featuresToRender = featuresToRender.filter(f => 
-                                f.tags && f.tags.some(tag => appState.selectedTagsPlanning.includes(tag))
-                            );
-                        }
 
                         if (featuresToRender.length > 0) {
                             featuresToRender.forEach(f => {
-                                const originalIndex = (task.features || []).findIndex(origF => origF === f);
+                                const originalIndex = (appState.currentTasks.find(t=>t.id === task.id)?.features || []).findIndex(origF => origF.name === f.name);
                                 const isSelected = appState.selectedFeatures.some(sf => sf.brickId === task.id && sf.featureIndex === originalIndex);
                                 const priorityClass = getPriorityClass(f.priority);
+                                const hasSubFeatures = f.subFeatures && f.subFeatures.length > 0;
+
                                 featuresHTML += `
-                                 <li data-brick-id="${task.id}" data-feature-index="${originalIndex}">
-                                    <input type="checkbox" class="feature-checkbox" ${isSelected ? 'checked' : ''}>
-                                    <span class="priority-badge ${priorityClass}">${f.priority}</span>
-                                    <div class="feature-inline-view-content">
-                                        <span class="feature-name-text">${f.name}</span>
-                                        <div class="tags-container-display">${renderTags(f.tags)}</div>
+                                 <li>
+                                    <div style="display: flex; align-items: center; width: 100%;">
+                                        <input type="checkbox" class="feature-checkbox" data-brick-id="${task.id}" data-feature-index="${originalIndex}" ${isSelected ? 'checked' : ''}>
+                                        <span class="priority-badge ${priorityClass}">${f.priority}</span>
+                                        <div class="feature-inline-view-content">
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <span class="feature-name-text">${f.name}</span>
+                                                ${hasSubFeatures ? `<button class="view-sub-features-btn" data-brick-id="${task.id}" data-feature-index="${originalIndex}" title="Voir les sous-fonctionnalités">${f.subFeatures.length}</button>` : ''}
+                                            </div>
+                                            <div class="tags-container-display">${renderTags(f.tags)}</div>
+                                        </div>
+                                        <button class="feature-action-btn edit-feature-btn" data-brick-id="${task.id}" data-feature-index="${originalIndex}" title="Modifier">✏️</button>
                                     </div>
-                                    <button class="feature-action-btn edit-feature-btn" title="Modifier">✏️</button>
                                 </li>`;
                             });
-                        } else if (!searchTerm && appState.selectedTagsPlanning.length === 0) {
-                            featuresHTML += '<li>-</li>';
+                        } else {
+                             featuresHTML += '<li>-</li>';
                         }
                         featuresHTML += '</ul>';
-
-                        if (featuresToRender.length > 0 || (taskNameMatches && appState.selectedTagsPlanning.length === 0)) {
-                            tableHTML += `<tr>
-                                <td><strong>${task.name || ''}</strong></td>
-                                <td>${featuresHTML}</td>
-                                <td class="action-cell">
-                                    <div class="action-cell-content">
-                                        <button class="add-feature-to-brick-btn" data-id="${task.id}" title="Ajouter des fonctionnalités en masse">+</button>
-                                        <button class="edit-task-btn" data-id="${task.id}">Modifier</button>
-                                        <button class="delete-row-btn" data-id="${task.id}" title="Supprimer cette brique">×</button>
-                                    </div>
-                                </td>
-                            </tr>`;
-                        }
+                        
+                        tableHTML += `<tr>
+                            <td><strong>${task.name || ''}</strong></td>
+                            <td>${featuresHTML}</td>
+                            <td class="action-cell">
+                                <div class="action-cell-content">
+                                    <button class="add-feature-to-brick-btn" data-id="${task.id}" title="Ajouter des fonctionnalités en masse">+</button>
+                                    <button class="edit-task-btn" data-id="${task.id}">Modifier</button>
+                                    <button class="delete-row-btn" data-id="${task.id}" title="Supprimer cette brique">×</button>
+                                </div>
+                            </td>
+                        </tr>`;
                     });
                 }
                 tableHTML += `</tbody></table>`;
@@ -1311,7 +1807,7 @@
                 const nameInput = document.getElementById('feature-name');
                 const name = nameInput.value.trim();
                 if (name) {
-                    currentFeatures.push({ name: name, priority: 'À définir', tags: [] });
+                    currentFeatures.push({ name: name, priority: 'À définir', tags: [], subFeatures: [] });
                     nameInput.value = '';
                     nameInput.focus();
                     showToast(`'${name}' sera ajoutée lors de la sauvegarde.`, 'success');
@@ -1389,7 +1885,7 @@
                     return;
                 }
                 saveButton.disabled = true;
-                const newFeatures = namesArray.map(name => ({ name, priority: featurePriority, tags: [] }));
+                const newFeatures = namesArray.map(name => ({ name, priority: featurePriority, tags: [], subFeatures: [] }));
                 try {
                     await updateDoc(doc(db, "projects", brickId), {
                         features: [...(brick.features || []), ...newFeatures],
@@ -1426,6 +1922,216 @@
                 }))
             );
             
+            const getAllSubFeatures = () => {
+                const allSubFeatures = [];
+                appState.currentTasks.forEach(task => {
+                    (task.features || []).forEach((feature, featureIndex) => {
+                        (feature.subFeatures || []).forEach((subFeature, subFeatureIndex) => {
+                            allSubFeatures.push({
+                                ...subFeature,
+                                parentFeatureName: feature.name,
+                                parentFeaturePriority: feature.priority || 'À définir',
+                                brickName: task.name,
+                                brickId: task.id,
+                                featureIndex: featureIndex,
+                                subFeatureIndex: subFeatureIndex,
+                                subFeatureId: `${task.id}-${featureIndex}-${subFeatureIndex}`
+                            });
+                        });
+                    });
+                });
+                return allSubFeatures;
+            };
+            
+            // ===================================================================
+            // =================== FONCTION TABLEAU DE BORD ======================
+            // ===================================================================
+            const renderDashboard = () => {
+                // S'assure qu'un conteneur global pour les infobulles existe
+                let tooltipContainer = document.getElementById('kpi-tooltip-container');
+                if (!tooltipContainer) {
+                    tooltipContainer = document.createElement('div');
+                    tooltipContainer.id = 'kpi-tooltip-container';
+                    document.body.appendChild(tooltipContainer);
+                }
+                tooltipContainer.innerHTML = ''; // Vide les anciennes infobulles
+
+                const allFeatures = getAllFeatures();
+                const allSubFeatures = getAllSubFeatures();
+                const kpiContainer = document.getElementById('kpi-container');
+
+                // --- 1. Calcul des KPIs ---
+                const totalBricks = appState.currentTasks.length;
+                const totalFeatures = allFeatures.length;
+                const totalSubFeatures = allSubFeatures.length;
+                const prioritizedFeaturesCount = allFeatures.filter(f => f.priority && f.priority !== 'À définir').length;
+                const percentagePrioritized = totalFeatures > 0 ? ((prioritizedFeaturesCount / totalFeatures) * 100).toFixed(0) : 0;
+
+                // --- 2. Affichage des KPIs ---
+                kpiContainer.innerHTML = `
+                    <div class="kpi-card" data-tooltip-id="tooltip-bricks">
+                        <p class="value">${totalBricks}</p>
+                        <p class="label">Briques</p>
+                    </div>
+                    <div class="kpi-card" data-tooltip-id="tooltip-features">
+                        <p class="value">${totalFeatures}</p>
+                        <p class="label">Fonctionnalités</p>
+                    </div>
+                    <div class="kpi-card" data-tooltip-id="tooltip-subfeatures">
+                        <p class="value">${totalSubFeatures}</p>
+                        <p class="label">Sous-fonctionnalités</p>
+                    </div>
+                    <div class="kpi-card">
+                        <p class="value">${percentagePrioritized}%</p>
+                        <p class="label">Priorisés</p>
+                    </div>
+                `;
+
+                // --- Génération des infobulles dans le conteneur global ---
+                const brickNamesList = appState.currentTasks.map(t => `<li>${t.name}</li>`).sort().join('');
+                const featureNamesList = allFeatures.map(f => `<li>${f.name} (${f.brickName})</li>`).sort().join('');
+                const subFeatureNamesList = allSubFeatures.map(sf => `<li>${sf.name} (${sf.parentFeatureName})</li>`).sort().join('');
+
+                tooltipContainer.innerHTML = `
+                    <div class="kpi-tooltip" id="tooltip-bricks"><ul>${brickNamesList}</ul></div>
+                    <div class="kpi-tooltip" id="tooltip-features"><ul>${featureNamesList}</ul></div>
+                    <div class="kpi-tooltip" id="tooltip-subfeatures"><ul>${subFeatureNamesList}</ul></div>
+                `;
+
+                // --- Logique pour afficher/cacher et positionner les infobulles ---
+                document.querySelectorAll('.kpi-card[data-tooltip-id]').forEach(card => {
+                    const tooltipId = card.dataset.tooltipId;
+                    const tooltip = document.getElementById(tooltipId);
+                    if (!tooltip) return;
+
+                    card.addEventListener('mouseenter', () => {
+                        const cardRect = card.getBoundingClientRect();
+                        tooltip.style.left = `${cardRect.left + cardRect.width / 2}px`;
+                        tooltip.style.top = `${cardRect.top}px`;
+                        tooltip.classList.add('visible');
+                    });
+                    card.addEventListener('mouseleave', () => {
+                        tooltip.classList.remove('visible');
+                    });
+                });
+                
+                // --- 3. Helper pour créer/mettre à jour les graphiques ---
+                const createOrUpdateChart = (chartId, type, data, options = {}) => {
+                    const ctx = document.getElementById(chartId)?.getContext('2d');
+                    if (!ctx) return;
+                    if (appState.charts[chartId]) {
+                        appState.charts[chartId].destroy();
+                    }
+                    appState.charts[chartId] = new Chart(ctx, { type, data, options });
+                };
+
+                const priorityColors = {
+                    'P1': '#bf616a',
+                    'P2': '#d08770',
+                    'P3': '#ebcb8b',
+                    'À définir': '#4c566a',
+                    'Toutes': '#81a1c1'
+                };
+
+                // --- 4. Données & Rendu Graphique 1: Répartition par Priorité ---
+                const priorityCounts = allFeatures.reduce((acc, f) => {
+                    const priority = f.priority || 'À définir';
+                    acc[priority] = (acc[priority] || 0) + 1;
+                    return acc;
+                }, {});
+
+                const priorityLabels = appState.priorities;
+                const priorityData = priorityLabels.map(p => priorityCounts[p] || 0);
+
+                createOrUpdateChart('priorityChart', 'doughnut', {
+                    labels: priorityLabels,
+                    datasets: [{
+                        label: 'Fonctionnalités',
+                        data: priorityData,
+                        backgroundColor: priorityLabels.map(p => priorityColors[p]),
+                    }]
+                }, { plugins: { legend: { position: 'right' } } });
+                
+                // --- 5. Données & Rendu Graphique 2: Fonctionnalités par Brique (AVEC LÉGENDE FILTRANTE) ---
+                const filterContainer = document.getElementById('p1ByBrickFilter');
+                const chartTitle = document.getElementById('p1ByBrickChartTitle');
+                
+                const priorityFilters = ['Toutes', ...appState.priorities];
+                filterContainer.innerHTML = priorityFilters.map(p => `
+                    <div class="legend-item ${appState.dashboardBrickChartFilter === p ? 'active' : ''}" data-priority="${p}">
+                        <span class="legend-item-box" style="background-color: ${priorityColors[p]};"></span>
+                        ${p}
+                    </div>
+                `).join('');
+
+                let featuresForBrickChart;
+                if (appState.dashboardBrickChartFilter === 'Toutes') {
+                    featuresForBrickChart = allFeatures;
+                    chartTitle.textContent = 'Toutes les fonctionnalités par Brique';
+                } else {
+                    featuresForBrickChart = allFeatures.filter(f => f.priority === appState.dashboardBrickChartFilter);
+                    chartTitle.textContent = `Fonctionnalités ${appState.dashboardBrickChartFilter} par Brique`;
+                }
+                
+                const featuresByBrick = featuresForBrickChart.reduce((acc, f) => {
+                    acc[f.brickName] = (acc[f.brickName] || 0) + 1;
+                    return acc;
+                }, {});
+
+                createOrUpdateChart('p1ByBrickChart', 'bar', {
+                    labels: Object.keys(featuresByBrick),
+                    datasets: [{
+                        label: `Nombre de fonctionnalités (${appState.dashboardBrickChartFilter})`,
+                        data: Object.values(featuresByBrick),
+                        backgroundColor: priorityColors[appState.dashboardBrickChartFilter],
+                    }]
+                }, { plugins: { legend: { display: false } } });
+
+                // --- 6. Données & Rendu Graphique 3: Fonctionnalités par Étiquette ---
+                const featuresByTag = allFeatures.reduce((acc, f) => {
+                    (f.tags || []).forEach(tag => {
+                        acc[tag] = (acc[tag] || 0) + 1;
+                    });
+                    return acc;
+                }, {});
+
+                const tagLabels = Object.keys(featuresByTag);
+                const numTags = tagLabels.length;
+                const chartHeight = Math.max(250, 80 + numTags * 25);
+                const tagChartCanvas = document.getElementById('featuresByTagChart');
+                if (tagChartCanvas) {
+                    tagChartCanvas.parentElement.style.height = `${chartHeight}px`;
+                }
+                
+                createOrUpdateChart('featuresByTagChart', 'bar', {
+                    labels: tagLabels,
+                    datasets: [{
+                        label: 'Nombre de fonctionnalités',
+                        data: Object.values(featuresByTag),
+                        backgroundColor: '#a3be8c',
+                    }]
+                }, { 
+                    indexAxis: 'y',
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } }
+                });
+
+                // --- 7. Écouteur d'événement pour les filtres ---
+                if (!filterContainer.dataset.listenerAttached) {
+                    filterContainer.addEventListener('click', (e) => {
+                        const legendItem = e.target.closest('.legend-item');
+                        if (legendItem) {
+                            const newFilter = legendItem.dataset.priority;
+                            if (appState.dashboardBrickChartFilter !== newFilter) {
+                                appState.dashboardBrickChartFilter = newFilter;
+                                renderDashboard(); 
+                            }
+                        }
+                    });
+                    filterContainer.dataset.listenerAttached = 'true';
+                }
+            };
+
             const renderMvpView = () => {
                 const mvpContent = document.getElementById('mvp-view-content');
                 let p1Features = getAllFeatures().filter(f => f.priority === 'P1');
@@ -1456,11 +2162,18 @@
                         return acc;
                     }, {});
                     Object.keys(featuresByTag).sort((a, b) => (a === 'Sans étiquette') - (b === 'Sans étiquette') || a.localeCompare(b)).forEach(tag => {
-                        const list = featuresByTag[tag].sort((a, b) => a.name.localeCompare(b.name)).map(feature => `
+                        const list = featuresByTag[tag].sort((a, b) => a.name.localeCompare(b.name)).map(feature => {
+                            const hasSubFeatures = feature.subFeatures && feature.subFeatures.length > 0;
+                            const featureIndex = feature.featureId.split('-')[1];
+                             return `
                             <li>
-                                <span>${feature.name}</span>
+                                <div style="display: flex; align-items: center; gap: 8px; flex-grow: 1;">
+                                    <span>${feature.name}</span>
+                                    ${hasSubFeatures ? `<button class="view-sub-features-btn" data-brick-id="${feature.brickId}" data-feature-index="${featureIndex}" title="Voir les sous-fonctionnalités">${feature.subFeatures.length}</button>` : ''}
+                                </div>
                                 <div class="tags-container-display">${renderTags(feature.tags)}</div>
-                            </li>`).join('');
+                            </li>`
+                        }).join('');
                         section.innerHTML += `<h4 class="mvp-tag-header">${tag}</h4><ul class="mvp-features-list">${list}</ul>`;
                     });
                     mvpContent.appendChild(section);
@@ -1468,51 +2181,383 @@
             };
 
             const renderDndView = () => {
-                let allFeatures = getAllFeatures();
-                if (appState.selectedBricksDnd.length > 0) {
-                    allFeatures = allFeatures.filter(f => appState.selectedBricksDnd.includes(f.brickName));
-                }
-                const searchTerm = appState.featureFilterDnd.toLowerCase().trim();
-                if (searchTerm) {
-                    allFeatures = allFeatures.filter(f => f.name.toLowerCase().includes(searchTerm));
-                }
                 const columns = { 'P1': [], 'P2': [], 'P3': [], 'À définir': [] };
-                allFeatures.forEach(f => {
-                    const priorityKey = f.priority || 'À définir';
-                    const itemHTML = `<div class="dnd-item ${getPriorityClass(priorityKey).replace('priority-', '')}" data-feature-id="${f.featureId}">
-                        <strong>${f.name}</strong>
-                        <div class="tags-container-display">${renderTags(f.tags)}</div>
-                        <span>${f.brickName}</span>
-                    </div>`;
-                    (columns[priorityKey] || columns['À définir']).push(itemHTML);
-                });
+                const searchTerm = appState.featureFilterDnd.toLowerCase().trim();
+
+                if (appState.dndViewMode === 'features') {
+                    let allFeatures = getAllFeatures();
+                     if (appState.selectedBricksDnd.length > 0) {
+                        allFeatures = allFeatures.filter(f => appState.selectedBricksDnd.includes(f.brickName));
+                    }
+                    if (searchTerm) {
+                        allFeatures = allFeatures.filter(f => f.name.toLowerCase().includes(searchTerm));
+                    }
+
+                    allFeatures.forEach(f => {
+                        const priorityKey = f.priority || 'À définir';
+                        const subFeaturesCount = f.subFeatures?.length || 0;
+                        const countText = subFeaturesCount > 0 ? `<span class="sub-features-count" data-brick-id="${f.brickId}" data-feature-index="${f.featureId.split('-')[1]}">${subFeaturesCount} sous-fonctionnalité${subFeaturesCount > 1 ? 's' : ''}</span>` : '';
+                        const itemHTML = `<div class="dnd-item ${getPriorityClass(priorityKey).replace('priority-', '')}" data-feature-id="${f.featureId}">
+                            <strong>${f.name}</strong>
+                            <div class="tags-container-display">${renderTags(f.tags)}</div>
+                            <span>Brique : ${f.brickName}</span>
+                            ${countText}
+                        </div>`;
+                        (columns[priorityKey] || columns['À définir']).push(itemHTML);
+                    });
+                } else { // dndViewMode is 'subFeatures'
+                    let allSubFeatures = getAllSubFeatures();
+                    if (appState.selectedBricksDnd.length > 0) {
+                        allSubFeatures = allSubFeatures.filter(sf => appState.selectedBricksDnd.includes(sf.brickName));
+                    }
+                    if (searchTerm) {
+                        allSubFeatures = allSubFeatures.filter(sf => sf.name.toLowerCase().includes(searchTerm) || sf.parentFeatureName.toLowerCase().includes(searchTerm));
+                    }
+
+                    allSubFeatures.forEach(sf => {
+                        const priorityKey = sf.parentFeaturePriority;
+                        const itemHTML = `<div class="dnd-item sub-feature-item ${getPriorityClass(priorityKey).replace('priority-', '')}" data-sub-feature-id="${sf.subFeatureId}">
+                            <span class="parent-feature-name">${sf.parentFeatureName}</span>
+                            <strong>${sf.name}</strong>
+                            <span>Brique : ${sf.brickName}</span>
+                        </div>`;
+                        (columns[priorityKey] || columns['À définir']).push(itemHTML);
+                    });
+                }
+                
                 Object.entries(columns).forEach(([key, items]) => {
                     const id = `dnd-${key.toLowerCase().replace(' ', '')}`;
                     const el = document.getElementById(id.replace('àdéfinir', 'adefinir'));
                     if (el) el.innerHTML = items.join('');
                 });
+
                 document.querySelectorAll('#dnd-container .dnd-list').forEach(list => {
-                    new window.Sortable(list, {
-                        group: 'shared', animation: 150,
+                    if (list.sortable) {
+                        list.sortable.destroy();
+                    }
+                    list.sortable = new window.Sortable(list, {
+                        group: 'shared-dnd', animation: 150,
                         onEnd: async (evt) => {
                             const { item, to, from } = evt;
                             const newPriority = to.dataset.priority;
-                            const [brickId, featureIndex] = item.dataset.featureId.split('-');
+                            
+                            let brickId, featureIndex;
+                            if (appState.dndViewMode === 'features') {
+                                [brickId, featureIndex] = item.dataset.featureId.split('-');
+                            } else {
+                                [brickId, featureIndex] = item.dataset.subFeatureId.split('-');
+                            }
+                            
                             const brick = appState.currentTasks.find(t => t.id === brickId);
                             if (brick && brick.features[featureIndex]) {
-                                brick.features[featureIndex].priority = newPriority;
-                                try {
-                                    await updateDoc(doc(db, "projects", brickId), { features: brick.features });
-                                    showToast("Priorité mise à jour !", "success");
-                                } catch (e) {
-                                    showToast("Erreur de mise à jour.", "error");
-                                    from.appendChild(item);
+                                const featuresCopy = JSON.parse(JSON.stringify(brick.features));
+                                
+                                if (featuresCopy[featureIndex].priority !== newPriority) {
+                                    featuresCopy[featureIndex].priority = newPriority;
+                                    try {
+                                        await updateDoc(doc(db, "projects", brickId), { features: featuresCopy });
+                                        showToast("Priorité mise à jour !", "success");
+                                    } catch (e) {
+                                        showToast("Erreur de mise à jour.", "error");
+                                        from.appendChild(item); // Revert visually
+                                    }
                                 }
                             }
                         }
                     });
                 });
             };
+
+            const renderReorgView = () => {
+                const board = document.getElementById('reorg-board');
+                board.innerHTML = ''; 
+
+                const featuresByBrick = appState.currentTasks.reduce((acc, brick) => {
+                    acc[brick.name] = (brick.features || []).map((feature, index) => ({
+                        ...feature,
+                        brickId: brick.id,
+                        featureIndex: index
+                    }));
+                    return acc;
+                }, {});
+
+                Object.keys(featuresByBrick).sort().forEach(brickName => {
+                    const column = document.createElement('div');
+                    column.className = 'dnd-column';
+                    column.innerHTML = `<h3>${brickName}</h3>`;
+
+                    featuresByBrick[brickName].forEach(feature => {
+                        const featureContainer = document.createElement('div');
+                        featureContainer.className = 'dnd-feature-container';
+                        featureContainer.innerHTML = `<h4>${feature.name}</h4>`;
+
+                        const subFeatureList = document.createElement('div');
+                        subFeatureList.className = 'dnd-sub-feature-list';
+                        subFeatureList.dataset.brickId = feature.brickId;
+                        subFeatureList.dataset.featureIndex = feature.featureIndex;
+                        
+                        (feature.subFeatures || []).forEach((sf, subFeatureIndex) => {
+                             subFeatureList.innerHTML += `<div class="dnd-item sub-feature-item" data-sub-feature-id="${feature.brickId}-${feature.featureIndex}-${subFeatureIndex}"><strong>${sf.name}</strong></div>`;
+                        });
+
+                        featureContainer.appendChild(subFeatureList);
+                        column.appendChild(featureContainer);
+                    });
+
+                    board.appendChild(column);
+                });
+
+                document.querySelectorAll('#reorg-container .dnd-sub-feature-list').forEach(list => {
+                    new window.Sortable(list, {
+                        group: 'reorg-sub-features',
+                        animation: 150,
+                        onEnd: async (evt) => {
+                            const { item, to, from } = evt;
+                            const [sourceBrickId, sourceFeatureIndex, sourceSubFeatureIndex] = item.dataset.subFeatureId.split('-');
+                            const destBrickId = to.dataset.brickId;
+                            const destFeatureIndex = to.dataset.featureIndex;
+
+                            if (from === to) return;
+
+                            const sourceBrick = appState.currentTasks.find(t => t.id === sourceBrickId);
+                            const destBrick = appState.currentTasks.find(t => t.id === destBrickId);
+                            
+                            if (!sourceBrick || !destBrick) {
+                                showToast("Erreur: Brique non trouvée.", "error"); return;
+                            }
+
+                            const sourceFeaturesCopy = JSON.parse(JSON.stringify(sourceBrick.features));
+                            const destFeaturesCopy = (sourceBrickId === destBrickId) ? sourceFeaturesCopy : JSON.parse(JSON.stringify(destBrick.features));
+                            const subFeatureToMove = sourceFeaturesCopy[sourceFeatureIndex].subFeatures.splice(sourceSubFeatureIndex, 1)[0];
+
+                            if (!subFeatureToMove) {
+                                 showToast("Erreur lors du déplacement.", "error");
+                                 from.appendChild(item); return;
+                            }
+                            
+                            if (!destFeaturesCopy[destFeatureIndex].subFeatures) {
+                                destFeaturesCopy[destFeatureIndex].subFeatures = [];
+                            }
+                            destFeaturesCopy[destFeatureIndex].subFeatures.push(subFeatureToMove);
+
+                            try {
+                                const batch = writeBatch(db);
+                                batch.update(doc(db, "projects", sourceBrickId), { features: sourceFeaturesCopy });
+                                if(sourceBrickId !== destBrickId) {
+                                     batch.update(doc(db, "projects", destBrickId), { features: destFeaturesCopy });
+                                }
+                                await batch.commit();
+                                showToast("Sous-fonctionnalité déplacée !", "success");
+                            } catch (e) {
+                                showToast("Erreur de mise à jour.", "error");
+                                from.appendChild(item);
+                            }
+                        }
+                    });
+                });
+            };
+
+            const renderInteractiveMindMap = () => {
+                const container = document.getElementById('interactive-mindmap-container');
+                container.innerHTML = '';
+                const rootUl = document.createElement('ul');
+                rootUl.className = 'mindmap-list mindmap-root';
+
+                appState.currentTasks.forEach(brick => {
+                    const brickLi = document.createElement('li');
+                    const brickNodeContainer = document.createElement('div');
+                    brickNodeContainer.className = 'mindmap-node-container';
+                    
+                    const brickNode = document.createElement('span');
+                    brickNode.className = 'mindmap-node brick';
+                    
+                    const brickToggle = document.createElement('span');
+                    brickToggle.className = 'mindmap-toggle';
+                    brickToggle.textContent = '▸';
+                    if (!brick.features || brick.features.length === 0) brickToggle.classList.add('hidden');
+                    
+                    brickNode.appendChild(brickToggle);
+                    brickNode.append(brick.name);
+                    brickNodeContainer.appendChild(brickNode);
+                    brickLi.appendChild(brickNodeContainer);
+
+                    if (brick.features && brick.features.length > 0) {
+                        const featuresUl = document.createElement('ul');
+                        featuresUl.className = 'mindmap-list';
+                        featuresUl.style.display = 'none';
+
+                        brick.features.forEach(feature => {
+                            const featureLi = document.createElement('li');
+                            const featureNodeContainer = document.createElement('div');
+                            featureNodeContainer.className = 'mindmap-node-container';
+
+                            const featureNode = document.createElement('span');
+                            featureNode.className = 'mindmap-node feature';
+
+                            const featureToggle = document.createElement('span');
+                            featureToggle.className = 'mindmap-toggle';
+                            featureToggle.textContent = '▸';
+                            if (!feature.subFeatures || feature.subFeatures.length === 0) featureToggle.classList.add('hidden');
+                            
+                            featureNode.appendChild(featureToggle);
+                            featureNode.append(feature.name);
+                            featureNodeContainer.appendChild(featureNode);
+                            featureLi.appendChild(featureNodeContainer);
+
+                            if (feature.subFeatures && feature.subFeatures.length > 0) {
+                                const subFeaturesUl = document.createElement('ul');
+                                subFeaturesUl.className = 'mindmap-list';
+                                subFeaturesUl.style.display = 'none';
+
+                                feature.subFeatures.forEach(subFeature => {
+                                    const subFeatureLi = document.createElement('li');
+                                    const subFeatureNode = document.createElement('span');
+                                    subFeatureNode.className = 'mindmap-node sub-feature';
+                                    subFeatureNode.textContent = subFeature.name;
+                                    subFeatureNode.dataset.description = subFeature.description || '';
+                                    subFeatureLi.appendChild(subFeatureNode);
+                                    subFeaturesUl.appendChild(subFeatureLi);
+                                });
+                                featureLi.appendChild(subFeaturesUl);
+                            }
+                            featuresUl.appendChild(featureLi);
+                        });
+                        brickLi.appendChild(featuresUl);
+                    }
+                    rootUl.appendChild(brickLi);
+                });
+                container.appendChild(rootUl);
+            };
+
+            const renderPriorityMindMap = () => {
+                const container = document.getElementById('priority-mindmap-view');
+                container.innerHTML = '';
+                const rootUl = document.createElement('ul');
+                rootUl.className = 'mindmap-list mindmap-root';
+
+                const featuresByPriority = getAllFeatures().reduce((acc, feature) => {
+                    const priority = feature.priority || 'À définir';
+                    if (!acc[priority]) acc[priority] = [];
+                    acc[priority].push(feature);
+                    return acc;
+                }, {});
+
+                appState.priorities.forEach(priority => {
+                    if (featuresByPriority[priority] && featuresByPriority[priority].length > 0) {
+                        const priorityLi = document.createElement('li');
+                        // ... (Priority Node creation, same as before)
+                        const priorityNodeContainer = document.createElement('div');
+                        priorityNodeContainer.className = 'mindmap-node-container';
+                        const priorityNode = document.createElement('span');
+                        priorityNode.className = 'mindmap-node priority';
+                        const priorityToggle = document.createElement('span');
+                        priorityToggle.className = 'mindmap-toggle';
+                        priorityToggle.textContent = '▸';
+                        priorityNode.appendChild(priorityToggle);
+                        priorityNode.append(priority);
+                        priorityNodeContainer.appendChild(priorityNode);
+                        priorityLi.appendChild(priorityNodeContainer);
+
+                        // **NOUVELLE LOGIQUE : Regrouper par brique à l'intérieur de la priorité**
+                        const featuresInPriority = featuresByPriority[priority];
+                        const featuresByBrick = featuresInPriority.reduce((acc, feature) => {
+                            const brickName = feature.brickName;
+                            if (!acc[brickName]) acc[brickName] = [];
+                            acc[brickName].push(feature);
+                            return acc;
+                        }, {});
+
+                        const bricksUl = document.createElement('ul');
+                        bricksUl.className = 'mindmap-list';
+                        bricksUl.style.display = 'none';
+
+                        Object.keys(featuresByBrick).sort().forEach(brickName => {
+                            const brickLi = document.createElement('li');
+                            const brickNodeContainer = document.createElement('div');
+                            brickNodeContainer.className = 'mindmap-node-container';
+                            const brickNode = document.createElement('span');
+                            brickNode.className = 'mindmap-node brick'; // Re-use brick style
+                            const brickToggle = document.createElement('span');
+                            brickToggle.className = 'mindmap-toggle';
+                            brickToggle.textContent = '▸';
+                            brickNode.appendChild(brickToggle);
+                            brickNode.append(brickName);
+                            brickNodeContainer.appendChild(brickNode);
+                            brickLi.appendChild(brickNodeContainer);
+
+                            const featuresUl = document.createElement('ul');
+                            featuresUl.className = 'mindmap-list';
+                            featuresUl.style.display = 'none';
+                            
+                            featuresByBrick[brickName].sort((a,b) => a.name.localeCompare(b.name)).forEach(feature => {
+                                const featureLi = document.createElement('li');
+                                const featureNodeContainer = document.createElement('div');
+                                featureNodeContainer.className = 'mindmap-node-container';
+                                const featureNode = document.createElement('span');
+                                featureNode.className = 'mindmap-node feature';
+                                const featureToggle = document.createElement('span');
+                                featureToggle.className = 'mindmap-toggle';
+                                featureToggle.textContent = '▸';
+                                if (!feature.subFeatures || feature.subFeatures.length === 0) featureToggle.classList.add('hidden');
+                                featureNode.appendChild(featureToggle);
+                                featureNode.append(feature.name); // brickName is now redundant here
+                                featureNodeContainer.appendChild(featureNode);
+                                featureLi.appendChild(featureNodeContainer);
+
+                                if (feature.subFeatures && feature.subFeatures.length > 0) {
+                                    const subFeaturesUl = document.createElement('ul');
+                                    subFeaturesUl.className = 'mindmap-list';
+                                    subFeaturesUl.style.display = 'none';
+                                    feature.subFeatures.sort((a,b) => a.name.localeCompare(b.name)).forEach(subFeature => {
+                                        const subFeatureLi = document.createElement('li');
+                                        const subFeatureNode = document.createElement('span');
+                                        subFeatureNode.className = 'mindmap-node sub-feature';
+                                        subFeatureNode.textContent = subFeature.name;
+                                        subFeatureNode.dataset.description = subFeature.description || '';
+                                        subFeatureLi.appendChild(subFeatureNode);
+                                        subFeaturesUl.appendChild(subFeatureLi);
+                                    });
+                                    featureLi.appendChild(subFeaturesUl);
+                                }
+                                featuresUl.appendChild(featureLi);
+                            });
+                            brickLi.appendChild(featuresUl);
+                            bricksUl.appendChild(brickLi);
+                        });
+                        priorityLi.appendChild(bricksUl);
+                        rootUl.appendChild(priorityLi);
+                    }
+                });
+                container.appendChild(rootUl);
+            };
+            
+            document.getElementById('main-content').addEventListener('click', (e) => {
+                const targetNode = e.target.closest('.mindmap-node');
+                if (!targetNode) return;
+
+                const mindmapContainer = e.target.closest('.interactive-mindmap-container');
+                if (!mindmapContainer) return;
+
+                const parentLi = targetNode.closest('li');
+                const childList = parentLi.querySelector('.mindmap-list');
+                
+                if (targetNode.classList.contains('sub-feature')) {
+                     const description = targetNode.dataset.description;
+                    if (description) {
+                        const infoModal = document.getElementById('info-modal');
+                        document.getElementById('info-modal-title').textContent = targetNode.textContent;
+                        document.getElementById('info-modal-body').textContent = description;
+                        infoModal.classList.remove('hidden');
+                    }
+                } else if (childList) {
+                    parentLi.classList.toggle('expanded');
+                    childList.style.display = childList.style.display === 'none' ? 'block' : 'none';
+                    const toggle = targetNode.querySelector('.mindmap-toggle');
+                    if(toggle) {
+                         toggle.style.transform = parentLi.classList.contains('expanded') ? 'rotate(90deg)' : 'rotate(0deg)';
+                    }
+                }
+            });
             
             const updateTagSuggestions = (tags) => {
                 const datalist = document.getElementById('tag-suggestions');
@@ -1765,7 +2810,7 @@
                     isFirstLoad = false;
                 }
                 appState.currentTasks = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
-                    .sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+                    .sort((a, b) => a.name.localeCompare(b.name));
                 populateFilters();
                 refreshUI();
             }, (error) => {
@@ -1783,21 +2828,22 @@
             ['feature-filter-planning', 'feature-filter-dnd'].forEach(id => {
                 document.getElementById(id).addEventListener('input', e => {
                     clearTimeout(appState.filterDebounceTimer);
-                    appState[id.replace(/-/g, '')] = e.target.value;
+                    const stateKey = id === 'feature-filter-planning' ? 'featureFilterPlanning' : 'featureFilterDnd';
+                    appState[stateKey] = e.target.value;
                     appState.filterDebounceTimer = setTimeout(refreshUI, 300); 
                 });
             });
 
             tableWrapper.addEventListener('click', (e) => {
-                const editFeatureBtn = e.target.closest('li[data-brick-id] button.edit-feature-btn');
+                const editFeatureBtn = e.target.closest('button.edit-feature-btn');
                 const editTaskBtn = e.target.closest('td.action-cell button.edit-task-btn');
                 const deleteRowBtn = e.target.closest('button.delete-row-btn');
                 const addFeatureBtn = e.target.closest('button.add-feature-to-brick-btn');
                 const featureCheckbox = e.target.closest('.feature-checkbox');
+                const viewSubFeaturesBtn = e.target.closest('.view-sub-features-btn');
 
                 if (editFeatureBtn) {
-                    const li = editFeatureBtn.closest('li[data-brick-id]');
-                    openEditFeatureModal(li.dataset.brickId, parseInt(li.dataset.featureIndex, 10));
+                    openEditFeatureModal(editFeatureBtn.dataset.brickId, parseInt(editFeatureBtn.dataset.featureIndex, 10));
                 } else if (editTaskBtn) {
                     openProjectModal(editTaskBtn.dataset.id);
                 } else if (deleteRowBtn) {
@@ -1805,14 +2851,41 @@
                 } else if (addFeatureBtn) {
                     openQuickFeatureModal(addFeatureBtn.dataset.id);
                 } else if (featureCheckbox) {
-                    const li = featureCheckbox.closest('li');
-                    const selectedFeature = { brickId: li.dataset.brickId, featureIndex: parseInt(li.dataset.featureIndex, 10) };
+                    const selectedFeature = { brickId: featureCheckbox.dataset.brickId, featureIndex: parseInt(featureCheckbox.dataset.featureIndex, 10) };
                     const existingIndex = appState.selectedFeatures.findIndex(sf => sf.brickId === selectedFeature.brickId && sf.featureIndex === selectedFeature.featureIndex);
                     if (existingIndex > -1) appState.selectedFeatures.splice(existingIndex, 1);
                     else appState.selectedFeatures.push(selectedFeature);
                     updateBulkActionBar();
+                } else if (viewSubFeaturesBtn) {
+                    openSubFeaturesViewModal(viewSubFeaturesBtn.dataset.brickId, parseInt(viewSubFeaturesBtn.dataset.featureIndex, 10));
                 }
             });
+
+            const openSubFeaturesViewModal = (brickId, featureIndex) => {
+                const brick = appState.currentTasks.find(t => t.id === brickId);
+                const feature = brick?.features?.[featureIndex];
+                if (!feature || !feature.subFeatures || feature.subFeatures.length === 0) {
+                    return;
+                }
+
+                const modal = document.getElementById('sub-features-view-modal');
+                const modalTitle = document.getElementById('sub-features-view-modal-title');
+                const modalContent = document.getElementById('sub-features-view-modal-content');
+
+                modalTitle.textContent = `Sous-fonctionnalités de : ${feature.name}`;
+
+                let contentHTML = '<ul class="sub-features-list">';
+                feature.subFeatures.forEach(sf => {
+                    contentHTML += `<li>
+                        <div class="sub-feature-name">${sf.name}</div>
+                        <div class="sub-feature-description">${sf.description || '<i>Aucune description</i>'}</div>
+                    </li>`;
+                });
+                contentHTML += '</ul>';
+
+                modalContent.innerHTML = contentHTML;
+                modal.classList.remove('hidden');
+            };
 
             const updateBulkActionBar = () => {
                 const count = appState.selectedFeatures.length;
@@ -1835,7 +2908,12 @@
                 const brick = appState.currentTasks.find(t => t.id === brickId);
                 const feature = brick?.features?.[featureIndex];
                 if (!feature) return showToast("Erreur: Fonctionnalité non trouvée.", "error");
-                currentEditingFeature = { brickId, featureIndex, tags: [...(feature.tags || [])] };
+                currentEditingFeature = { 
+                    brickId, 
+                    featureIndex, 
+                    tags: [...(feature.tags || [])],
+                    subFeatures: [...(feature.subFeatures || [])]
+                };
                 document.getElementById('edit-feature-modal-title').textContent = `Modifier : ${feature.name}`;
                 document.getElementById('edit-feature-name').value = feature.name;
                 document.getElementById('edit-feature-priority').value = feature.priority || 'À définir';
@@ -1844,6 +2922,7 @@
                 select.innerHTML = '<option value="">Choisir une étiquette...</option>' + appState.tags.map(tag => `<option value="${tag}">${tag}</option>`).join('');
 
                 renderEditFeatureTags();
+                renderEditSubFeatures();
                 elements.editFeatureModal.classList.remove('hidden');
             };
 
@@ -1856,6 +2935,49 @@
                     </span>
                 `).join('');
             };
+
+            const renderEditSubFeatures = () => {
+                const list = document.getElementById('edit-sub-features-list');
+                list.innerHTML = currentEditingFeature.subFeatures.map((sf, index) => `
+                    <li>
+                        <div class="sub-feature-details">
+                            <span>${sf.name}</span>
+                            ${sf.description ? `<p>${sf.description}</p>` : ''}
+                        </div>
+                        <button type="button" class="delete-sub-feature-btn" data-index="${index}" title="Supprimer">&times;</button>
+                    </li>
+                `).join('');
+            };
+
+            const handleAddSubFeature = () => {
+                const nameInput = document.getElementById('sub-feature-name');
+                const descriptionInput = document.getElementById('sub-feature-description');
+                const name = nameInput.value.trim();
+                const description = descriptionInput.value.trim();
+                if (name) {
+                    currentEditingFeature.subFeatures.push({ name, description });
+                    renderEditSubFeatures();
+                    nameInput.value = '';
+                    descriptionInput.value = '';
+                    nameInput.focus();
+                }
+            };
+            
+            document.getElementById('add-sub-feature-btn').addEventListener('click', handleAddSubFeature);
+            document.getElementById('sub-feature-description').addEventListener('keydown', (e) => {
+                if(e.key === 'Enter') {
+                    e.preventDefault();
+                    handleAddSubFeature();
+                }
+            });
+
+            document.getElementById('edit-sub-features-list').addEventListener('click', e => {
+                if (e.target.classList.contains('delete-sub-feature-btn')) {
+                    const index = parseInt(e.target.dataset.index, 10);
+                    currentEditingFeature.subFeatures.splice(index, 1);
+                    renderEditSubFeatures();
+                }
+            });
             
             document.getElementById('edit-feature-tag-select').addEventListener('change', e => {
                 const newTag = e.target.value;
@@ -1902,7 +3024,8 @@
                     ...featuresCopy[featureIndex],
                     name: newName,
                     priority: document.getElementById('edit-feature-priority').value,
-                    tags: currentEditingFeature.tags
+                    tags: currentEditingFeature.tags,
+                    subFeatures: currentEditingFeature.subFeatures
                 };
                 try {
                     await updateDoc(doc(db, "projects", brickId), { features: featuresCopy });
@@ -1931,6 +3054,63 @@
                 }
             });
             
+            const importSubFeaturesBtn = document.getElementById('import-sub-features-btn');
+            const subFeatureJsonInput = document.getElementById('sub-feature-json-import');
+
+            importSubFeaturesBtn.addEventListener('click', () => {
+                subFeatureJsonInput.click();
+            });
+
+            subFeatureJsonInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const jsonContent = JSON.parse(e.target.result);
+                        const importedSubFeatures = [];
+                        const firstKey = Object.keys(jsonContent)[0];
+
+                        if (jsonContent[firstKey] && Array.isArray(jsonContent[firstKey].onglets)) {
+                            jsonContent[firstKey].onglets.forEach(onglet => {
+                                if (Array.isArray(onglet.fonctionnalites)) {
+                                    onglet.fonctionnalites.forEach(func => {
+                                        if (func.nom) {
+                                            importedSubFeatures.push({
+                                                name: func.nom,
+                                                description: func.description || ''
+                                            });
+                                        }
+                                    });
+                                }
+                            });
+                        } else {
+                            throw new Error("Format JSON non reconnu.");
+                        }
+
+                        if (importedSubFeatures.length > 0) {
+                            currentEditingFeature.subFeatures.push(...importedSubFeatures);
+                            renderEditSubFeatures();
+                            showToast(`${importedSubFeatures.length} sous-fonctionnalité(s) importée(s) !`, 'success');
+                        } else {
+                            showToast('Aucune sous-fonctionnalité valide trouvée dans le fichier.', 'error');
+                        }
+
+                    } catch (error) {
+                        showToast(`Erreur d'importation : ${error.message}`, 'error');
+                    } finally {
+                        event.target.value = '';
+                    }
+                };
+                reader.onerror = () => {
+                    showToast('Erreur de lecture du fichier.', 'error');
+                    event.target.value = '';
+                };
+                reader.readAsText(file);
+            });
+
+
             const openBulkTagsModal = () => {
                 currentBulkTags = [];
                 const select = document.getElementById('bulk-tags-select');
@@ -2052,22 +3232,52 @@
                     appState.mvpFilter = filterCard.dataset.filter;
                     renderMvpView();
                 }
+                const viewSubFeaturesBtn = e.target.closest('.view-sub-features-btn');
+                if (viewSubFeaturesBtn) {
+                    openSubFeaturesViewModal(viewSubFeaturesBtn.dataset.brickId, parseInt(viewSubFeaturesBtn.dataset.featureIndex, 10));
+                }
+            });
+            
+            document.getElementById('dnd-view-switch').addEventListener('change', (e) => {
+                appState.dndViewMode = e.target.checked ? 'subFeatures' : 'features';
+                renderDndView();
+            });
+
+            document.getElementById('dnd-container').addEventListener('click', (e) => {
+                const subFeaturesCountBtn = e.target.closest('.sub-features-count');
+                if (subFeaturesCountBtn) {
+                    const { brickId, featureIndex } = subFeaturesCountBtn.dataset;
+                    openSubFeaturesViewModal(brickId, parseInt(featureIndex, 10));
+                }
             });
 
             // --- Event Listeners Setup ---
-            ['cancel-project-btn', 'cancel-quick-feature-btn', 'cancel-edit-feature-modal-btn', 'cancel-bulk-tags-btn', 'cancel-bulk-move-btn'].forEach(id => {
-                document.getElementById(id).addEventListener('click', e => e.target.closest('.modal-overlay').classList.add('hidden'));
+            ['cancel-project-btn', 'cancel-quick-feature-btn', 'cancel-edit-feature-modal-btn', 'cancel-bulk-tags-btn', 'cancel-bulk-move-btn', 'cancel-sub-features-view-btn', 'cancel-info-btn'].forEach(id => {
+                const button = document.getElementById(id);
+                if (button) {
+                    button.addEventListener('click', e => e.target.closest('.modal-overlay').classList.add('hidden'));
+                }
             });
             document.getElementById('sidebar-toggle').addEventListener('click', () => document.body.classList.toggle('sidebar-collapsed'));
-            document.querySelectorAll('.tab-link, .accueil-card').forEach(elem => elem.addEventListener('click', e => switchTab(e.currentTarget.dataset.tab)));
+            document.querySelectorAll('.tab-link, .accueil-card').forEach(elem => {
+                 elem.addEventListener('click', (e) => {
+                    const targetTab = e.currentTarget.dataset.tab;
+                    if(targetTab) {
+                        switchTab(targetTab);
+                    }
+                });
+            });
             document.getElementById('add-task-btn').addEventListener('click', () => openProjectModal());
             elements.projectForm.addEventListener('submit', handleFormSubmit);
             elements.quickFeatureForm.addEventListener('submit', handleQuickFeatureFormSubmit);
             elements.addFeatureBtn.addEventListener('click', handleAddFeature);
-            window.addEventListener('click', () => document.querySelectorAll('.checkboxes').forEach(el => el.classList.add('hidden')));
+            window.addEventListener('click', (e) => {
+                if (!e.target.closest('.multi-select-container')) {
+                    document.querySelectorAll('.checkboxes').forEach(el => el.classList.add('hidden'));
+                }
+            });
             document.querySelectorAll('.multi-select-container').forEach(el => el.addEventListener('click', e => e.stopPropagation()));
         };
     </script>
 </body>
 </html>
-
