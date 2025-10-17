@@ -7,6 +7,7 @@
     <title>Priorisons le projet Neo-CT</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
     <style>
         :root {
@@ -24,11 +25,11 @@
             --grey: #4c566a;
         }
 
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif; 
-            background-color: #f8f9fa; 
-            color: #3b4252; 
-            margin: 0; 
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+            background-color: #f8f9fa;
+            color: #3b4252;
+            margin: 0;
             padding-bottom: 80px; /* Space for bulk action bar */
         }
 
@@ -52,7 +53,7 @@
             padding: 20px;
             transition: margin-left 0.3s ease-in-out;
         }
-        
+
         body.sidebar-collapsed .sidebar {
             transform: translateX(calc(-1 * var(--sidebar-width)));
         }
@@ -69,7 +70,7 @@
             justify-content: center;
             gap: 10px;
         }
-        
+
         #db-status-indicator {
             width: 12px;
             height: 12px;
@@ -85,31 +86,31 @@
         }
 
 
-        .tabs-nav { 
-            display: flex; 
+        .tabs-nav {
+            display: flex;
             flex-direction: column;
             gap: 5px;
         }
-        .tab-link { 
-            padding: 12px 15px; 
-            cursor: pointer; 
-            border: none; 
-            background-color: transparent; 
-            font-size: 1.0em; 
+        .tab-link {
+            padding: 12px 15px;
+            cursor: pointer;
+            border: none;
+            background-color: transparent;
+            font-size: 1.0em;
             color: var(--nord4);
             border-radius: 6px;
-            display: flex; 
-            align-items: center; 
+            display: flex;
+            align-items: center;
             gap: 12px;
             text-align: left;
             transition: background-color: 0.2s, color 0.2s;
         }
-        .tab-link.active { 
+        .tab-link.active {
             background-color: var(--nord10);
-            color: var(--nord6); 
-            font-weight: 600; 
+            color: var(--nord6);
+            font-weight: 600;
         }
-        .tab-link:hover { 
+        .tab-link:hover {
             background-color: #3b4252;
         }
 
@@ -122,7 +123,7 @@
             margin-top: 10px;
             border-bottom: 1px solid var(--grey);
         }
-        
+
         .top-bar {
             display: flex;
             align-items: center;
@@ -153,7 +154,7 @@
         }
 
         .main-header { display: flex; align-items: center; gap: 25px; max-width: 1800px; margin: 0 auto; flex-grow: 1; }
-        .logo { 
+        .logo {
             max-height: 55px;
             max-width: 150px;
             object-fit: contain;
@@ -170,8 +171,8 @@
         h1 { text-align: left; color: var(--nord12); font-weight: 600; margin: 0; flex-grow: 1; font-size: 1.7em; }
         .logo-group-right { display: flex; align-items: center; gap: 20px; }
         .page-container { display: flex; flex-direction: column; gap: 30px; max-width: 1800px; margin: 20px auto 0 auto; }
-        .controls-container, .accueil-container, .mvp-container, .dnd-container, .admin-container, .mindmap-container, .static-mindmap-container, .priority-mindmap-container { background-color: #ffffff; padding: 30px; box-shadow: 0 6px 20px rgba(0,0,0,0.08); border-radius: 12px; border: 1px solid var(--nord4); }
-        .controls-container h2, .mvp-container h2, .dnd-container h2, .admin-container h2, .mindmap-container h2, .static-mindmap-container h2, .priority-mindmap-container h2 { margin-top: 0; font-size: 1.4em; color: var(--nord0); }
+        .controls-container, .accueil-container, .mvp-container, .dnd-container, .admin-container, .mindmap-container, .static-mindmap-container, .priority-mindmap-container, .detail-level-container /* AJOUTÉ */ { background-color: #ffffff; padding: 30px; box-shadow: 0 6px 20px rgba(0,0,0,0.08); border-radius: 12px; border: 1px solid var(--nord4); }
+        .controls-container h2, .mvp-container h2, .dnd-container h2, .admin-container h2, .mindmap-container h2, .static-mindmap-container h2, .priority-mindmap-container h2, .detail-level-container h2 /* AJOUTÉ */ { margin-top: 0; font-size: 1.4em; color: var(--nord0); }
 
         /* === DASHBOARD STYLES === */
         #kpi-container {
@@ -242,12 +243,13 @@
             font-weight: 600;
             color: var(--nord0);
         }
+        /* Style Tooltip générique */
         .kpi-tooltip {
             visibility: hidden;
             opacity: 0;
-            position: fixed; /* Utilise 'fixed' pour être au-dessus de tout */
-            transform: translate(-50%, -100%); /* Centre horizontalement et positionne au-dessus */
-            margin-bottom: -10px; /* Petite marge pour décoller du curseur */
+            position: fixed;
+            transform: translate(-50%, -100%);
+            margin-bottom: -10px;
             background-color: var(--nord0);
             color: var(--nord6);
             padding: 15px;
@@ -255,12 +257,14 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
             width: auto;
             min-width: 200px;
-            max-width: 400px;
-            max-height: 300px; /* Hauteur max plus grande */
-            overflow-y: auto; /* Ascenseur standard si nécessaire */
-            z-index: 9999; /* Au-dessus de tout */
+            max-width: 450px;
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 9999;
             transition: opacity 0.2s, visibility 0.2s;
-            pointer-events: none; /* Pour ne pas gêner la souris */
+            pointer-events: none;
+            font-size: 0.9em;
+            line-height: 1.5;
         }
         .kpi-tooltip.visible {
             visibility: visible;
@@ -276,13 +280,31 @@
             padding: 3px 0;
             white-space: nowrap;
         }
+        .kpi-tooltip .tooltip-content p,
+        .kpi-tooltip .tooltip-content ul,
+        .kpi-tooltip .tooltip-content ol {
+            margin-bottom: 10px;
+            white-space: normal;
+        }
+        .kpi-tooltip .tooltip-content ul,
+        .kpi-tooltip .tooltip-content ol {
+            padding-left: 20px;
+        }
+        .kpi-tooltip .tooltip-content code {
+             background-color: var(--grey);
+             padding: 2px 4px;
+             border-radius: 3px;
+             font-size: 0.9em;
+        }
+        .kpi-tooltip .tooltip-content strong {
+            color: var(--nord8);
+        }
 
-
-        .planning-header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-bottom: 20px; 
+        .planning-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
             flex-wrap: wrap;
             gap: 20px;
         }
@@ -293,10 +315,10 @@
             flex-wrap: wrap;
         }
         .filter-group {
-            min-width: 220px;
+            min-width: 200px;
         }
         .filter-group label { display: block; font-weight: 500; color: #4c566a; margin-bottom: 5px; font-size: 0.9em; }
-        
+
         .project-counter-sync { font-size: 1.1em; color: var(--grey); font-weight: 500; white-space: nowrap; }
         .project-counter-sync strong { color: var(--nord12); }
         .counter-separator { margin: 0 10px; color: var(--nord4); }
@@ -307,6 +329,23 @@
         #tasks-table th { font-size: 0.9em; text-transform: uppercase; color: #4c566a; padding-bottom: 12px; font-weight: 600; }
         #tasks-table th.action-cell { text-align: center; }
         .action-cell-content { display: flex; justify-content: center; align-items: center; gap: 5px;}
+
+        /* NOUVEAUX STYLES POUR LE TABLEAU "NIVEAU DE DÉTAIL" */
+        #detail-level-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        #detail-level-table th, #detail-level-table td { padding: 10px 8px; text-align: left; vertical-align: middle; border-bottom: 1px solid var(--nord6); }
+        #detail-level-table th { font-size: 0.9em; text-transform: uppercase; color: #4c566a; font-weight: 600; background-color: #f8f9fa; cursor: pointer; }
+        #detail-level-table th:hover { background-color: var(--nord6); }
+        #detail-level-table td { font-size: 0.95em; }
+        #detail-level-table .description-progress-bar {
+            width: 80px; height: 10px; background-color: var(--nord4); border-radius: 5px; overflow: hidden; display: inline-block; vertical-align: middle; margin-left: 5px;
+        }
+        #detail-level-table .description-progress-bar div {
+            height: 100%; background-color: var(--nord14); transition: width 0.3s ease;
+        }
+        #detail-level-table .description-text { font-size: 0.85em; color: var(--grey); display: inline-block; vertical-align: middle;}
+        #detail-level-table .no-subfeatures { color: var(--grey); font-style: italic; }
+        /* FIN NOUVEAUX STYLES */
+
 
         .header-filter { width: 100%; padding: 8px; border-radius: 6px; border: 1px solid var(--nord4); background-color: #f8f9fa; box-sizing: border-box; }
 
@@ -337,7 +376,7 @@
         .cancel-button { background-color: var(--nord11); } .cancel-button:hover:not(:disabled) { background-color: #d08770; }
         .add-button { background-color: var(--nord10); } .add-button:hover:not(:disabled) { background-color: var(--nord9); }
         .button-group { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
-        
+
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; z-index: 1000; overflow-y: auto; }
         .modal-content { background: #fff; padding: 30px; border-radius: 12px; width: 90%; max-width: 600px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); margin: 20px 0; }
         .modal-content h3 { margin-top: 0; }
@@ -347,7 +386,7 @@
         .modal-actions .button { margin-top: 0; flex-grow: 0; }
         .modal-actions .delete-button { margin-right: auto; }
         .hidden { display: none; }
-        
+
         #sub-features-view-modal .modal-content, #info-modal .modal-content {
             max-width: 900px;
         }
@@ -374,10 +413,10 @@
         .feature-inputs { display: flex; gap: 10px; margin-top: 10px; }
         .feature-inputs input { flex-grow: 1; }
         #add-feature-btn, #add-sub-feature-btn { padding: 10px 15px; font-size: 14px; align-self: center; margin-top: 0; }
-        
+
         .feature-action-btn { background: none; border: none; font-size: 1.2em; cursor: pointer; opacity: 0.7; padding: 4px;}
         .feature-action-btn:hover { opacity: 1; }
-        
+
         .feature-inline-view-content { display: flex; flex-direction: column; align-items: flex-start; flex-grow: 1; }
         #tasks-table .features-list-display li {
             display: flex;
@@ -452,6 +491,8 @@
             padding-left: 15px;
             border-left: 2px solid var(--nord4);
         }
+        .sub-feature-description p { margin: 0 0 10px 0; }
+        .sub-feature-description ul { margin: 0; padding-left: 20px; }
 
 
         #edit-sub-features-list {
@@ -472,23 +513,26 @@
             border-bottom: 1px solid var(--nord4);
         }
         #edit-sub-features-list li:last-child { border-bottom: none; }
+        #edit-sub-features-list .sub-feature-details { flex-grow: 1; }
         #edit-sub-features-list .sub-feature-details p {
             font-size: 0.85em; color: var(--grey); margin: 2px 0 0 0; font-weight: 400;
         }
-        .delete-sub-feature-btn {
-            background: none; border: none; color: var(--nord11);
+        #edit-sub-features-list .sub-feature-actions { display: flex; align-items: center; flex-shrink: 0; margin-left: 10px; }
+        .delete-sub-feature-btn, .edit-sub-feature-btn {
+            background: none; border: none;
             font-size: 1.3em; cursor: pointer; opacity: 0.7;
-            flex-shrink: 0;
-            margin-left: 10px;
+            padding: 2px 6px;
         }
-        .delete-sub-feature-btn:hover { opacity: 1; }
+        .delete-sub-feature-btn:hover, .edit-sub-feature-btn:hover { opacity: 1; }
+        .delete-sub-feature-btn { color: var(--nord11); }
+        .edit-sub-feature-btn { color: var(--nord9); }
 
-        .priority-badge { 
-            font-size: 0.8em; 
-            padding: 3px 8px; 
-            border-radius: 12px; 
-            color: white; 
-            font-weight: 600; 
+        .priority-badge {
+            font-size: 0.8em;
+            padding: 3px 8px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
             margin-right: 8px;
         }
         .priority-p1 { background-color: var(--nord11); }
@@ -496,7 +540,7 @@
         .priority-p3 { background-color: var(--nord13); }
         .priority-adefinir { background-color: var(--grey); }
         #tasks-table .features-list-display, #tasks-table .sub-features-list { list-style: none; padding: 0; margin: 0; }
-        
+
         .status-message {
             text-align: center;
             padding: 40px 20px;
@@ -535,7 +579,7 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
         #toast-notification.show { bottom: 20px; }
-        
+
         #bulk-action-bar {
             position: fixed;
             bottom: -100px;
@@ -605,7 +649,7 @@
             border-bottom: 2px solid var(--nord4);
         }
         .dnd-list {
-            min-height: 50px; /* Assure une zone de drop même quand la colonne est vide */
+            min-height: 50px;
             flex-grow: 1;
         }
         .dnd-item {
@@ -621,7 +665,7 @@
         .dnd-item.p2 { border-color: var(--nord12); }
         .dnd-item.p3 { border-color: var(--nord13); }
         .dnd-item.adefinir { border-color: var(--grey); }
-        
+
         .dnd-item strong {
             display: block;
             margin-bottom: 5px;
@@ -679,7 +723,7 @@
             width: 50px;
             height: 28px;
         }
-        .switch input { 
+        .switch input {
             opacity: 0;
             width: 0;
             height: 0;
@@ -790,7 +834,7 @@
         .multi-select-container {
             position: relative;
             width: 100%;
-            max-width: 220px;
+            min-width: 200px;
             border: 1px solid var(--nord4);
             border-radius: 6px;
             background-color: #f8f9fa;
@@ -814,8 +858,6 @@
             border: 1px solid var(--nord4);
             border-radius: 6px;
             width: 100%;
-            max-height: 200px;
-            overflow-y: auto;
             z-index: 101;
             margin-top: 5px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
@@ -835,7 +877,24 @@
         .checkboxes input[type="checkbox"] {
             margin-right: 8px;
         }
-        
+
+        .multi-select-search {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: none;
+            border-bottom: 1px solid var(--nord4);
+            background-color: var(--nord6);
+        }
+        .multi-select-search:focus {
+            outline: 1px solid var(--nord9);
+        }
+        .multi-select-list {
+            max-height: 160px;
+            overflow-y: auto;
+            position: relative;
+        }
+
         /* Styles for Tags */
         .tags-container-display, .tags-container-modal-view, .tags-container-modal-edit {
             display: flex;
@@ -883,7 +942,7 @@
             padding: 5px;
         }
         .tags-editor .tag-input:focus, .tags-editor .tag-select:focus { outline: none; }
-        
+
         .tags-editor .add-tag-btn {
             background-color: var(--nord10);
             color: white;
@@ -1086,16 +1145,21 @@
             <button class="tab-link active" data-tab="accueil-container">🏠 Accueil</button>
 
             <div class="sidebar-section-header">Gestion & Saisie</div>
-            <button class="tab-link" data-tab="controls-container">📝 Gestion des briques, fonctionnalités et S-F</button>
+            <button class="tab-link" data-tab="controls-container">📝 Gestion des applis, modules et fonctionnalités</button>
             <button class="tab-link" data-tab="dnd-container">⚖️ Priorisation</button>
-            <button class="tab-link" data-tab="reorg-container">🏗️ Réorganisation S-F</button>
+            <button class="tab-link" data-tab="reorg-container">🏗️ Réorganisation Fonctionnalités</button>
             <button class="tab-link" data-tab="admin-container">⚙️ Administration</button>
 
             <div class="sidebar-section-header">Analyse & Visualisation</div>
             <button class="tab-link" data-tab="mvp-container">🚀 Vue MVP (P1)</button>
             <button class="tab-link" data-tab="mindmap-container">🧱 Carte Structurelle</button>
             <button class="tab-link" data-tab="priority-mindmap-container">📊 Carte par Priorité</button>
+            <button class="tab-link" data-tab="detail-level-container">📊 Niveau de Détail</button>
             <button class="tab-link" data-tab="static-mindmap-container">🖼️ Carte Statique</button>
+
+            <div class="sidebar-section-header">Information</div>
+            <button class="tab-link" data-tab="documentation-container">📚 Documentation</button>
+
         </div>
     </div>
 
@@ -1123,29 +1187,32 @@
                         <canvas id="priorityChart"></canvas>
                     </div>
                     <div class="chart-wrapper">
-                        <h3 id="p1ByBrickChartTitle">Fonctionnalités par Brique</h3>
+                        <h3 id="p1ByBrickChartTitle">Modules par Appli</h3>
                         <div id="p1ByBrickFilter" class="chart-legend-filter">
                             </div>
                         <canvas id="p1ByBrickChart"></canvas>
                     </div>
                     <div class="chart-wrapper">
-                        <h3>Fonctionnalités par Étiquette</h3>
+                        <h3>Modules par Étiquette</h3>
                         <canvas id="featuresByTagChart"></canvas>
                     </div>
                 </div>
             </div>
-            
+
             <div id="controls-container" class="controls-container content-tab hidden">
-                <h2>Gestion des briques, fonctionnalités et S-F</h2>
+                <h2>Gestion des applis, modules et fonctionnalités</h2>
                  <div class="planning-header">
                     <div class="filter-controls">
                         <div class="filter-group">
-                            <label for="brick-filter-planning">Filtrer par brique</label>
+                            <label for="brick-filter-planning">Filtrer par appli</label>
                             <div id="brick-filter-planning" class="multi-select-container">
                                 <div class="select-box">
-                                    <span>Toutes les briques</span>
+                                    <span>Toutes les applis</span>
                                 </div>
-                                <div id="brick-checkboxes-planning" class="checkboxes hidden"></div>
+                                <div id="brick-checkboxes-planning" class="checkboxes hidden">
+                                    <input type="text" class="multi-select-search" placeholder="Rechercher...">
+                                    <div class="multi-select-list"></div>
+                                </div>
                             </div>
                         </div>
                         <div class="filter-group">
@@ -1154,31 +1221,47 @@
                                 <div class="select-box">
                                     <span>Toutes les étiquettes</span>
                                 </div>
-                                <div id="tag-checkboxes-planning" class="checkboxes hidden"></div>
+                                <div id="tag-checkboxes-planning" class="checkboxes hidden">
+                                    <input type="text" class="multi-select-search" placeholder="Rechercher...">
+                                    <div class="multi-select-list"></div>
+                                </div>
                             </div>
                         </div>
                         <div class="filter-group">
-                            <label for="feature-filter-planning">Chercher une fonctionnalité</label>
-                            <input type="text" id="feature-filter-planning" class="header-filter" placeholder="Contient...">
+                            <label for="module-filter-planning">Filtrer par module</label>
+                            <div id="module-filter-planning" class="multi-select-container">
+                                <div class="select-box">
+                                    <span>Tous les modules</span>
+                                </div>
+                                <div id="module-checkboxes-planning" class="checkboxes hidden">
+                                    <input type="text" class="multi-select-search" placeholder="Rechercher...">
+                                    <div class="multi-select-list"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="filter-group">
+                            <label for="feature-filter-planning">Recherche globale</label>
+                            <input type="text" id="feature-filter-planning" class="header-filter" placeholder="Appli, module, fonction...">
                         </div>
                     </div>
                      <p id="planning-counter" class="project-counter-sync"></p>
                 </div>
-                
+
                 <div id="loader-container" class="status-message">
                     <h1>Préparation de l'application...</h1>
                     <ul id="loader-steps">
                         <li id="step1"><span>Connexion à la base de données</span><span class="status"></span></li>
                         <li id="step2"><span>Chargement des paramètres</span><span class="status"></span></li>
-                        <li id="step3"><span>Chargement des données</span><span class="status"></span></li>
+                        <li id="step3"><span>ChargEMENT des données</span><span class="status"></span></li>
                         <li id="step4"><span>Affichage de l'interface</span><span class="status"></span></li>
                     </ul>
                 </div>
 
                 <div id="table-wrapper" class="hidden"></div>
-                
+
                 <div id="button-group-wrapper" class="button-group hidden">
-                    <button class="button add-button" id="add-task-btn">Ajouter une brique</button>
+                    <button class="button add-button" id="add-task-btn">Ajouter une appli</button>
+                    <button class="button add-button" id="add-module-btn" style="background-color: var(--nord9);">Ajouter un module</button>
                 </div>
             </div>
 
@@ -1187,26 +1270,53 @@
                 <div class="planning-header">
                     <div class="filter-controls">
                         <div class="filter-group">
-                            <label for="brick-filter-dnd">Filtrer par brique</label>
+                            <label for="brick-filter-dnd">Filtrer par appli</label>
                             <div id="brick-filter-dnd" class="multi-select-container">
                                 <div class="select-box">
-                                    <span>Toutes les briques</span>
+                                    <span>Toutes les applis</span>
                                 </div>
-                                <div id="brick-checkboxes-dnd" class="checkboxes hidden"></div>
+                                <div id="brick-checkboxes-dnd" class="checkboxes hidden">
+                                    <input type="text" class="multi-select-search" placeholder="Rechercher...">
+                                    <div class="multi-select-list"></div>
+                                </div>
                             </div>
                         </div>
                         <div class="filter-group">
-                            <label for="feature-filter-dnd">Chercher une fonctionnalité</label>
-                            <input type="text" id="feature-filter-dnd" class="header-filter" placeholder="Contient...">
+                            <label for="tag-filter-dnd">Filtrer par étiquette</label>
+                            <div id="tag-filter-dnd" class="multi-select-container">
+                                <div class="select-box">
+                                    <span>Toutes les étiquettes</span>
+                                </div>
+                                <div id="tag-checkboxes-dnd" class="checkboxes hidden">
+                                    <input type="text" class="multi-select-search" placeholder="Rechercher...">
+                                    <div class="multi-select-list"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="filter-group">
+                            <label for="module-filter-dnd">Filtrer par module</label>
+                            <div id="module-filter-dnd" class="multi-select-container">
+                                <div class="select-box">
+                                    <span>Tous les modules</span>
+                                </div>
+                                <div id="module-checkboxes-dnd" class="checkboxes hidden">
+                                    <input type="text" class="multi-select-search" placeholder="Rechercher...">
+                                    <div class="multi-select-list"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="filter-group">
+                            <label for="feature-filter-dnd">Recherche globale</label>
+                            <input type="text" id="feature-filter-dnd" class="header-filter" placeholder="Module, fonction...">
                         </div>
                     </div>
                     <div class="view-switch-container">
-                        <label for="dnd-view-switch" class="switch-label">Fonctionnalités</label>
+                        <label for="dnd-view-switch" class="switch-label">Modules</label>
                         <label class="switch">
                             <input type="checkbox" id="dnd-view-switch">
                             <span class="slider round"></span>
                         </label>
-                        <label for="dnd-view-switch" class="switch-label">Sous-fonctionnalités</label>
+                        <label for="dnd-view-switch" class="switch-label">Fonctionnalités</label>
                     </div>
                 </div>
                 <div class="dnd-board">
@@ -1230,8 +1340,52 @@
             </div>
 
             <div id="reorg-container" class="dnd-container content-tab hidden">
-                <h2>Réorganisation des sous-fonctionnalités</h2>
-                <p style="margin-top: -15px; margin-bottom: 25px; color: var(--grey);">Glissez-déposez une sous-fonctionnalité d'une fonctionnalité à une autre pour la ré-assigner.</p>
+                <h2>Réorganisation des fonctionnalités</h2>
+                <div class="planning-header">
+                    <div class="filter-controls">
+                        <div class="filter-group">
+                            <label for="brick-filter-reorg">Filtrer par appli</label>
+                            <div id="brick-filter-reorg" class="multi-select-container">
+                                <div class="select-box">
+                                    <span>Toutes les applis</span>
+                                </div>
+                                <div id="brick-checkboxes-reorg" class="checkboxes hidden">
+                                    <input type="text" class="multi-select-search" placeholder="Rechercher...">
+                                    <div class="multi-select-list"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="filter-group">
+                            <label for="tag-filter-reorg">Filtrer par étiquette</label>
+                            <div id="tag-filter-reorg" class="multi-select-container">
+                                <div class="select-box">
+                                    <span>Toutes les étiquettes</span>
+                                </div>
+                                <div id="tag-checkboxes-reorg" class="checkboxes hidden">
+                                    <input type="text" class="multi-select-search" placeholder="Rechercher...">
+                                    <div class="multi-select-list"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="filter-group">
+                            <label for="module-filter-reorg">Filtrer par module</label>
+                            <div id="module-filter-reorg" class="multi-select-container">
+                                <div class="select-box">
+                                    <span>Tous les modules</span>
+                                </div>
+                                <div id="module-checkboxes-reorg" class="checkboxes hidden">
+                                    <input type="text" class="multi-select-search" placeholder="Rechercher...">
+                                    <div class="multi-select-list"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="filter-group">
+                            <label for="feature-filter-reorg">Recherche globale</label>
+                            <input type="text" id="feature-filter-reorg" class="header-filter" placeholder="Module, fonction...">
+                        </div>
+                    </div>
+                </div>
+                <p style="margin-top: -15px; margin-bottom: 25px; color: var(--grey);">Glissez-déposez une fonctionnalité d'un module à un autre pour la ré-assigner.</p>
                 <div id="reorg-board" class="dnd-board">
                     </div>
             </div>
@@ -1301,35 +1455,84 @@
                 <h2>📊 Carte par Priorité</h2>
                 <div id="priority-mindmap-view" class="interactive-mindmap-container"></div>
             </div>
-            
+
+            <div id="detail-level-container" class="detail-level-container content-tab hidden">
+                 <h2>📊 Niveau de Détail des Modules</h2>
+                 <p>Ce tableau analyse la granularité et la description des fonctionnalités pour chaque module.</p>
+                 <div id="detail-level-table-container">
+                     </div>
+            </div>
             <div id="static-mindmap-container" class="static-mindmap-container content-tab hidden">
                 <h2>🖼️ Carte Statique</h2>
                 <img src="Map.png" alt="Carte Mentale du Projet" style="width: 100%; height: auto; border-radius: 8px;">
             </div>
 
+            <div id="documentation-container" class="admin-container content-tab hidden" style="line-height: 1.6;">
+                <h2>📚 Documentation de l'outil de priorisation Neo-CT</h2>
+
+                <h3>Objectif de l'application</h3>
+                <p>
+                    Cette application (SPA - Single Page Application) a été conçue pour centraliser, structurer et prioriser
+                    l'ensemble des développements prévus pour le projet Neo-CT. Elle remplace les fichiers Excel statiques
+                    par une interface web dynamique, collaborative et connectée à une base de données en temps réel (Firestore).
+                </p>
+
+                <h3>Ce qu'elle propose : les fonctionnalités clés</h3>
+                <ul>
+                    <li><b>Gestion centralisée :</b> Ajouter, modifier et supprimer les "Applis" (briques logicielles),
+                        les "Modules" (fonctionnalités majeures) et les "Fonctionnalités" (sous-tâches ou user stories détaillées).</li>
+                    <li><b>Priorisation visuelle (Drag & Drop) :</b> L'onglet "Priorisation" offre une vue Kanban (P1, P2, P3, À définir)
+                        où les modules peuvent être glissés-déposés pour définir leur priorité.</li>
+                    <li><b>Actions groupées :</b> Cocher plusieurs modules dans l'onglet "Gestion" pour leur appliquer des étiquettes
+                        en masse ou les déplacer vers une autre appli.</li>
+                    <li><b>Vues d'analyse :</b>
+                        <ul>
+                            <li><b>Tableau de bord :</b> KPIs et graphiques sur la répartition des tâches.</li>
+                            <li><b>Vue MVP (P1) :</b> Un focus immédiat sur tous les modules P1, triés par appli et étiquette.</li>
+                            <li><b>Cartes (Mindmaps) :</b> Vues hiérarchiques pour comprendre la structure du projet (par appli ou par priorité).</li>
+                            <li><b>Niveau de Détail :</b> Analyse de la granularité et de la description des modules.</li>
+                        </ul>
+                    </li>
+                    <li><b>Administration :</b> Gérer la liste des étiquettes et des priorités disponibles, et exporter toutes les données.</li>
+                </ul>
+
+                <h3>Comment elle fonctionne ? (Techniquement)</h3>
+                <p>
+                    Tout est contenu dans un seul fichier <code>index.html</code>. L'application utilise :
+                </p>
+                <ul>
+                    <li><b>Firebase (Firestore) :</b> Pour la base de données. Chaque action (ajout, modification, glisser-déposer)
+                        est synchronisée en temps réel avec la base.</li>
+                    <li><b>Chart.js :</b> Pour les graphiques du tableau de bord.</li>
+                    <li><b>Sortable.js :</b> Pour toutes les fonctionnalités de glisser-déposer.</li>
+                    <li><b>Marked.js :</b> Pour afficher les descriptions des fonctionnalités (qui peuvent être écrites en Markdown).</li>
+                </ul>
+            </div>
+
         </div>
     </div>
-    
+
     <div id="kpi-tooltip-container"></div>
+    <div id="reorg-tooltip-container"></div>
 
     <div id="project-modal" class="modal-overlay hidden">
         <div class="modal-content">
-            <h3 id="project-modal-title">Ajouter une brique</h3>
+            <h3 id="project-modal-title">Ajouter une appli</h3>
             <form id="project-form" data-existing-features="[]">
                 <input type="hidden" id="project-id">
                 <div>
-                    <label for="project-name">Nom de la brique</label>
+                    <label for="project-name">Nom de l'appli</label>
                     <input type="text" id="project-name" required>
                 </div>
                 <div>
-                    <label for="project-description">Description de la brique</label>
+                    <label for="project-description">Description de l'appli</label>
                     <textarea id="project-description" rows="3"></textarea>
                 </div>
 
                 <div id="features-section">
-                    <h4>Ajouter des fonctionnalités (optionnel)</h4>
+                    <h4>Ajouter des modules (optionnel)</h4>
                     <div class="feature-inputs">
-                        <input type="text" id="feature-name" placeholder="Nom de la nouvelle fonctionnalité">
+                        <input type="text" id="feature-name" placeholder="Nom du nouveau module">
                         <button type="button" id="add-feature-btn" class="button add-button">Ajouter</button>
                     </div>
                 </div>
@@ -1341,15 +1544,15 @@
             </form>
         </div>
     </div>
-    
+
     <div id="quick-feature-modal" class="modal-overlay hidden">
         <div class="modal-content">
-            <h3 id="quick-feature-modal-title">Ajout rapide de fonctionnalités</h3>
+            <h3 id="quick-feature-modal-title">Ajout rapide de modules</h3>
             <form id="quick-feature-form">
                 <input type="hidden" id="quick-feature-modal-brick-id">
                 <div>
-                    <label for="quick-feature-names">Noms des fonctionnalités (une par ligne)</label>
-                    <textarea id="quick-feature-names" rows="8" required placeholder="Fonctionnalité A&#10;Fonctionnalité B&#10;Fonctionnalité C"></textarea>
+                    <label for="quick-feature-names">Noms des modules (un par ligne)</label>
+                    <textarea id="quick-feature-names" rows="8" required placeholder="Module A&#10;Module B&#10;Module C"></textarea>
                 </div>
                 <div>
                     <label for="quick-feature-priority">Priorité pour ce lot</label>
@@ -1357,7 +1560,7 @@
                         </select>
                 </div>
                  <div class="modal-actions">
-                    <button type="submit" class="button save-button">Ajouter les fonctionnalités</button>
+                    <button type="submit" class="button save-button">Ajouter les modules</button>
                     <button type="button" id="cancel-quick-feature-btn" class="button cancel-button">Annuler</button>
                 </div>
             </form>
@@ -1374,14 +1577,20 @@
             </div>
         </div>
     </div>
-    
+
     <div id="edit-feature-modal" class="modal-overlay hidden">
         <div class="modal-content">
-            <h3 id="edit-feature-modal-title">Modifier la fonctionnalité</h3>
+            <h3 id="edit-feature-modal-title">Modifier le module</h3>
             <form id="edit-feature-form">
                 <input type="file" id="sub-feature-json-import" accept=".json" class="hidden">
+
+                <div id="edit-feature-brick-selector-group" class="hidden">
+                    <label for="edit-feature-brick-select">Appli parente</label>
+                    <select id="edit-feature-brick-select" required></select>
+                </div>
+
                 <div>
-                    <label for="edit-feature-name">Nom de la fonctionnalité</label>
+                    <label for="edit-feature-name">Nom du module</label>
                     <input type="text" id="edit-feature-name" required>
                 </div>
                 <div>
@@ -1398,15 +1607,15 @@
                         <button type="button" class="add-tag-btn" id="edit-feature-add-new-tag-btn" title="Créer une nouvelle étiquette">+</button>
                     </div>
                 </div>
-                
+
                 <div id="sub-features-section-modal">
-                    <h4>Sous-fonctionnalités</h4>
+                    <h4>Fonctionnalités</h4>
                     <ul id="edit-sub-features-list"></ul>
                     <div class="feature-inputs" style="flex-direction: column; align-items: stretch; gap: 5px;">
-                        <input type="text" id="sub-feature-name" placeholder="Nom de la sous-fonctionnalité">
-                        <input type="text" id="sub-feature-description" placeholder="Description (optionnel)">
+                        <input type="text" id="sub-feature-name" placeholder="Nom de la fonctionnalité">
+                        <textarea id="sub-feature-description" placeholder="Description (optionnel)" rows="3"></textarea>
                     </div>
-                     <div style="text-align: right; margin-top: 10px; display: flex; justify-content: flex-end; gap: 10px;">
+                     <div style="text-align: right; margin-top: 10px; display: flex; justify-content: flex-end; gap: 10px;" id="sub-feature-actions-container">
                         <button type="button" id="import-sub-features-btn" class="button add-button" style="background-color: var(--nord13); color: var(--nord0);">Importer JSON</button>
                         <button type="button" id="add-sub-feature-btn" class="button add-button">Ajouter</button>
                     </div>
@@ -1420,10 +1629,10 @@
             </form>
         </div>
     </div>
-    
+
     <div id="sub-features-view-modal" class="modal-overlay hidden">
         <div class="modal-content">
-            <h3 id="sub-features-view-modal-title">Sous-fonctionnalités</h3>
+            <h3 id="sub-features-view-modal-title">Fonctionnalités</h3>
             <div id="sub-features-view-modal-content">
                 </div>
             <div class="modal-actions">
@@ -1431,7 +1640,7 @@
             </div>
         </div>
     </div>
-    
+
     <div id="info-modal" class="modal-overlay hidden">
         <div class="modal-content">
             <h3 id="info-modal-title"></h3>
@@ -1461,7 +1670,7 @@
     <div id="bulk-tags-modal" class="modal-overlay hidden">
         <div class="modal-content">
             <h3 id="bulk-tags-modal-title">Gérer les étiquettes</h3>
-            <p>Appliquez une ou plusieurs étiquettes aux fonctionnalités sélectionnées.</p>
+            <p>Appliquez une ou plusieurs étiquettes aux modules sélectionnés.</p>
             <form id="bulk-tags-form">
                 <div>
                     <label>Étiquettes à appliquer</label>
@@ -1481,11 +1690,11 @@
 
      <div id="bulk-move-modal" class="modal-overlay hidden">
         <div class="modal-content">
-            <h3 id="bulk-move-modal-title">Déplacer les fonctionnalités</h3>
-            <p>Sélectionnez la nouvelle brique pour les fonctionnalités sélectionnées.</p>
+            <h3 id="bulk-move-modal-title">Déplacer les modules</h3>
+            <p>Sélectionnez la nouvelle appli pour les modules sélectionnés.</p>
             <form id="bulk-move-form">
                 <div>
-                    <label for="bulk-move-brick-select">Nouvelle brique</label>
+                    <label for="bulk-move-brick-select">Nouvelle appli</label>
                     <select id="bulk-move-brick-select" required></select>
                 </div>
                  <div class="modal-actions">
@@ -1521,7 +1730,7 @@
         };
 
         window.onload = async () => {
-            
+
             const step1 = document.getElementById('step1');
             const step2 = document.getElementById('step2');
             const step3 = document.getElementById('step3');
@@ -1557,26 +1766,41 @@
 
             // --- Étape 2: Initialisation des modules & Paramètres ---
             step2.classList.add('active');
-            
+
             const appState = {
                 currentTasks: [],
                 priorities: [],
                 tags: [],
                 mvpFilter: 'all',
+
+                // Filtres "Gestion"
                 featureFilterPlanning: '',
                 selectedBricksPlanning: [],
                 selectedTagsPlanning: [],
-                selectedFeatures: [],
+                selectedModulesPlanning: [],
+
+                // Filtres "Priorisation"
                 featureFilterDnd: '',
                 selectedBricksDnd: [],
+                selectedTagsDnd: [],
+                selectedModulesDnd: [],
+
+                // Filtres "Réorganisation"
+                featureFilterReorg: '',
+                selectedBricksReorg: [],
+                selectedTagsReorg: [],
+                selectedModulesReorg: [],
+
+                selectedFeatures: [], // Sélection de masse
                 filterDebounceTimer: null,
-                dndViewMode: 'features', // 'features' or 'subFeatures'
-                charts: {}, // Pour stocker les instances des graphiques
-                dashboardBrickChartFilter: 'P1', // Filtre actif pour le graph par brique
+                dndViewMode: 'features',
+                charts: {},
+                dashboardBrickChartFilter: 'P1',
             };
-            
+
             let currentFeatures = [];
             let currentEditingFeature = { brickId: null, featureIndex: -1, tags: [], subFeatures: [] };
+            let currentSubFeatureEditIndex = null;
             let currentBulkTags = [];
             let currentAdminEditing = { type: null, originalName: null };
 
@@ -1601,6 +1825,12 @@
                 bulkSelectionCounter: document.getElementById('bulk-selection-counter'),
             };
 
+            const parseMarkdown = (text) => {
+                if (!text) return '';
+                marked.setOptions({ breaks: true });
+                return marked.parse(text);
+            };
+
             const showToast = (message, type = 'success') => {
                 elements.toast.textContent = message;
                 elements.toast.style.backgroundColor = type === 'error' ? 'var(--nord11)' : 'var(--nord14)';
@@ -1615,7 +1845,7 @@
                 document.getElementById('confirm-modal-title').textContent = title;
                 document.getElementById('confirm-modal-body').textContent = body;
                 confirmModal.classList.remove('hidden');
-                
+
                 return new Promise((resolve) => {
                     document.getElementById('confirm-btn').onclick = () => {
                         confirmModal.classList.add('hidden');
@@ -1628,6 +1858,7 @@
                 });
             };
 
+            // ##### FONCTION switchTab MODIFIÉE #####
             const switchTab = (targetId) => {
                 document.querySelectorAll('.tab-link').forEach(item => {
                     item.classList.toggle('active', item.dataset.tab === targetId);
@@ -1636,6 +1867,7 @@
                     content.classList.toggle('hidden', content.id !== targetId);
                 });
 
+                // Appeler la fonction de rendu correspondante
                 if (targetId === 'accueil-container') renderDashboard();
                 if (targetId === 'mvp-container') renderMvpView();
                 if (targetId === 'dnd-container') renderDndView();
@@ -1646,62 +1878,90 @@
                 }
                 if (targetId === 'mindmap-container') renderInteractiveMindMap();
                 if (targetId === 'priority-mindmap-container') renderPriorityMindMap();
+                if (targetId === 'detail-level-container') renderDetailLevelView(); // AJOUTÉ
             };
 
-            const applyFilters = (tasks) => {
+
+            const applyFilters = (tasks, { brickKey, tagKey, moduleKey, textKey }) => {
                 let initialData = [...tasks];
                 let filteredData;
 
-                // --- FILTRE PAR BRIQUE ---
-                if (appState.selectedBricksPlanning.length > 0) {
-                    filteredData = initialData.filter(task => appState.selectedBricksPlanning.includes(task.name));
+                const selectedBricks = appState[brickKey] || [];
+                const selectedTags = appState[tagKey] || [];
+                const selectedModules = appState[moduleKey] || [];
+                const searchTerm = (appState[textKey] || '').toLowerCase().trim();
+
+                if (selectedBricks.length > 0) {
+                    filteredData = initialData.filter(task => selectedBricks.includes(task.name));
                 } else {
-                    filteredData = initialData; // On prend tout si aucune sélection
+                    filteredData = initialData;
                 }
 
-                // --- FILTRE PAR ÉTIQUETTE ---
-                if (appState.selectedTagsPlanning.length > 0) {
-                    filteredData = filteredData.filter(task => 
-                        task.features && task.features.some(f => 
-                            f.tags && f.tags.some(tag => appState.selectedTagsPlanning.includes(tag))
-                        )
-                    );
+                if (selectedTags.length === 0 && selectedModules.length === 0 && !searchTerm) {
+                    return filteredData;
                 }
-                
-                // --- FILTRE PAR RECHERCHE TEXTUELLE ---
-                const searchTerm = appState.featureFilterPlanning.toLowerCase().trim();
-                if (searchTerm) {
-                    filteredData = filteredData.map(task => {
-                        const matchingFeatures = (task.features || []).filter(f => 
-                            f.name.toLowerCase().includes(searchTerm) || 
-                            (f.subFeatures || []).some(sf => sf.name.toLowerCase().includes(searchTerm) || (sf.description || '').toLowerCase().includes(searchTerm))
-                        );
-                        if(task.name.toLowerCase().includes(searchTerm)) {
-                            return task;
-                        }
-                        if(matchingFeatures.length > 0){
-                            return {...task, features: matchingFeatures};
-                        }
-                        return null;
-                    }).filter(Boolean);
-                }
+
+                filteredData = filteredData.map(task => {
+                    if (searchTerm && task.name.toLowerCase().includes(searchTerm)) {
+                        return task;
+                    }
+
+                    const matchingFeatures = (task.features || []).filter(f => {
+                        const tagMatch = selectedTags.length === 0 ||
+                            (f.tags && f.tags.some(tag => selectedTags.includes(tag)));
+
+                        const moduleMatch = selectedModules.length === 0 ||
+                            selectedModules.includes(f.name);
+
+                        const textMatch = !searchTerm ||
+                            f.name.toLowerCase().includes(searchTerm) ||
+                            (f.subFeatures || []).some(sf =>
+                                sf.name.toLowerCase().includes(searchTerm) ||
+                                (sf.description || '').toLowerCase().includes(searchTerm)
+                            );
+
+                        return tagMatch && moduleMatch && textMatch;
+                    });
+
+                    if (matchingFeatures.length > 0) {
+                        return {...task, features: matchingFeatures};
+                    }
+
+                    return null;
+                }).filter(Boolean);
+
                 return filteredData;
             };
 
             const refreshUI = () => {
-                const filteredTasks = applyFilters(appState.currentTasks);
-                renderTable(filteredTasks);
-                updateCounter(filteredTasks);
                 const activeTab = document.querySelector('.content-tab:not(.hidden)');
-                if (activeTab) {
-                    switch(activeTab.id) {
-                        case 'accueil-container': renderDashboard(); break;
-                        case 'dnd-container': renderDndView(); break;
-                        case 'reorg-container': renderReorgView(); break;
-                        case 'mvp-container': renderMvpView(); break;
-                        case 'mindmap-container': renderInteractiveMindMap(); break;
-                        case 'priority-mindmap-container': renderPriorityMindMap(); break;
+                if (!activeTab) return;
+
+                switch(activeTab.id) {
+                    case 'controls-container': {
+                        const filteredTasks = applyFilters(appState.currentTasks, {
+                            brickKey: 'selectedBricksPlanning',
+                            tagKey: 'selectedTagsPlanning',
+                            moduleKey: 'selectedModulesPlanning',
+                            textKey: 'featureFilterPlanning'
+                        });
+                        renderTable(filteredTasks);
+                        updateCounter(filteredTasks);
+                        break;
                     }
+                    case 'dnd-container':
+                        renderDndView();
+                        break;
+                    case 'reorg-container':
+                        renderReorgView();
+                        break;
+                    case 'detail-level-container': // Rafraîchir si c'est la vue active
+                        renderDetailLevelView();
+                        break;
+                    case 'accueil-container': renderDashboard(); break;
+                    case 'mvp-container': renderMvpView(); break;
+                    case 'mindmap-container': renderInteractiveMindMap(); break;
+                    case 'priority-mindmap-container': renderPriorityMindMap(); break;
                 }
             };
 
@@ -1711,20 +1971,16 @@
                 let subFeatureCount = 0;
 
                 tasks.forEach(task => {
-                    const featuresToCount = (task.features || []).filter(f => {
-                         if (appState.selectedTagsPlanning.length > 0) {
-                            return f.tags && f.tags.some(tag => appState.selectedTagsPlanning.includes(tag));
-                        }
-                        return true;
-                    });
-                    featureCount += featuresToCount.length;
-                    subFeatureCount += featuresToCount.reduce((sum, f) => sum + (f.subFeatures?.length || 0), 0);
+                    featureCount += (task.features || []).length;
+                    subFeatureCount += (task.features || []).reduce((sum, f) => sum + (f.subFeatures?.length || 0), 0);
                 });
 
                 const counter = document.getElementById('planning-counter');
-                counter.innerHTML = `<strong>${brickCount}</strong> brique${brickCount > 1 ? 's' : ''} 
-                <span class="counter-separator">|</span> <strong>${featureCount}</strong> fonctionnalité${featureCount > 1 ? 's' : ''}
-                <span class="counter-separator">|</span> <strong>${subFeatureCount}</strong> sous-fonctionnalité${subFeatureCount > 1 ? 's' : ''}`;
+                 if (counter) {
+                    counter.innerHTML = `<strong>${brickCount}</strong> appli${brickCount > 1 ? 's' : ''}
+                    <span class="counter-separator">|</span> <strong>${featureCount}</strong> module${featureCount > 1 ? 's' : ''}
+                    <span class="counter-separator">|</span> <strong>${subFeatureCount}</strong> fonctionnalité${subFeatureCount > 1 ? 's' : ''}`;
+                }
             };
 
             const getPriorityClass = (priority) => {
@@ -1739,20 +1995,20 @@
                 if (!tagsArray || tagsArray.length === 0) return '';
                 return tagsArray.map(tag => `<span class="tag-item">${tag}</span>`).join('');
             };
-            
+
             const renderTable = (tasks) => {
                 let tableHTML = `<table id="tasks-table">
                     <thead>
                         <tr>
-                            <th style="width: 25%;">Brique</th>
-                            <th>Fonctionnalités</th>
+                            <th style="width: 25%;">Appli</th>
+                            <th>Modules</th>
                             <th style="width: 20%;" class="action-cell">Actions</th>
                         </tr>
                     </thead>
                     <tbody>`;
 
                 if (tasks.length === 0) {
-                    tableHTML += '<tr><td colspan="3" style="text-align:center; padding: 20px;">Aucune brique ou fonctionnalité ne correspond à votre recherche.</td></tr>';
+                    tableHTML += '<tr><td colspan="3" style="text-align:center; padding: 20px;">Aucune appli ou module ne correspond à votre recherche.</td></tr>';
                 } else {
                     tasks.forEach((task) => {
                         let featuresHTML = '<ul class="features-list-display">';
@@ -1760,7 +2016,11 @@
 
                         if (featuresToRender.length > 0) {
                             featuresToRender.forEach(f => {
-                                const originalIndex = (appState.currentTasks.find(t=>t.id === task.id)?.features || []).findIndex(origF => origF.name === f.name);
+                                const originalTask = appState.currentTasks.find(t=>t.id === task.id);
+                                const originalIndex = (originalTask?.features || []).findIndex(origF => origF.name === f.name);
+
+                                if (originalIndex === -1) return;
+
                                 const isSelected = appState.selectedFeatures.some(sf => sf.brickId === task.id && sf.featureIndex === originalIndex);
                                 const priorityClass = getPriorityClass(f.priority);
                                 const hasSubFeatures = f.subFeatures && f.subFeatures.length > 0;
@@ -1773,7 +2033,7 @@
                                         <div class="feature-inline-view-content">
                                             <div style="display: flex; align-items: center; gap: 8px;">
                                                 <span class="feature-name-text">${f.name}</span>
-                                                ${hasSubFeatures ? `<button class="view-sub-features-btn" data-brick-id="${task.id}" data-feature-index="${originalIndex}" title="Voir les sous-fonctionnalités">${f.subFeatures.length}</button>` : ''}
+                                                ${hasSubFeatures ? `<button class="view-sub-features-btn" data-brick-id="${task.id}" data-feature-index="${originalIndex}" title="Voir les fonctionnalités">${f.subFeatures.length}</button>` : ''}
                                             </div>
                                             <div class="tags-container-display">${renderTags(f.tags)}</div>
                                         </div>
@@ -1785,15 +2045,15 @@
                              featuresHTML += '<li>-</li>';
                         }
                         featuresHTML += '</ul>';
-                        
+
                         tableHTML += `<tr>
                             <td><strong>${task.name || ''}</strong></td>
                             <td>${featuresHTML}</td>
                             <td class="action-cell">
                                 <div class="action-cell-content">
-                                    <button class="add-feature-to-brick-btn" data-id="${task.id}" title="Ajouter des fonctionnalités en masse">+</button>
+                                    <button class="add-feature-to-brick-btn" data-id="${task.id}" title="Ajouter des modules en masse">+</button>
                                     <button class="edit-task-btn" data-id="${task.id}">Modifier</button>
-                                    <button class="delete-row-btn" data-id="${task.id}" title="Supprimer cette brique">×</button>
+                                    <button class="delete-row-btn" data-id="${task.id}" title="Supprimer cette appli">×</button>
                                 </div>
                             </td>
                         </tr>`;
@@ -1802,7 +2062,7 @@
                 tableHTML += `</tbody></table>`;
                 tableWrapper.innerHTML = tableHTML;
             };
-            
+
             const handleAddFeature = () => {
                 const nameInput = document.getElementById('feature-name');
                 const name = nameInput.value.trim();
@@ -1810,24 +2070,24 @@
                     currentFeatures.push({ name: name, priority: 'À définir', tags: [], subFeatures: [] });
                     nameInput.value = '';
                     nameInput.focus();
-                    showToast(`'${name}' sera ajoutée lors de la sauvegarde.`, 'success');
+                    showToast(`'${name}' sera ajouté lors de la sauvegarde.`, 'success');
                 }
             };
-            
+
             const openProjectModal = (projectId = null) => {
                 elements.projectForm.reset();
                 elements.projectForm.dataset.existingFeatures = '[]';
                 if (projectId) {
                     const task = appState.currentTasks.find(t => t.id === projectId);
                     if (task) {
-                        elements.projectModalTitle.textContent = "Modifier la brique";
+                        elements.projectModalTitle.textContent = "Modifier l'appli";
                         document.getElementById('project-id').value = task.id;
                         document.getElementById('project-name').value = task.name;
                         document.getElementById('project-description').value = task.description;
                         elements.projectForm.dataset.existingFeatures = JSON.stringify(task.features || []);
                     }
                 } else {
-                    elements.projectModalTitle.textContent = "Ajouter une brique";
+                    elements.projectModalTitle.textContent = "Ajouter une appli";
                     document.getElementById('project-id').value = '';
                 }
                 currentFeatures = [];
@@ -1839,7 +2099,7 @@
                 const saveButton = e.target.querySelector('button[type="submit"]');
                 const projectName = document.getElementById('project-name').value.trim();
                 if (!projectName) {
-                    showToast('Le nom de la brique est obligatoire.', 'error');
+                    showToast("Le nom de l'appli est obligatoire.", 'error');
                     return;
                 }
                 saveButton.disabled = true;
@@ -1854,11 +2114,11 @@
                 try {
                     if (id) {
                         await updateDoc(doc(db, "projects", id), taskData);
-                        showToast('Brique mise à jour avec succès !');
+                        showToast('Appli mise à jour avec succès !');
                     } else {
                         taskData.createdAt = serverTimestamp();
                         await addDoc(collection(db, "projects"), taskData);
-                        showToast('Brique ajoutée avec succès !');
+                        showToast('Appli ajoutée avec succès !');
                     }
                     elements.projectModal.classList.add('hidden');
                 } catch (error) {
@@ -1867,7 +2127,7 @@
                     saveButton.disabled = false;
                 }
             };
-            
+
             const handleQuickFeatureFormSubmit = async (e) => {
                 e.preventDefault();
                 const saveButton = e.target.querySelector('button[type="submit"]');
@@ -1876,12 +2136,12 @@
                 const featurePriority = document.getElementById('quick-feature-priority').value;
                 const namesArray = featureNames.split('\n').map(name => name.trim()).filter(Boolean);
                 if (namesArray.length === 0) {
-                    showToast('Veuillez entrer au moins un nom de fonctionnalité.', 'error');
+                    showToast('Veuillez entrer au moins un nom de module.', 'error');
                     return;
                 }
                 const brick = appState.currentTasks.find(t => t.id === brickId);
                 if (!brick) {
-                    showToast('Erreur: Brique non trouvée.', 'error');
+                    showToast('Erreur: Appli non trouvée.', 'error');
                     return;
                 }
                 saveButton.disabled = true;
@@ -1891,7 +2151,7 @@
                         features: [...(brick.features || []), ...newFeatures],
                         updatedAt: serverTimestamp()
                     });
-                    showToast(`${namesArray.length} fonctionnalité(s) ajoutée(s) !`);
+                    showToast(`${namesArray.length} module(s) ajouté(s) !`);
                     elements.quickFeatureModal.classList.add('hidden');
                 } catch (error) {
                     showToast(`Erreur: ${error.message}`, 'error');
@@ -1903,17 +2163,17 @@
             const handleDeleteProject = async (button) => {
                 const id = button.dataset.id;
                 const task = appState.currentTasks.find(t => t.id === id);
-                if (task && await showConfirmModal("Confirmation de suppression", `Supprimer la brique "${task.name}" et toutes ses fonctionnalités ?`)) {
+                if (task && await showConfirmModal("Confirmation de suppression", `Supprimer l'appli "${task.name}" et tous ses modules ?`)) {
                     try {
                         await deleteDoc(doc(db, "projects", id));
-                        showToast('Brique supprimée.', 'success');
+                        showToast('Appli supprimée.', 'success');
                     } catch (error) {
                         showToast(`Erreur de suppression: ${error.message}`, 'error');
                     }
                 }
             };
 
-            const getAllFeatures = () => appState.currentTasks.flatMap((task) => 
+            const getAllFeatures = () => appState.currentTasks.flatMap((task) =>
                 (task.features || []).map((feature, featureIndex) => ({
                     ...feature,
                     brickName: task.name,
@@ -1921,7 +2181,7 @@
                     featureId: `${task.id}-${featureIndex}`
                 }))
             );
-            
+
             const getAllSubFeatures = () => {
                 const allSubFeatures = [];
                 appState.currentTasks.forEach(task => {
@@ -1942,44 +2202,38 @@
                 });
                 return allSubFeatures;
             };
-            
-            // ===================================================================
-            // =================== FONCTION TABLEAU DE BORD ======================
-            // ===================================================================
+
             const renderDashboard = () => {
-                // S'assure qu'un conteneur global pour les infobulles existe
                 let tooltipContainer = document.getElementById('kpi-tooltip-container');
                 if (!tooltipContainer) {
                     tooltipContainer = document.createElement('div');
                     tooltipContainer.id = 'kpi-tooltip-container';
                     document.body.appendChild(tooltipContainer);
                 }
-                tooltipContainer.innerHTML = ''; // Vide les anciennes infobulles
+                tooltipContainer.innerHTML = '';
 
                 const allFeatures = getAllFeatures();
                 const allSubFeatures = getAllSubFeatures();
                 const kpiContainer = document.getElementById('kpi-container');
 
-                // --- 1. Calcul des KPIs ---
                 const totalBricks = appState.currentTasks.length;
                 const totalFeatures = allFeatures.length;
                 const totalSubFeatures = allSubFeatures.length;
                 const prioritizedFeaturesCount = allFeatures.filter(f => f.priority && f.priority !== 'À définir').length;
                 const percentagePrioritized = totalFeatures > 0 ? ((prioritizedFeaturesCount / totalFeatures) * 100).toFixed(0) : 0;
 
-                // --- 2. Affichage des KPIs ---
                 kpiContainer.innerHTML = `
                     <div class="kpi-card" data-tooltip-id="tooltip-bricks">
                         <p class="value">${totalBricks}</p>
-                        <p class="label">Briques</p>
+                        <p class="label">Applis</p>
                     </div>
                     <div class="kpi-card" data-tooltip-id="tooltip-features">
                         <p class="value">${totalFeatures}</p>
-                        <p class="label">Fonctionnalités</p>
+                        <p class="label">Modules</p>
                     </div>
                     <div class="kpi-card" data-tooltip-id="tooltip-subfeatures">
                         <p class="value">${totalSubFeatures}</p>
-                        <p class="label">Sous-fonctionnalités</p>
+                        <p class="label">Fonctionnalités</p>
                     </div>
                     <div class="kpi-card">
                         <p class="value">${percentagePrioritized}%</p>
@@ -1987,7 +2241,6 @@
                     </div>
                 `;
 
-                // --- Génération des infobulles dans le conteneur global ---
                 const brickNamesList = appState.currentTasks.map(t => `<li>${t.name}</li>`).sort().join('');
                 const featureNamesList = allFeatures.map(f => `<li>${f.name} (${f.brickName})</li>`).sort().join('');
                 const subFeatureNamesList = allSubFeatures.map(sf => `<li>${sf.name} (${sf.parentFeatureName})</li>`).sort().join('');
@@ -1998,14 +2251,13 @@
                     <div class="kpi-tooltip" id="tooltip-subfeatures"><ul>${subFeatureNamesList}</ul></div>
                 `;
 
-                // --- Logique pour afficher/cacher et positionner les infobulles ---
                 document.querySelectorAll('.kpi-card[data-tooltip-id]').forEach(card => {
                     const tooltipId = card.dataset.tooltipId;
                     const tooltip = document.getElementById(tooltipId);
                     if (!tooltip) return;
 
-                    card.addEventListener('mouseenter', () => {
-                        const cardRect = card.getBoundingClientRect();
+                    card.addEventListener('mouseenter', (e) => {
+                        const cardRect = e.target.getBoundingClientRect();
                         tooltip.style.left = `${cardRect.left + cardRect.width / 2}px`;
                         tooltip.style.top = `${cardRect.top}px`;
                         tooltip.classList.add('visible');
@@ -2014,8 +2266,7 @@
                         tooltip.classList.remove('visible');
                     });
                 });
-                
-                // --- 3. Helper pour créer/mettre à jour les graphiques ---
+
                 const createOrUpdateChart = (chartId, type, data, options = {}) => {
                     const ctx = document.getElementById(chartId)?.getContext('2d');
                     if (!ctx) return;
@@ -2033,7 +2284,6 @@
                     'Toutes': '#81a1c1'
                 };
 
-                // --- 4. Données & Rendu Graphique 1: Répartition par Priorité ---
                 const priorityCounts = allFeatures.reduce((acc, f) => {
                     const priority = f.priority || 'À définir';
                     acc[priority] = (acc[priority] || 0) + 1;
@@ -2046,16 +2296,15 @@
                 createOrUpdateChart('priorityChart', 'doughnut', {
                     labels: priorityLabels,
                     datasets: [{
-                        label: 'Fonctionnalités',
+                        label: 'Modules',
                         data: priorityData,
                         backgroundColor: priorityLabels.map(p => priorityColors[p]),
                     }]
                 }, { plugins: { legend: { position: 'right' } } });
-                
-                // --- 5. Données & Rendu Graphique 2: Fonctionnalités par Brique (AVEC LÉGENDE FILTRANTE) ---
+
                 const filterContainer = document.getElementById('p1ByBrickFilter');
                 const chartTitle = document.getElementById('p1ByBrickChartTitle');
-                
+
                 const priorityFilters = ['Toutes', ...appState.priorities];
                 filterContainer.innerHTML = priorityFilters.map(p => `
                     <div class="legend-item ${appState.dashboardBrickChartFilter === p ? 'active' : ''}" data-priority="${p}">
@@ -2067,12 +2316,12 @@
                 let featuresForBrickChart;
                 if (appState.dashboardBrickChartFilter === 'Toutes') {
                     featuresForBrickChart = allFeatures;
-                    chartTitle.textContent = 'Toutes les fonctionnalités par Brique';
+                    chartTitle.textContent = 'Tous les modules par Appli';
                 } else {
                     featuresForBrickChart = allFeatures.filter(f => f.priority === appState.dashboardBrickChartFilter);
-                    chartTitle.textContent = `Fonctionnalités ${appState.dashboardBrickChartFilter} par Brique`;
+                    chartTitle.textContent = `Modules ${appState.dashboardBrickChartFilter} par Appli`;
                 }
-                
+
                 const featuresByBrick = featuresForBrickChart.reduce((acc, f) => {
                     acc[f.brickName] = (acc[f.brickName] || 0) + 1;
                     return acc;
@@ -2081,13 +2330,12 @@
                 createOrUpdateChart('p1ByBrickChart', 'bar', {
                     labels: Object.keys(featuresByBrick),
                     datasets: [{
-                        label: `Nombre de fonctionnalités (${appState.dashboardBrickChartFilter})`,
+                        label: `Nombre de modules (${appState.dashboardBrickChartFilter})`,
                         data: Object.values(featuresByBrick),
                         backgroundColor: priorityColors[appState.dashboardBrickChartFilter],
                     }]
                 }, { plugins: { legend: { display: false } } });
 
-                // --- 6. Données & Rendu Graphique 3: Fonctionnalités par Étiquette ---
                 const featuresByTag = allFeatures.reduce((acc, f) => {
                     (f.tags || []).forEach(tag => {
                         acc[tag] = (acc[tag] || 0) + 1;
@@ -2102,21 +2350,20 @@
                 if (tagChartCanvas) {
                     tagChartCanvas.parentElement.style.height = `${chartHeight}px`;
                 }
-                
+
                 createOrUpdateChart('featuresByTagChart', 'bar', {
                     labels: tagLabels,
                     datasets: [{
-                        label: 'Nombre de fonctionnalités',
+                        label: 'Nombre de modules',
                         data: Object.values(featuresByTag),
                         backgroundColor: '#a3be8c',
                     }]
-                }, { 
+                }, {
                     indexAxis: 'y',
                     maintainAspectRatio: false,
                     plugins: { legend: { display: false } }
                 });
 
-                // --- 7. Écouteur d'événement pour les filtres ---
                 if (!filterContainer.dataset.listenerAttached) {
                     filterContainer.addEventListener('click', (e) => {
                         const legendItem = e.target.closest('.legend-item');
@@ -2124,7 +2371,7 @@
                             const newFilter = legendItem.dataset.priority;
                             if (appState.dashboardBrickChartFilter !== newFilter) {
                                 appState.dashboardBrickChartFilter = newFilter;
-                                renderDashboard(); 
+                                renderDashboard();
                             }
                         }
                     });
@@ -2135,14 +2382,14 @@
             const renderMvpView = () => {
                 const mvpContent = document.getElementById('mvp-view-content');
                 let p1Features = getAllFeatures().filter(f => f.priority === 'P1');
-                
+
                 if (appState.mvpFilter !== 'all') {
                     p1Features = p1Features.filter(f => f.brickName.toLowerCase().includes(appState.mvpFilter.toLowerCase()));
                 }
 
                 mvpContent.innerHTML = '';
                 if (p1Features.length === 0) {
-                    mvpContent.innerHTML = '<p>Aucune fonctionnalité de priorité P1 ne correspond à ce filtre.</p>';
+                    mvpContent.innerHTML = '<p>Aucun module de priorité P1 ne correspond à ce filtre.</p>';
                     return;
                 }
                 const featuresByBrick = p1Features.reduce((acc, feature) => {
@@ -2153,7 +2400,7 @@
                     const section = document.createElement('div');
                     section.className = 'mvp-brique-section';
                     const features = featuresByBrick[brickName];
-                    section.innerHTML = `<h3>${brickName} (${features.length} fonctionnalité${features.length > 1 ? 's' : ''})</h3>`;
+                    section.innerHTML = `<h3>${brickName} (${features.length} module${features.length > 1 ? 's' : ''})</h3>`;
                     const featuresByTag = features.reduce((acc, feature) => {
                         const tags = (feature.tags && feature.tags.length > 0) ? feature.tags : ['Sans étiquette'];
                         tags.forEach(tag => {
@@ -2169,7 +2416,7 @@
                             <li>
                                 <div style="display: flex; align-items: center; gap: 8px; flex-grow: 1;">
                                     <span>${feature.name}</span>
-                                    ${hasSubFeatures ? `<button class="view-sub-features-btn" data-brick-id="${feature.brickId}" data-feature-index="${featureIndex}" title="Voir les sous-fonctionnalités">${feature.subFeatures.length}</button>` : ''}
+                                    ${hasSubFeatures ? `<button class="view-sub-features-btn" data-brick-id="${feature.brickId}" data-feature-index="${featureIndex}" title="Voir les fonctionnalités">${feature.subFeatures.length}</button>` : ''}
                                 </div>
                                 <div class="tags-container-display">${renderTags(feature.tags)}</div>
                             </li>`
@@ -2182,49 +2429,62 @@
 
             const renderDndView = () => {
                 const columns = { 'P1': [], 'P2': [], 'P3': [], 'À définir': [] };
-                const searchTerm = appState.featureFilterDnd.toLowerCase().trim();
+
+                const searchTerm = (appState.featureFilterDnd || '').toLowerCase().trim();
+                const selectedBricks = appState.selectedBricksDnd || [];
+                const selectedTags = appState.selectedTagsDnd || [];
+                const selectedModules = appState.selectedModulesDnd || [];
 
                 if (appState.dndViewMode === 'features') {
-                    let allFeatures = getAllFeatures();
-                     if (appState.selectedBricksDnd.length > 0) {
-                        allFeatures = allFeatures.filter(f => appState.selectedBricksDnd.includes(f.brickName));
-                    }
-                    if (searchTerm) {
-                        allFeatures = allFeatures.filter(f => f.name.toLowerCase().includes(searchTerm));
-                    }
+                    const allFeatures = getAllFeatures().filter(f => {
+                        const brickMatch = selectedBricks.length === 0 || selectedBricks.includes(f.brickName);
+                        const tagMatch = selectedTags.length === 0 || (f.tags && f.tags.some(tag => selectedTags.includes(tag)));
+                        const moduleMatch = selectedModules.length === 0 || selectedModules.includes(f.name);
+                        const textMatch = !searchTerm || f.name.toLowerCase().includes(searchTerm);
+
+                        return brickMatch && tagMatch && moduleMatch && textMatch;
+                    });
 
                     allFeatures.forEach(f => {
                         const priorityKey = f.priority || 'À définir';
                         const subFeaturesCount = f.subFeatures?.length || 0;
-                        const countText = subFeaturesCount > 0 ? `<span class="sub-features-count" data-brick-id="${f.brickId}" data-feature-index="${f.featureId.split('-')[1]}">${subFeaturesCount} sous-fonctionnalité${subFeaturesCount > 1 ? 's' : ''}</span>` : '';
+                        const countText = subFeaturesCount > 0 ? `<span class="sub-features-count" data-brick-id="${f.brickId}" data-feature-index="${f.featureId.split('-')[1]}">${subFeaturesCount} fonctionnalité${subFeaturesCount > 1 ? 's' : ''}</span>` : '';
                         const itemHTML = `<div class="dnd-item ${getPriorityClass(priorityKey).replace('priority-', '')}" data-feature-id="${f.featureId}">
                             <strong>${f.name}</strong>
                             <div class="tags-container-display">${renderTags(f.tags)}</div>
-                            <span>Brique : ${f.brickName}</span>
+                            <span>Appli : ${f.brickName}</span>
                             ${countText}
                         </div>`;
                         (columns[priorityKey] || columns['À définir']).push(itemHTML);
                     });
-                } else { // dndViewMode is 'subFeatures'
-                    let allSubFeatures = getAllSubFeatures();
-                    if (appState.selectedBricksDnd.length > 0) {
-                        allSubFeatures = allSubFeatures.filter(sf => appState.selectedBricksDnd.includes(sf.brickName));
-                    }
-                    if (searchTerm) {
-                        allSubFeatures = allSubFeatures.filter(sf => sf.name.toLowerCase().includes(searchTerm) || sf.parentFeatureName.toLowerCase().includes(searchTerm));
-                    }
+                } else {
+                    const allSubFeatures = getAllSubFeatures().filter(sf => {
+                        const brickMatch = selectedBricks.length === 0 || selectedBricks.includes(sf.brickName);
+
+                        const parentFeature = appState.currentTasks.find(t => t.id === sf.brickId)?.features[sf.featureIndex];
+                        if (!parentFeature) return false;
+
+                        const tagMatch = selectedTags.length === 0 || (parentFeature.tags && parentFeature.tags.some(tag => selectedTags.includes(tag)));
+                        const moduleMatch = selectedModules.length === 0 || selectedModules.includes(parentFeature.name);
+
+                        const textMatch = !searchTerm ||
+                            sf.name.toLowerCase().includes(searchTerm) ||
+                            sf.parentFeatureName.toLowerCase().includes(searchTerm);
+
+                        return brickMatch && tagMatch && moduleMatch && textMatch;
+                    });
 
                     allSubFeatures.forEach(sf => {
                         const priorityKey = sf.parentFeaturePriority;
                         const itemHTML = `<div class="dnd-item sub-feature-item ${getPriorityClass(priorityKey).replace('priority-', '')}" data-sub-feature-id="${sf.subFeatureId}">
                             <span class="parent-feature-name">${sf.parentFeatureName}</span>
                             <strong>${sf.name}</strong>
-                            <span>Brique : ${sf.brickName}</span>
+                            <span>Appli : ${sf.brickName}</span>
                         </div>`;
                         (columns[priorityKey] || columns['À définir']).push(itemHTML);
                     });
                 }
-                
+
                 Object.entries(columns).forEach(([key, items]) => {
                     const id = `dnd-${key.toLowerCase().replace(' ', '')}`;
                     const el = document.getElementById(id.replace('àdéfinir', 'adefinir'));
@@ -2240,18 +2500,18 @@
                         onEnd: async (evt) => {
                             const { item, to, from } = evt;
                             const newPriority = to.dataset.priority;
-                            
+
                             let brickId, featureIndex;
                             if (appState.dndViewMode === 'features') {
                                 [brickId, featureIndex] = item.dataset.featureId.split('-');
                             } else {
                                 [brickId, featureIndex] = item.dataset.subFeatureId.split('-');
                             }
-                            
+
                             const brick = appState.currentTasks.find(t => t.id === brickId);
                             if (brick && brick.features[featureIndex]) {
                                 const featuresCopy = JSON.parse(JSON.stringify(brick.features));
-                                
+
                                 if (featuresCopy[featureIndex].priority !== newPriority) {
                                     featuresCopy[featureIndex].priority = newPriority;
                                     try {
@@ -2259,7 +2519,7 @@
                                         showToast("Priorité mise à jour !", "success");
                                     } catch (e) {
                                         showToast("Erreur de mise à jour.", "error");
-                                        from.appendChild(item); // Revert visually
+                                        from.appendChild(item);
                                     }
                                 }
                             }
@@ -2270,14 +2530,36 @@
 
             const renderReorgView = () => {
                 const board = document.getElementById('reorg-board');
-                board.innerHTML = ''; 
+                board.innerHTML = '';
+                const tooltipContainer = document.getElementById('reorg-tooltip-container');
+                tooltipContainer.innerHTML = '';
 
-                const featuresByBrick = appState.currentTasks.reduce((acc, brick) => {
-                    acc[brick.name] = (brick.features || []).map((feature, index) => ({
+                const searchTerm = (appState.featureFilterReorg || '').toLowerCase().trim();
+                const selectedBricks = appState.selectedBricksReorg || [];
+                const selectedTags = appState.selectedTagsReorg || [];
+                const selectedModules = appState.selectedModulesReorg || [];
+
+                const tasksToRender = appState.currentTasks.filter(task => {
+                    return selectedBricks.length === 0 || selectedBricks.includes(task.name);
+                });
+
+                const featuresByBrick = tasksToRender.reduce((acc, brick) => {
+                    const matchingFeatures = (brick.features || []).map((feature, index) => ({
                         ...feature,
                         brickId: brick.id,
                         featureIndex: index
-                    }));
+                    })).filter(f => {
+                        const tagMatch = selectedTags.length === 0 || (f.tags && f.tags.some(tag => selectedTags.includes(tag)));
+                        const moduleMatch = selectedModules.length === 0 || selectedModules.includes(f.name);
+                        const textMatch = !searchTerm ||
+                            f.name.toLowerCase().includes(searchTerm) ||
+                            (f.subFeatures || []).some(sf => sf.name.toLowerCase().includes(searchTerm));
+                        return tagMatch && moduleMatch && textMatch;
+                    });
+
+                    if(matchingFeatures.length > 0) {
+                        acc[brick.name] = matchingFeatures;
+                    }
                     return acc;
                 }, {});
 
@@ -2295,9 +2577,25 @@
                         subFeatureList.className = 'dnd-sub-feature-list';
                         subFeatureList.dataset.brickId = feature.brickId;
                         subFeatureList.dataset.featureIndex = feature.featureIndex;
-                        
+
                         (feature.subFeatures || []).forEach((sf, subFeatureIndex) => {
-                             subFeatureList.innerHTML += `<div class="dnd-item sub-feature-item" data-sub-feature-id="${feature.brickId}-${feature.featureIndex}-${subFeatureIndex}"><strong>${sf.name}</strong></div>`;
+                             const subFeatureId = `${feature.brickId}-${feature.featureIndex}-${subFeatureIndex}`;
+                             const hasDescription = sf.description && sf.description.trim() !== '';
+                             const tooltipId = `reorg-tt-${subFeatureId}`;
+                             subFeatureList.innerHTML += `
+                                <div class="dnd-item sub-feature-item"
+                                     data-sub-feature-id="${subFeatureId}"
+                                     ${hasDescription ? `data-tooltip-id="${tooltipId}"` : ''}>
+                                    <strong>${sf.name}</strong>
+                                </div>`;
+
+                             if (hasDescription) {
+                                 const tooltipDiv = document.createElement('div');
+                                 tooltipDiv.className = 'kpi-tooltip'; // Réutiliser la classe tooltip
+                                 tooltipDiv.id = tooltipId;
+                                 tooltipDiv.innerHTML = `<div class="tooltip-content">${parseMarkdown(sf.description)}</div>`;
+                                 tooltipContainer.appendChild(tooltipDiv);
+                             }
                         });
 
                         featureContainer.appendChild(subFeatureList);
@@ -2308,11 +2606,14 @@
                 });
 
                 document.querySelectorAll('#reorg-container .dnd-sub-feature-list').forEach(list => {
-                    new window.Sortable(list, {
+                    if (list.sortableInstance) {
+                        list.sortableInstance.destroy();
+                    }
+                    list.sortableInstance = new window.Sortable(list, {
                         group: 'reorg-sub-features',
                         animation: 150,
                         onEnd: async (evt) => {
-                            const { item, to, from } = evt;
+                             const { item, to, from } = evt;
                             const [sourceBrickId, sourceFeatureIndex, sourceSubFeatureIndex] = item.dataset.subFeatureId.split('-');
                             const destBrickId = to.dataset.brickId;
                             const destFeatureIndex = to.dataset.featureIndex;
@@ -2321,24 +2622,31 @@
 
                             const sourceBrick = appState.currentTasks.find(t => t.id === sourceBrickId);
                             const destBrick = appState.currentTasks.find(t => t.id === destBrickId);
-                            
+
                             if (!sourceBrick || !destBrick) {
-                                showToast("Erreur: Brique non trouvée.", "error"); return;
+                                showToast("Erreur: Appli non trouvée.", "error"); return;
                             }
+
+                             const originalSourceFeatureIndex = parseInt(sourceFeatureIndex, 10);
+                             const originalSourceSubFeatureIndex = parseInt(sourceSubFeatureIndex, 10);
+                             const originalDestFeatureIndex = parseInt(destFeatureIndex, 10);
+
 
                             const sourceFeaturesCopy = JSON.parse(JSON.stringify(sourceBrick.features));
                             const destFeaturesCopy = (sourceBrickId === destBrickId) ? sourceFeaturesCopy : JSON.parse(JSON.stringify(destBrick.features));
-                            const subFeatureToMove = sourceFeaturesCopy[sourceFeatureIndex].subFeatures.splice(sourceSubFeatureIndex, 1)[0];
+                            const subFeatureToMove = sourceFeaturesCopy[originalSourceFeatureIndex].subFeatures.splice(originalSourceSubFeatureIndex, 1)[0];
+
 
                             if (!subFeatureToMove) {
                                  showToast("Erreur lors du déplacement.", "error");
-                                 from.appendChild(item); return;
+                                 from.appendChild(item);
+                                 return;
                             }
-                            
-                            if (!destFeaturesCopy[destFeatureIndex].subFeatures) {
-                                destFeaturesCopy[destFeatureIndex].subFeatures = [];
+
+                            if (!destFeaturesCopy[originalDestFeatureIndex].subFeatures) {
+                                destFeaturesCopy[originalDestFeatureIndex].subFeatures = [];
                             }
-                            destFeaturesCopy[destFeatureIndex].subFeatures.push(subFeatureToMove);
+                            destFeaturesCopy[originalDestFeatureIndex].subFeatures.push(subFeatureToMove);
 
                             try {
                                 const batch = writeBatch(db);
@@ -2347,14 +2655,79 @@
                                      batch.update(doc(db, "projects", destBrickId), { features: destFeaturesCopy });
                                 }
                                 await batch.commit();
-                                showToast("Sous-fonctionnalité déplacée !", "success");
+                                showToast("Fonctionnalité déplacée !", "success");
                             } catch (e) {
-                                showToast("Erreur de mise à jour.", "error");
-                                from.appendChild(item);
+                                showToast("Erreur de mise à jour: " + e.message, "error");
+                                console.error("DnD Reorg error:", e);
                             }
                         }
                     });
                 });
+            };
+
+            // ##### NOUVELLE FONCTION renderDetailLevelView #####
+            const renderDetailLevelView = () => {
+                const container = document.getElementById('detail-level-table-container');
+                if (!container) return;
+
+                const allFeaturesData = getAllFeatures().map(f => {
+                    const subFeatures = f.subFeatures || [];
+                    const totalSub = subFeatures.length;
+                    const describedSub = subFeatures.filter(sf => sf.description && sf.description.trim() !== '').length;
+                    const descriptionPercent = totalSub > 0 ? Math.round((describedSub / totalSub) * 100) : 0;
+                    return {
+                        name: f.name,
+                        appName: f.brickName,
+                        priority: f.priority || 'À définir',
+                        totalSub: totalSub,
+                        describedSub: describedSub,
+                        descriptionPercent: descriptionPercent
+                    };
+                });
+
+                // Simple tri (ajuster si besoin de plus complexe)
+                allFeaturesData.sort((a,b) => a.name.localeCompare(b.name));
+
+                let tableHTML = `<table id="detail-level-table">
+                    <thead>
+                        <tr>
+                            <th>Module</th>
+                            <th>Application</th>
+                            <th>Priorité</th>
+                            <th>Nb. Fonct.</th>
+                            <th>Fonct. Décrites</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+
+                if (allFeaturesData.length === 0) {
+                     tableHTML += '<tr><td colspan="5" style="text-align:center; padding: 20px;">Aucun module trouvé.</td></tr>';
+                } else {
+                    allFeaturesData.forEach(f => {
+                        let descriptionHTML = '';
+                        if (f.totalSub === 0) {
+                            descriptionHTML = `<span class="no-subfeatures">-</span>`;
+                        } else {
+                             descriptionHTML = `
+                                <span class="description-text">${f.describedSub} / ${f.totalSub} (${f.descriptionPercent}%)</span>
+                                <div class="description-progress-bar">
+                                    <div style="width: ${f.descriptionPercent}%;"></div>
+                                </div>
+                             `;
+                        }
+
+                        tableHTML += `<tr>
+                            <td>${f.name}</td>
+                            <td>${f.appName}</td>
+                            <td><span class="priority-badge ${getPriorityClass(f.priority)}">${f.priority}</span></td>
+                            <td>${f.totalSub}</td>
+                            <td>${descriptionHTML}</td>
+                        </tr>`;
+                    });
+                }
+
+                tableHTML += `</tbody></table>`;
+                container.innerHTML = tableHTML;
             };
 
             const renderInteractiveMindMap = () => {
@@ -2363,19 +2736,19 @@
                 const rootUl = document.createElement('ul');
                 rootUl.className = 'mindmap-list mindmap-root';
 
-                appState.currentTasks.forEach(brick => {
+                [...appState.currentTasks].sort((a, b) => a.name.localeCompare(b.name)).forEach(brick => {
                     const brickLi = document.createElement('li');
                     const brickNodeContainer = document.createElement('div');
                     brickNodeContainer.className = 'mindmap-node-container';
-                    
+
                     const brickNode = document.createElement('span');
                     brickNode.className = 'mindmap-node brick';
-                    
+
                     const brickToggle = document.createElement('span');
                     brickToggle.className = 'mindmap-toggle';
                     brickToggle.textContent = '▸';
                     if (!brick.features || brick.features.length === 0) brickToggle.classList.add('hidden');
-                    
+
                     brickNode.appendChild(brickToggle);
                     brickNode.append(brick.name);
                     brickNodeContainer.appendChild(brickNode);
@@ -2386,7 +2759,7 @@
                         featuresUl.className = 'mindmap-list';
                         featuresUl.style.display = 'none';
 
-                        brick.features.forEach(feature => {
+                        [...brick.features].sort((a, b) => a.name.localeCompare(b.name)).forEach(feature => {
                             const featureLi = document.createElement('li');
                             const featureNodeContainer = document.createElement('div');
                             featureNodeContainer.className = 'mindmap-node-container';
@@ -2398,7 +2771,7 @@
                             featureToggle.className = 'mindmap-toggle';
                             featureToggle.textContent = '▸';
                             if (!feature.subFeatures || feature.subFeatures.length === 0) featureToggle.classList.add('hidden');
-                            
+
                             featureNode.appendChild(featureToggle);
                             featureNode.append(feature.name);
                             featureNodeContainer.appendChild(featureNode);
@@ -2409,7 +2782,7 @@
                                 subFeaturesUl.className = 'mindmap-list';
                                 subFeaturesUl.style.display = 'none';
 
-                                feature.subFeatures.forEach(subFeature => {
+                                [...feature.subFeatures].sort((a, b) => a.name.localeCompare(b.name)).forEach(subFeature => {
                                     const subFeatureLi = document.createElement('li');
                                     const subFeatureNode = document.createElement('span');
                                     subFeatureNode.className = 'mindmap-node sub-feature';
@@ -2445,7 +2818,6 @@
                 appState.priorities.forEach(priority => {
                     if (featuresByPriority[priority] && featuresByPriority[priority].length > 0) {
                         const priorityLi = document.createElement('li');
-                        // ... (Priority Node creation, same as before)
                         const priorityNodeContainer = document.createElement('div');
                         priorityNodeContainer.className = 'mindmap-node-container';
                         const priorityNode = document.createElement('span');
@@ -2458,7 +2830,6 @@
                         priorityNodeContainer.appendChild(priorityNode);
                         priorityLi.appendChild(priorityNodeContainer);
 
-                        // **NOUVELLE LOGIQUE : Regrouper par brique à l'intérieur de la priorité**
                         const featuresInPriority = featuresByPriority[priority];
                         const featuresByBrick = featuresInPriority.reduce((acc, feature) => {
                             const brickName = feature.brickName;
@@ -2476,7 +2847,7 @@
                             const brickNodeContainer = document.createElement('div');
                             brickNodeContainer.className = 'mindmap-node-container';
                             const brickNode = document.createElement('span');
-                            brickNode.className = 'mindmap-node brick'; // Re-use brick style
+                            brickNode.className = 'mindmap-node brick';
                             const brickToggle = document.createElement('span');
                             brickToggle.className = 'mindmap-toggle';
                             brickToggle.textContent = '▸';
@@ -2488,7 +2859,7 @@
                             const featuresUl = document.createElement('ul');
                             featuresUl.className = 'mindmap-list';
                             featuresUl.style.display = 'none';
-                            
+
                             featuresByBrick[brickName].sort((a,b) => a.name.localeCompare(b.name)).forEach(feature => {
                                 const featureLi = document.createElement('li');
                                 const featureNodeContainer = document.createElement('div');
@@ -2500,7 +2871,7 @@
                                 featureToggle.textContent = '▸';
                                 if (!feature.subFeatures || feature.subFeatures.length === 0) featureToggle.classList.add('hidden');
                                 featureNode.appendChild(featureToggle);
-                                featureNode.append(feature.name); // brickName is now redundant here
+                                featureNode.append(feature.name);
                                 featureNodeContainer.appendChild(featureNode);
                                 featureLi.appendChild(featureNodeContainer);
 
@@ -2530,7 +2901,7 @@
                 });
                 container.appendChild(rootUl);
             };
-            
+
             document.getElementById('main-content').addEventListener('click', (e) => {
                 const targetNode = e.target.closest('.mindmap-node');
                 if (!targetNode) return;
@@ -2540,13 +2911,13 @@
 
                 const parentLi = targetNode.closest('li');
                 const childList = parentLi.querySelector('.mindmap-list');
-                
+
                 if (targetNode.classList.contains('sub-feature')) {
                      const description = targetNode.dataset.description;
                     if (description) {
                         const infoModal = document.getElementById('info-modal');
                         document.getElementById('info-modal-title').textContent = targetNode.textContent;
-                        document.getElementById('info-modal-body').textContent = description;
+                        document.getElementById('info-modal-body').innerHTML = parseMarkdown(description);
                         infoModal.classList.remove('hidden');
                     }
                 } else if (childList) {
@@ -2558,45 +2929,97 @@
                     }
                 }
             });
-            
+
             const updateTagSuggestions = (tags) => {
                 const datalist = document.getElementById('tag-suggestions');
                 if (datalist) datalist.innerHTML = tags.map(tag => `<option value="${tag}"></option>`).join('');
             };
 
             const populateMultiSelect = (checkboxesId, items) => {
-                 const checkboxes = document.getElementById(checkboxesId);
-                 if (checkboxes) checkboxes.innerHTML = items.map(item => `<label><input type="checkbox" value="${item}" /> ${item}</label>`).join('');
+                const checkboxesContainer = document.getElementById(checkboxesId);
+                if (!checkboxesContainer) return;
+                const listElement = checkboxesContainer.querySelector('.multi-select-list');
+                if (listElement) {
+                    const sortedItems = [...items].sort((a, b) => a.localeCompare(b));
+                    listElement.innerHTML = sortedItems.map(item => `<label><input type="checkbox" value="${item}" /> ${item}</label>`).join('');
+                }
             }
 
             const populateFilters = () => {
                 const brickNames = [...new Set(appState.currentTasks.map(t => t.name))].sort();
+                const allModuleNames = [...new Set(getAllFeatures().map(f => f.name))].sort();
+
                 populateMultiSelect('brick-checkboxes-planning', brickNames);
-                populateMultiSelect('brick-checkboxes-dnd', brickNames);
                 populateMultiSelect('tag-checkboxes-planning', appState.tags);
+                populateMultiSelect('module-checkboxes-planning', allModuleNames);
+
+                populateMultiSelect('brick-checkboxes-dnd', brickNames);
+                populateMultiSelect('tag-checkboxes-dnd', appState.tags);
+                populateMultiSelect('module-checkboxes-dnd', allModuleNames);
+
+                populateMultiSelect('brick-checkboxes-reorg', brickNames);
+                populateMultiSelect('tag-checkboxes-reorg', appState.tags);
+                populateMultiSelect('module-checkboxes-reorg', allModuleNames);
+
                 updateTagSuggestions(appState.tags);
             };
 
             const setupMultiSelect = (containerId, checkboxesId, stateKey) => {
                 const container = document.getElementById(containerId);
-                const checkboxes = document.getElementById(checkboxesId);
+                const checkboxesContainer = document.getElementById(checkboxesId);
+                if (!container || !checkboxesContainer) return;
+
+                const searchInput = checkboxesContainer.querySelector('.multi-select-search');
+                const listElement = checkboxesContainer.querySelector('.multi-select-list');
                 const selectBoxText = container.querySelector('.select-box span');
                 const defaultText = selectBoxText.textContent;
+
                 container.querySelector('.select-box').addEventListener('click', e => {
                     e.stopPropagation();
-                    checkboxes.classList.toggle('hidden');
+                    const isHidden = checkboxesContainer.classList.contains('hidden');
+                    document.querySelectorAll('.checkboxes:not(.hidden)').forEach(el => {
+                        if (el.id !== checkboxesId) {
+                            el.classList.add('hidden');
+                        }
+                    });
+                    if (isHidden) {
+                        checkboxesContainer.classList.remove('hidden');
+                        searchInput.value = '';
+                        listElement.querySelectorAll('label').forEach(label => label.style.display = 'block');
+                        searchInput.focus();
+                    } else {
+                        checkboxesContainer.classList.add('hidden');
+                    }
                 });
-                checkboxes.addEventListener('change', e => {
+
+                searchInput.addEventListener('input', () => {
+                    const searchTerm = searchInput.value.toLowerCase();
+                    const labels = listElement.querySelectorAll('label');
+                    labels.forEach(label => {
+                        const labelText = label.textContent.toLowerCase();
+                        label.style.display = labelText.includes(searchTerm) ? 'block' : 'none';
+                    });
+                });
+                searchInput.addEventListener('click', e => e.stopPropagation());
+
+
+                checkboxesContainer.addEventListener('change', e => {
                     if (e.target.type === 'checkbox') {
-                        const selected = Array.from(checkboxes.querySelectorAll('input:checked')).map(cb => cb.value);
+                        const selected = Array.from(listElement.querySelectorAll('input:checked')).map(cb => cb.value);
                         appState[stateKey] = selected;
-                        if (selected.length === 0) selectBoxText.textContent = defaultText;
-                        else if (selected.length === 1) selectBoxText.textContent = selected[0];
-                        else selectBoxText.textContent = `${selected.length} sélectionné(s)`;
+
+                        if (selected.length === 0) {
+                            selectBoxText.textContent = defaultText;
+                        } else if (selected.length === 1) {
+                            selectBoxText.textContent = selected[0];
+                        } else {
+                            selectBoxText.textContent = `${selected.length} sélectionné(s)`;
+                        }
                         refreshUI();
                     }
                 });
             };
+
 
             const populatePriorityDropdowns = () => {
                 const optionsHTML = appState.priorities.map(p => `<option value="${p}">${p}</option>`).join('');
@@ -2622,7 +3045,7 @@
                     </li>
                 `).join('');
             };
-            
+
             const runAnomaliesCheck = () => {
                 const anomalies = {
                     emptyBricks: [],
@@ -2630,14 +3053,11 @@
                     invalidPriority: [],
                     duplicateFeatures: []
                 };
-
                 const featureNames = {};
-
                 appState.currentTasks.forEach(brick => {
                     if (!brick.features || brick.features.length === 0) {
                         anomalies.emptyBricks.push({ brickId: brick.id, name: brick.name });
                     }
-
                     (brick.features || []).forEach((feature, index) => {
                         if (!feature.tags || feature.tags.length === 0) {
                             anomalies.noTags.push({ brickId: brick.id, featureIndex: index, name: feature.name, brickName: brick.name });
@@ -2645,7 +3065,6 @@
                         if (!feature.priority || !appState.priorities.includes(feature.priority)) {
                             anomalies.invalidPriority.push({ brickId: brick.id, featureIndex: index, name: feature.name, brickName: brick.name });
                         }
-
                         const featureKey = `${brick.id}-${feature.name.toLowerCase()}`;
                         if (featureNames[featureKey]) {
                              anomalies.duplicateFeatures.push({ brickId: brick.id, featureIndex: index, name: feature.name, brickName: brick.name });
@@ -2656,11 +3075,10 @@
                 });
                 renderAnomalies(anomalies);
             };
-            
+
             const renderAnomalies = (anomalies) => {
                 const container = document.getElementById('anomalies-container');
                 container.innerHTML = '';
-                
                 const createAnomalyList = (title, items, type) => {
                     if(items.length === 0) return '';
                     let listHTML = items.map(item => {
@@ -2670,7 +3088,7 @@
                             info = `<strong>${item.name}</strong>`;
                             dataset = `data-brick-id="${item.brickId}"`;
                         } else {
-                            info = `<strong>${item.name}</strong> <span>(Brique: ${item.brickName})</span>`;
+                            info = `<strong>${item.name}</strong> <span>(Appli: ${item.brickName})</span>`;
                             dataset = `data-brick-id="${item.brickId}" data-feature-index="${item.featureIndex}"`;
                         }
                         return `<li class="anomaly-list-item">
@@ -2683,12 +3101,10 @@
                                 <ul class="admin-list">${listHTML}</ul>
                             </div>`;
                 };
-
-                container.innerHTML += createAnomalyList('Briques vides', anomalies.emptyBricks, 'brick');
-                container.innerHTML += createAnomalyList('Fonctionnalités sans étiquette', anomalies.noTags, 'feature');
-                container.innerHTML += createAnomalyList('Fonctionnalités avec priorité invalide', anomalies.invalidPriority, 'feature');
-                container.innerHTML += createAnomalyList('Fonctionnalités en double', anomalies.duplicateFeatures, 'feature');
-                
+                container.innerHTML += createAnomalyList('Applis vides', anomalies.emptyBricks, 'brick');
+                container.innerHTML += createAnomalyList('Modules sans étiquette', anomalies.noTags, 'feature');
+                container.innerHTML += createAnomalyList('Modules avec priorité invalide', anomalies.invalidPriority, 'feature');
+                container.innerHTML += createAnomalyList('Modules en double', anomalies.duplicateFeatures, 'feature');
                 if(container.innerHTML === '') {
                     container.innerHTML = '<p>Aucune anomalie détectée. Bravo !</p>';
                 }
@@ -2751,7 +3167,7 @@
                 const { type, originalName } = currentAdminEditing;
                 const newName = document.getElementById('admin-edit-name').value.trim();
                 if (!newName || !type || !originalName) return;
-                
+
                 const currentList = [...appState[type]];
                 const index = currentList.indexOf(originalName);
                 if (index > -1) {
@@ -2811,6 +3227,7 @@
                 }
                 appState.currentTasks = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
                     .sort((a, b) => a.name.localeCompare(b.name));
+
                 populateFilters();
                 refreshUI();
             }, (error) => {
@@ -2823,14 +3240,31 @@
 
             setupMultiSelect('brick-filter-planning', 'brick-checkboxes-planning', 'selectedBricksPlanning');
             setupMultiSelect('tag-filter-planning', 'tag-checkboxes-planning', 'selectedTagsPlanning');
-            setupMultiSelect('brick-filter-dnd', 'brick-checkboxes-dnd', 'selectedBricksDnd');
+            setupMultiSelect('module-filter-planning', 'module-checkboxes-planning', 'selectedModulesPlanning');
 
-            ['feature-filter-planning', 'feature-filter-dnd'].forEach(id => {
-                document.getElementById(id).addEventListener('input', e => {
+            setupMultiSelect('brick-filter-dnd', 'brick-checkboxes-dnd', 'selectedBricksDnd');
+            setupMultiSelect('tag-filter-dnd', 'tag-checkboxes-dnd', 'selectedTagsDnd');
+            setupMultiSelect('module-filter-dnd', 'module-checkboxes-dnd', 'selectedModulesDnd');
+
+            setupMultiSelect('brick-filter-reorg', 'brick-checkboxes-reorg', 'selectedBricksReorg');
+            setupMultiSelect('tag-filter-reorg', 'tag-checkboxes-reorg', 'selectedTagsReorg');
+            setupMultiSelect('module-filter-reorg', 'module-checkboxes-reorg', 'selectedModulesReorg');
+
+            ['feature-filter-planning', 'feature-filter-dnd', 'feature-filter-reorg'].forEach(id => {
+                const input = document.getElementById(id);
+                if (!input) return;
+                input.addEventListener('input', e => {
                     clearTimeout(appState.filterDebounceTimer);
-                    const stateKey = id === 'feature-filter-planning' ? 'featureFilterPlanning' : 'featureFilterDnd';
-                    appState[stateKey] = e.target.value;
-                    appState.filterDebounceTimer = setTimeout(refreshUI, 300); 
+
+                    let stateKey;
+                    if (id === 'feature-filter-planning') stateKey = 'featureFilterPlanning';
+                    else if (id === 'feature-filter-dnd') stateKey = 'featureFilterDnd';
+                    else if (id === 'feature-filter-reorg') stateKey = 'featureFilterReorg';
+
+                    if (stateKey) {
+                        appState[stateKey] = e.target.value;
+                        appState.filterDebounceTimer = setTimeout(refreshUI, 300);
+                    }
                 });
             });
 
@@ -2872,13 +3306,13 @@
                 const modalTitle = document.getElementById('sub-features-view-modal-title');
                 const modalContent = document.getElementById('sub-features-view-modal-content');
 
-                modalTitle.textContent = `Sous-fonctionnalités de : ${feature.name}`;
+                modalTitle.textContent = `Fonctionnalités de : ${feature.name}`;
 
                 let contentHTML = '<ul class="sub-features-list">';
                 feature.subFeatures.forEach(sf => {
                     contentHTML += `<li>
                         <div class="sub-feature-name">${sf.name}</div>
-                        <div class="sub-feature-description">${sf.description || '<i>Aucune description</i>'}</div>
+                        <div class="sub-feature-description">${parseMarkdown(sf.description) || '<i>Aucune description</i>'}</div>
                     </li>`;
                 });
                 contentHTML += '</ul>';
@@ -2904,26 +3338,75 @@
                 }
             };
 
+            const openCreateFeatureModal = () => {
+                currentEditingFeature = {
+                    brickId: null,
+                    featureIndex: -1,
+                    tags: [],
+                    subFeatures: []
+                };
+
+                elements.editFeatureForm.reset();
+                resetSubFeatureForm();
+
+                document.getElementById('edit-feature-modal-title').textContent = 'Ajouter un nouveau module';
+
+                const brickSelectorGroup = document.getElementById('edit-feature-brick-selector-group');
+                const brickSelect = document.getElementById('edit-feature-brick-select');
+                brickSelect.innerHTML = '<option value="">Choisir une appli...</option>' +
+                    appState.currentTasks.map(task => `<option value="${task.id}">${task.name}</option>`).join('');
+                brickSelectorGroup.classList.remove('hidden');
+
+                document.getElementById('edit-feature-priority').value = 'À définir';
+                const tagSelect = document.getElementById('edit-feature-tag-select');
+                tagSelect.innerHTML = '<option value="">Choisir une étiquette...</option>' + appState.tags.map(tag => `<option value="${tag}">${tag}</option>`).join('');
+
+                renderEditFeatureTags();
+                renderEditSubFeatures();
+
+                document.getElementById('delete-feature-btn-modal').classList.add('hidden');
+
+                elements.editFeatureModal.classList.remove('hidden');
+            };
+
             const openEditFeatureModal = (brickId, featureIndex) => {
                 const brick = appState.currentTasks.find(t => t.id === brickId);
                 const feature = brick?.features?.[featureIndex];
-                if (!feature) return showToast("Erreur: Fonctionnalité non trouvée.", "error");
-                currentEditingFeature = { 
-                    brickId, 
-                    featureIndex, 
+                if (!feature) return showToast("Erreur: Module non trouvé.", "error");
+                currentEditingFeature = {
+                    brickId,
+                    featureIndex,
                     tags: [...(feature.tags || [])],
                     subFeatures: [...(feature.subFeatures || [])]
                 };
-                document.getElementById('edit-feature-modal-title').textContent = `Modifier : ${feature.name}`;
+
+                document.getElementById('edit-feature-brick-selector-group').classList.add('hidden');
+
+                document.getElementById('edit-feature-modal-title').textContent = `Modifier le module : ${feature.name}`;
                 document.getElementById('edit-feature-name').value = feature.name;
                 document.getElementById('edit-feature-priority').value = feature.priority || 'À définir';
-                
+
                 const select = document.getElementById('edit-feature-tag-select');
                 select.innerHTML = '<option value="">Choisir une étiquette...</option>' + appState.tags.map(tag => `<option value="${tag}">${tag}</option>`).join('');
+
+                document.getElementById('delete-feature-btn-modal').classList.remove('hidden');
 
                 renderEditFeatureTags();
                 renderEditSubFeatures();
                 elements.editFeatureModal.classList.remove('hidden');
+            };
+
+            const resetSubFeatureForm = () => {
+                document.getElementById('sub-feature-name').value = '';
+                document.getElementById('sub-feature-description').value = '';
+                document.getElementById('add-sub-feature-btn').textContent = 'Ajouter';
+
+                const cancelButton = document.getElementById('cancel-sub-feature-edit-btn');
+                if (cancelButton) {
+                    cancelButton.remove();
+                }
+
+                currentSubFeatureEditIndex = null;
             };
 
             const renderEditFeatureTags = () => {
@@ -2942,9 +3425,12 @@
                     <li>
                         <div class="sub-feature-details">
                             <span>${sf.name}</span>
-                            ${sf.description ? `<p>${sf.description}</p>` : ''}
+                            ${sf.description ? `<p>${parseMarkdown(sf.description)}</p>` : ''}
                         </div>
-                        <button type="button" class="delete-sub-feature-btn" data-index="${index}" title="Supprimer">&times;</button>
+                        <div class="sub-feature-actions">
+                            <button type="button" class="edit-sub-feature-btn" data-index="${index}" title="Modifier">✏️</button>
+                            <button type="button" class="delete-sub-feature-btn" data-index="${index}" title="Supprimer">&times;</button>
+                        </div>
                     </li>
                 `).join('');
             };
@@ -2954,31 +3440,69 @@
                 const descriptionInput = document.getElementById('sub-feature-description');
                 const name = nameInput.value.trim();
                 const description = descriptionInput.value.trim();
-                if (name) {
-                    currentEditingFeature.subFeatures.push({ name, description });
-                    renderEditSubFeatures();
-                    nameInput.value = '';
-                    descriptionInput.value = '';
-                    nameInput.focus();
+
+                if (!name) {
+                    showToast('Le nom de la fonctionnalité est obligatoire.', 'error');
+                    return;
                 }
+
+                if (currentSubFeatureEditIndex !== null) {
+                    currentEditingFeature.subFeatures[currentSubFeatureEditIndex] = { name, description };
+                    showToast('Fonctionnalité mise à jour !', 'success');
+                } else {
+                    currentEditingFeature.subFeatures.push({ name, description });
+                }
+
+                renderEditSubFeatures();
+                resetSubFeatureForm();
+                nameInput.focus();
             };
-            
+
             document.getElementById('add-sub-feature-btn').addEventListener('click', handleAddSubFeature);
+
             document.getElementById('sub-feature-description').addEventListener('keydown', (e) => {
-                if(e.key === 'Enter') {
+                if(e.key === 'Enter' && e.ctrlKey) {
                     e.preventDefault();
                     handleAddSubFeature();
                 }
             });
 
             document.getElementById('edit-sub-features-list').addEventListener('click', e => {
-                if (e.target.classList.contains('delete-sub-feature-btn')) {
-                    const index = parseInt(e.target.dataset.index, 10);
+                const editBtn = e.target.closest('.edit-sub-feature-btn');
+                const deleteBtn = e.target.closest('.delete-sub-feature-btn');
+
+                if (editBtn) {
+                    const index = parseInt(editBtn.dataset.index, 10);
+                    const subFeature = currentEditingFeature.subFeatures[index];
+
+                    document.getElementById('sub-feature-name').value = subFeature.name;
+                    document.getElementById('sub-feature-description').value = subFeature.description;
+                    document.getElementById('add-sub-feature-btn').textContent = 'Mettre à jour';
+
+                    currentSubFeatureEditIndex = index;
+
+                    const actionsContainer = document.getElementById('sub-feature-actions-container');
+                    if (!document.getElementById('cancel-sub-feature-edit-btn')) {
+                        const cancelButton = document.createElement('button');
+                        cancelButton.type = 'button';
+                        cancelButton.id = 'cancel-sub-feature-edit-btn';
+                        cancelButton.textContent = 'Annuler';
+                        cancelButton.className = 'button cancel-button';
+                        cancelButton.onclick = resetSubFeatureForm;
+                        actionsContainer.appendChild(cancelButton);
+                    }
+                }
+
+                if (deleteBtn) {
+                    const index = parseInt(deleteBtn.dataset.index, 10);
                     currentEditingFeature.subFeatures.splice(index, 1);
                     renderEditSubFeatures();
+                    if(index === currentSubFeatureEditIndex) {
+                        resetSubFeatureForm();
+                    }
                 }
             });
-            
+
             document.getElementById('edit-feature-tag-select').addEventListener('change', e => {
                 const newTag = e.target.value;
                 if (newTag && !currentEditingFeature.tags.includes(newTag)) {
@@ -3014,22 +3538,41 @@
             elements.editFeatureForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const saveButton = e.target.querySelector('button[type="submit"]');
-                const { brickId, featureIndex } = currentEditingFeature;
-                const brick = appState.currentTasks.find(t => t.id === brickId);
+                let { brickId, featureIndex } = currentEditingFeature;
                 const newName = document.getElementById('edit-feature-name').value.trim();
+
+                const isCreating = featureIndex === -1;
+                if (isCreating) {
+                    brickId = document.getElementById('edit-feature-brick-select').value;
+                    if (!brickId) {
+                        showToast("Veuillez sélectionner une appli parente.", "error");
+                        return;
+                    }
+                }
+
+                const brick = appState.currentTasks.find(t => t.id === brickId);
                 if (!brick || !newName) return;
+
                 saveButton.disabled = true;
-                const featuresCopy = JSON.parse(JSON.stringify(brick.features));
-                featuresCopy[featureIndex] = {
-                    ...featuresCopy[featureIndex],
+                const featuresCopy = JSON.parse(JSON.stringify(brick.features || []));
+
+                const newFeatureData = {
+                    ...(isCreating ? {} : featuresCopy[featureIndex]),
                     name: newName,
                     priority: document.getElementById('edit-feature-priority').value,
                     tags: currentEditingFeature.tags,
                     subFeatures: currentEditingFeature.subFeatures
                 };
+
+                if (isCreating) {
+                    featuresCopy.push(newFeatureData);
+                } else {
+                    featuresCopy[featureIndex] = newFeatureData;
+                }
+
                 try {
                     await updateDoc(doc(db, "projects", brickId), { features: featuresCopy });
-                    showToast("Fonctionnalité mise à jour !", "success");
+                    showToast(isCreating ? "Module ajouté !" : "Module mis à jour !", "success");
                     elements.editFeatureModal.classList.add('hidden');
                 } catch (error) {
                     showToast("Erreur de mise à jour.", "error");
@@ -3041,19 +3584,19 @@
             document.getElementById('delete-feature-btn-modal').addEventListener('click', async () => {
                 const { brickId, featureIndex } = currentEditingFeature;
                 const brick = appState.currentTasks.find(t => t.id === brickId);
-                if (brick && await showConfirmModal("Confirmation", `Supprimer "${brick.features[featureIndex].name}" ?`)) {
+                if (brick && await showConfirmModal("Confirmation", `Supprimer le module "${brick.features[featureIndex].name}" ?`)) {
                     const featuresCopy = JSON.parse(JSON.stringify(brick.features));
                     featuresCopy.splice(featureIndex, 1);
                     try {
                         await updateDoc(doc(db, "projects", brickId), { features: featuresCopy });
-                        showToast("Fonctionnalité supprimée !", "success");
+                        showToast("Module supprimé !", "success");
                         elements.editFeatureModal.classList.add('hidden');
                     } catch (error) {
                         showToast("Erreur de suppression.", "error");
                     }
                 }
             });
-            
+
             const importSubFeaturesBtn = document.getElementById('import-sub-features-btn');
             const subFeatureJsonInput = document.getElementById('sub-feature-json-import');
 
@@ -3069,32 +3612,37 @@
                 reader.onload = (e) => {
                     try {
                         const jsonContent = JSON.parse(e.target.result);
-                        const importedSubFeatures = [];
-                        const firstKey = Object.keys(jsonContent)[0];
 
-                        if (jsonContent[firstKey] && Array.isArray(jsonContent[firstKey].onglets)) {
-                            jsonContent[firstKey].onglets.forEach(onglet => {
-                                if (Array.isArray(onglet.fonctionnalites)) {
-                                    onglet.fonctionnalites.forEach(func => {
-                                        if (func.nom) {
-                                            importedSubFeatures.push({
-                                                name: func.nom,
-                                                description: func.description || ''
-                                            });
-                                        }
-                                    });
-                                }
-                            });
-                        } else {
-                            throw new Error("Format JSON non reconnu.");
+                        if (!Array.isArray(jsonContent)) {
+                            throw new Error("Le fichier JSON doit être un tableau de fonctionnalités.");
                         }
+
+                        const importedSubFeatures = [];
+
+                        jsonContent.forEach(item => {
+                            if (item.nom_fonctionnalite) {
+                                let description = '';
+                                if (item.user_story) {
+                                    description += `**User Story:**\n${item.user_story}\n\n`;
+                                }
+                                if (item.criteres_acceptation && Array.isArray(item.criteres_acceptation)) {
+                                    description += '**Critères d\'acceptation:**\n';
+                                    description += item.criteres_acceptation.map(critere => `- ${critere}`).join('\n');
+                                }
+
+                                importedSubFeatures.push({
+                                    name: item.nom_fonctionnalite,
+                                    description: description.trim()
+                                });
+                            }
+                        });
 
                         if (importedSubFeatures.length > 0) {
                             currentEditingFeature.subFeatures.push(...importedSubFeatures);
                             renderEditSubFeatures();
-                            showToast(`${importedSubFeatures.length} sous-fonctionnalité(s) importée(s) !`, 'success');
+                            showToast(`${importedSubFeatures.length} fonctionnalité(s) importée(s) !`, 'success');
                         } else {
-                            showToast('Aucune sous-fonctionnalité valide trouvée dans le fichier.', 'error');
+                            showToast('Aucune fonctionnalité valide (avec "nom_fonctionnalite") trouvée dans le fichier.', 'error');
                         }
 
                     } catch (error) {
@@ -3115,20 +3663,20 @@
                 currentBulkTags = [];
                 const select = document.getElementById('bulk-tags-select');
                 select.innerHTML = '<option value="">Choisir une étiquette...</option>' + appState.tags.map(tag => `<option value="${tag}">${tag}</option>`).join('');
-                document.getElementById('bulk-tags-modal-title').textContent = `Gérer les étiquettes pour ${appState.selectedFeatures.length} fonctionnalités`;
+                document.getElementById('bulk-tags-modal-title').textContent = `Gérer les étiquettes pour ${appState.selectedFeatures.length} modules`;
                 renderBulkTags();
                 elements.bulkTagsModal.classList.remove('hidden');
             }
 
             document.getElementById('bulk-manage-tags-btn').addEventListener('click', openBulkTagsModal);
-            
+
             document.getElementById('bulk-tags-select').addEventListener('change', (e) => {
                 const newTag = e.target.value;
                 if (newTag && !currentBulkTags.includes(newTag)) {
                     currentBulkTags.push(newTag);
                     renderBulkTags();
                 }
-                e.target.value = ""; // Reset select
+                e.target.value = "";
             });
 
              document.getElementById('bulk-add-new-tag-btn').addEventListener('click', async () => {
@@ -3166,7 +3714,7 @@
                 const updatesByBrick = appState.selectedFeatures.reduce((acc, { brickId, featureIndex }) => {
                     if (!acc[brickId]) acc[brickId] = appState.currentTasks.find(t => t.id === brickId).features.map(f => ({...f}));
                     const tags = new Set(acc[brickId][featureIndex].tags || []);
-                    currentBulkTags.forEach(tag => tags.add(tag)); // Only add tags in bulk mode
+                    currentBulkTags.forEach(tag => tags.add(tag));
                     acc[brickId][featureIndex].tags = [...tags];
                     return acc;
                 }, {});
@@ -3184,11 +3732,11 @@
                     elements.bulkTagsModal.classList.add('hidden');
                 }
             });
-            
+
             document.getElementById('bulk-move-btn').addEventListener('click', () => {
                 const select = document.getElementById('bulk-move-brick-select');
                 select.innerHTML = appState.currentTasks.map(task => `<option value="${task.id}">${task.name}</option>`).join('');
-                document.getElementById('bulk-move-modal-title').textContent = `Déplacer ${appState.selectedFeatures.length} fonctionnalités`;
+                document.getElementById('bulk-move-modal-title').textContent = `Déplacer ${appState.selectedFeatures.length} modules`;
                 elements.bulkMoveModal.classList.remove('hidden');
             });
 
@@ -3196,7 +3744,7 @@
                 e.preventDefault();
                 const saveButton = e.target.querySelector('button[type="submit"]');
                 const destBrickId = document.getElementById('bulk-move-brick-select').value;
-                if (!destBrickId) return showToast("Veuillez sélectionner une brique.", "error");
+                if (!destBrickId) return showToast("Veuillez sélectionner une appli.", "error");
                 saveButton.disabled = true;
                 const featuresToMove = [];
                 const updates = {};
@@ -3213,7 +3761,7 @@
                 Object.entries(updates).forEach(([brickId, features]) => batch.update(doc(db, "projects", brickId), { features }));
                 try {
                     await batch.commit();
-                    showToast(`${featuresToMove.length} fonctionnalité(s) déplacée(s) !`, "success");
+                    showToast(`${featuresToMove.length} module(s) déplacé(s) !`, "success");
                     appState.selectedFeatures = [];
                     updateBulkActionBar();
                 } catch (error) {
@@ -3223,7 +3771,7 @@
                     elements.bulkMoveModal.classList.add('hidden');
                 }
             });
-            
+
              document.getElementById('mvp-container').addEventListener('click', e => {
                 const filterCard = e.target.closest('.mvp-filter-card');
                 if (filterCard) {
@@ -3237,7 +3785,7 @@
                     openSubFeaturesViewModal(viewSubFeaturesBtn.dataset.brickId, parseInt(viewSubFeaturesBtn.dataset.featureIndex, 10));
                 }
             });
-            
+
             document.getElementById('dnd-view-switch').addEventListener('change', (e) => {
                 appState.dndViewMode = e.target.checked ? 'subFeatures' : 'features';
                 renderDndView();
@@ -3251,11 +3799,44 @@
                 }
             });
 
+            const reorgBoard = document.getElementById('reorg-board');
+            if (reorgBoard) {
+                reorgBoard.addEventListener('mouseenter', (e) => {
+                    const target = e.target.closest('.sub-feature-item[data-tooltip-id]');
+                    if (target) {
+                        const tooltipId = target.dataset.tooltipId;
+                        const tooltip = document.getElementById(tooltipId);
+                        if (tooltip) {
+                            const targetRect = target.getBoundingClientRect();
+                            tooltip.style.left = `${targetRect.left + targetRect.width / 2}px`;
+                            tooltip.style.top = `${targetRect.top}px`;
+                            tooltip.classList.add('visible');
+                        }
+                    }
+                }, true);
+
+                reorgBoard.addEventListener('mouseleave', (e) => {
+                     const target = e.target.closest('.sub-feature-item[data-tooltip-id]');
+                     if (target) {
+                        const tooltipId = target.dataset.tooltipId;
+                        const tooltip = document.getElementById(tooltipId);
+                        if (tooltip) {
+                            tooltip.classList.remove('visible');
+                        }
+                    }
+                }, true);
+            }
+
             // --- Event Listeners Setup ---
             ['cancel-project-btn', 'cancel-quick-feature-btn', 'cancel-edit-feature-modal-btn', 'cancel-bulk-tags-btn', 'cancel-bulk-move-btn', 'cancel-sub-features-view-btn', 'cancel-info-btn'].forEach(id => {
                 const button = document.getElementById(id);
                 if (button) {
-                    button.addEventListener('click', e => e.target.closest('.modal-overlay').classList.add('hidden'));
+                    button.addEventListener('click', e => {
+                        e.target.closest('.modal-overlay').classList.add('hidden');
+                        if (id === 'cancel-edit-feature-modal-btn') {
+                            resetSubFeatureForm();
+                        }
+                    });
                 }
             });
             document.getElementById('sidebar-toggle').addEventListener('click', () => document.body.classList.toggle('sidebar-collapsed'));
@@ -3268,9 +3849,12 @@
                 });
             });
             document.getElementById('add-task-btn').addEventListener('click', () => openProjectModal());
+            document.getElementById('add-module-btn').addEventListener('click', () => openCreateFeatureModal());
+
             elements.projectForm.addEventListener('submit', handleFormSubmit);
             elements.quickFeatureForm.addEventListener('submit', handleQuickFeatureFormSubmit);
             elements.addFeatureBtn.addEventListener('click', handleAddFeature);
+
             window.addEventListener('click', (e) => {
                 if (!e.target.closest('.multi-select-container')) {
                     document.querySelectorAll('.checkboxes').forEach(el => el.classList.add('hidden'));
