@@ -14,8 +14,7 @@
 </script>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js">
 </script>
-<style>
-   :root {
+<style>:root {
             --sidebar-width: 260px;
             --nord0: #2e3440;
             --nord4: #d8dee9;
@@ -29,7 +28,6 @@
             --nord14: #a3be8c; /* Success */
             --grey: #4c566a;
         }
-
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
             background-color: #f8f9fa;
@@ -37,7 +35,6 @@
             margin: 0;
             padding-bottom: 80px; /* Space for bulk action bar */
         }
-
         /* === STRUCTURE : SIDEBAR & CONTENT === */
         .sidebar {
             position: fixed;
@@ -58,14 +55,12 @@
             padding: 20px;
             transition: margin-left 0.3s ease-in-out;
         }
-
         body.sidebar-collapsed .sidebar {
             transform: translateX(calc(-1 * var(--sidebar-width)));
         }
         body.sidebar-collapsed .main-content {
             margin-left: 0;
         }
-
         .sidebar h2 {
             text-align: center;
             color: var(--nord8);
@@ -75,7 +70,6 @@
             justify-content: center;
             gap: 10px;
         }
-
         #db-status-indicator {
             width: 12px;
             height: 12px;
@@ -89,8 +83,6 @@
         #db-status-indicator.status-error {
             background-color: var(--nord11);
         }
-
-
         .tabs-nav {
             display: flex;
             flex-direction: column;
@@ -118,7 +110,6 @@
         .tab-link:hover {
             background-color: #3b4252;
         }
-
         .sidebar-section-header {
             color: var(--nord8);
             font-size: 0.9em;
@@ -128,7 +119,6 @@
             margin-top: 10px;
             border-bottom: 1px solid var(--grey);
         }
-
         .top-bar {
             display: flex;
             align-items: center;
@@ -140,7 +130,6 @@
             top: 0;
             z-index: 100;
         }
-
         .sidebar-toggle {
             font-size: 1.8em;
             cursor: pointer;
@@ -148,16 +137,13 @@
             border: none;
             color: var(--nord0);
         }
-
         .content-tab {
             animation: fadeIn 0.5s ease-in-out;
         }
-
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
         .main-header { display: flex; align-items: center; gap: 25px; max-width: 1800px; margin: 0 auto; flex-grow: 1; }
         .logo {
             max-height: 55px;
@@ -178,7 +164,6 @@
         .page-container { display: flex; flex-direction: column; gap: 30px; max-width: 1800px; margin: 20px auto 0 auto; }
         .controls-container, .accueil-container, .mvp-container, .dnd-container, .admin-container, .mindmap-container, .static-mindmap-container, .priority-mindmap-container, .detail-level-container /* AJOUTÉ */ { background-color: #ffffff; padding: 30px; box-shadow: 0 6px 20px rgba(0,0,0,0.08); border-radius: 12px; border: 1px solid var(--nord4); }
         .controls-container h2, .mvp-container h2, .dnd-container h2, .admin-container h2, .mindmap-container h2, .static-mindmap-container h2, .priority-mindmap-container h2, .detail-level-container h2 /* AJOUTÉ */ { margin-top: 0; font-size: 1.4em; color: var(--nord0); }
-
         /* === DASHBOARD STYLES === */
         #kpi-container {
             display: grid;
@@ -304,7 +289,6 @@
         .kpi-tooltip .tooltip-content strong {
             color: var(--nord8);
         }
-
         .planning-header {
             display: flex;
             justify-content: space-between;
@@ -323,18 +307,15 @@
             min-width: 200px;
         }
         .filter-group label { display: block; font-weight: 500; color: #4c566a; margin-bottom: 5px; font-size: 0.9em; }
-
         .project-counter-sync { font-size: 1.1em; color: var(--grey); font-weight: 500; white-space: nowrap; }
         .project-counter-sync strong { color: var(--nord12); }
         .counter-separator { margin: 0 10px; color: var(--nord4); }
-
         #tasks-table { width: 100%; border-collapse: collapse; }
         #tasks-table th, #tasks-table td { padding: 12px 8px; text-align: left; vertical-align: middle; }
         #tasks-table tbody tr { border-bottom: 1px solid var(--nord6); }
         #tasks-table th { font-size: 0.9em; text-transform: uppercase; color: #4c566a; padding-bottom: 12px; font-weight: 600; }
         #tasks-table th.action-cell { text-align: center; }
         .action-cell-content { display: flex; justify-content: center; align-items: center; gap: 5px;}
-
         /* NOUVEAUX STYLES POUR LE TABLEAU "NIVEAU DE DÉTAIL" */
         #detail-level-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         #detail-level-table th, #detail-level-table td { padding: 10px 8px; text-align: left; vertical-align: middle; border-bottom: 1px solid var(--nord6); }
@@ -350,10 +331,7 @@
         #detail-level-table .description-text { font-size: 0.85em; color: var(--grey); display: inline-block; vertical-align: middle;}
         #detail-level-table .no-subfeatures { color: var(--grey); font-style: italic; }
         /* FIN NOUVEAUX STYLES */
-
-
         .header-filter { width: 100%; padding: 8px; border-radius: 6px; border: 1px solid var(--nord4); background-color: #f8f9fa; box-sizing: border-box; }
-
         .add-feature-to-brick-btn {
             background-color: var(--nord14);
             border: none;
@@ -373,7 +351,6 @@
         .edit-task-btn:hover { background-color: var(--nord4); }
         .delete-row-btn { background: none; border: none; color: var(--nord11); font-size: 1.6em; cursor: pointer; padding: 4px 8px; opacity: 0.7; transition: opacity 0.2s, color 0.2s; line-height: 1; border-radius: 4px; }
         .delete-row-btn:hover { opacity: 1; color: var(--nord12); background-color: var(--nord6); }
-
         .button { display: inline-block; flex: none; width: auto; padding: 12px 18px; color: #ffffff; border: none; border-radius: 6px; font-size: 15px; font-weight: 500; cursor: pointer; transition: background-color: 0.2s, opacity 0.2s; text-align: center; }
         .button:disabled { background-color: var(--grey); opacity: 0.7; cursor: not-allowed; }
         .save-button { background-color: var(--nord14); } .save-button:hover:not(:disabled) { background-color: #b5d5a2; }
@@ -381,7 +358,6 @@
         .cancel-button { background-color: var(--nord11); } .cancel-button:hover:not(:disabled) { background-color: #d08770; }
         .add-button { background-color: var(--nord10); } .add-button:hover:not(:disabled) { background-color: var(--nord9); }
         .button-group { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
-
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; z-index: 1000; overflow-y: auto; }
         .modal-content { background: #fff; padding: 30px; border-radius: 12px; width: 90%; max-width: 600px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); margin: 20px 0; }
         .modal-content h3 { margin-top: 0; }
@@ -391,17 +367,14 @@
         .modal-actions .button { margin-top: 0; flex-grow: 0; }
         .modal-actions .delete-button { margin-right: auto; }
         .hidden { display: none; }
-
         #sub-features-view-modal .modal-content, #info-modal .modal-content {
             max-width: 900px;
         }
-
         .accueil-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; margin-top: 20px; }
         .accueil-card { background-color: var(--nord6); padding: 25px; border-radius: 10px; text-align: center; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; border: 1px solid var(--nord4); position: relative; }
         .accueil-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
         .accueil-card-icon { font-size: 3em; margin-bottom: 15px; }
         .accueil-card h3 { margin: 0; font-size: 1.3em; color: var(--nord0); }
-
         .tooltip-text-accueil {
             visibility: hidden; width: 220px; background-color: var(--nord0); color: #fff; text-align: center; border-radius: 6px; padding: 8px 12px;
             position: absolute; z-index: 10; bottom: 110%; left: 50%; margin-left: -110px; opacity: 0; transition: opacity 0.3s;
@@ -412,16 +385,13 @@
             border-width: 5px; border-style: solid; border-color: var(--nord0) transparent transparent transparent;
         }
         .accueil-card:hover .tooltip-text-accueil { visibility: visible; opacity: 1; }
-
         #features-section, #sub-features-section-modal { margin-top: 20px; border-top: 1px solid var(--nord4); padding-top: 15px; }
         #features-section h4, #sub-features-section-modal h4 { margin-top: 0; margin-bottom: 15px; color: var(--grey); font-size: 1.1em; }
         .feature-inputs { display: flex; gap: 10px; margin-top: 10px; }
         .feature-inputs input { flex-grow: 1; }
         #add-feature-btn, #add-sub-feature-btn { padding: 10px 15px; font-size: 14px; align-self: center; margin-top: 0; }
-
         .feature-action-btn { background: none; border: none; font-size: 1.2em; cursor: pointer; opacity: 0.7; padding: 4px;}
         .feature-action-btn:hover { opacity: 1; }
-
         .feature-inline-view-content { display: flex; flex-direction: column; align-items: flex-start; flex-grow: 1; }
         #tasks-table .features-list-display li {
             display: flex;
@@ -444,7 +414,6 @@
         #tasks-table .features-list-display li:hover {
             background-color: var(--nord6);
         }
-
         /* Sub-features styles */
         .view-sub-features-btn {
             background-color: var(--nord8);
@@ -460,14 +429,12 @@
         .view-sub-features-btn:hover {
             background-color: var(--nord9);
         }
-
         #sub-features-view-modal-content {
             max-height: 65vh;
             overflow-y: auto;
             padding: 5px 15px 5px 5px;
             margin: 0 -15px;
         }
-
         #sub-features-view-modal-content .sub-features-list {
             list-style: none;
             padding: 10px 0;
@@ -498,8 +465,6 @@
         }
         .sub-feature-description p { margin: 0 0 10px 0; }
         .sub-feature-description ul { margin: 0; padding-left: 20px; }
-
-
         #edit-sub-features-list {
             list-style: none;
             padding: 5px;
@@ -531,7 +496,6 @@
         .delete-sub-feature-btn:hover, .edit-sub-feature-btn:hover { opacity: 1; }
         .delete-sub-feature-btn { color: var(--nord11); }
         .edit-sub-feature-btn { color: var(--nord9); }
-
         .priority-badge {
             font-size: 0.8em;
             padding: 3px 8px;
@@ -545,7 +509,6 @@
         .priority-p3 { background-color: var(--nord13); }
         .priority-adefinir { background-color: var(--grey); }
         #tasks-table .features-list-display, #tasks-table .sub-features-list { list-style: none; padding: 0; margin: 0; }
-
         .status-message {
             text-align: center;
             padding: 40px 20px;
@@ -568,7 +531,6 @@
             font-family: monospace;
             white-space: pre-wrap;
         }
-
         #toast-notification {
             position: fixed;
             bottom: -100px;
@@ -584,7 +546,6 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
         #toast-notification.show { bottom: 20px; }
-
         #bulk-action-bar {
             position: fixed;
             bottom: -100px;
@@ -607,8 +568,6 @@
         #bulk-selection-counter {
             font-weight: 500;
         }
-
-
         #loader-container { padding: 30px; }
         #loader-container h1 { color: var(--nord0); font-size: 1.4em; }
         #loader-steps {
@@ -631,7 +590,6 @@
         #loader-steps li.success .status::before { content: '✔'; animation: none; color: var(--nord14); border: none; font-size: 1.2em; }
         #loader-steps li.error .status::before { content: '✖'; animation: none; color: var(--nord11); border: none; font-size: 1.2em; }
         @keyframes spin { to { transform: rotate(360deg); } }
-
         /* Styles pour le Drag and Drop */
         .dnd-board {
             display: grid;
@@ -670,7 +628,6 @@
         .dnd-item.p2 { border-color: var(--nord12); }
         .dnd-item.p3 { border-color: var(--nord13); }
         .dnd-item.adefinir { border-color: var(--grey); }
-
         .dnd-item strong {
             display: block;
             margin-bottom: 5px;
@@ -699,7 +656,6 @@
             opacity: 0.4;
             background-color: var(--nord8);
         }
-
         .dnd-item.sub-feature-item {
             background-color: #e5e9f0;
         }
@@ -710,7 +666,6 @@
             display: block;
             margin-bottom: 4px;
         }
-
         /* DnD View Switcher */
         .view-switch-container {
             display: flex;
@@ -768,8 +723,6 @@
         .slider.round:before {
             border-radius: 50%;
         }
-
-
         /* Styles for MVP View */
         .mvp-filter-grid {
             display: grid;
@@ -834,7 +787,6 @@
             margin-top: 0; /* Override default margin */
             justify-content: flex-end;
         }
-
         /* Styles for Multi-Select Dropdown */
         .multi-select-container {
             position: relative;
@@ -882,7 +834,6 @@
         .checkboxes input[type="checkbox"] {
             margin-right: 8px;
         }
-
         .multi-select-search {
             width: 100%;
             padding: 8px;
@@ -899,7 +850,6 @@
             overflow-y: auto;
             position: relative;
         }
-
         /* Styles for Tags */
         .tags-container-display, .tags-container-modal-view, .tags-container-modal-edit {
             display: flex;
@@ -929,7 +879,6 @@
             line-height: 1;
         }
         .remove-tag-btn:hover { opacity: 1; }
-
         .tags-editor {
             display: flex;
             align-items: center;
@@ -947,7 +896,6 @@
             padding: 5px;
         }
         .tags-editor .tag-input:focus, .tags-editor .tag-select:focus { outline: none; }
-
         .tags-editor .add-tag-btn {
             background-color: var(--nord10);
             color: white;
@@ -959,7 +907,6 @@
             cursor: pointer;
         }
         .dnd-item .tags-container-display { margin-bottom: 5px; }
-
         /* Admin Page Styles */
         .admin-sections {
             display: grid;
@@ -1031,7 +978,6 @@
         .anomaly-info span {
             color: var(--grey);
         }
-
         /* Interactive Mindmap */
         .interactive-mindmap-container {
             padding-left: 20px;
@@ -1091,7 +1037,6 @@
         .mindmap-node.sub-feature:hover {
             text-decoration: underline;
         }
-
         .mindmap-toggle {
             display: inline-block;
             width: 20px;
@@ -1103,7 +1048,6 @@
         .mindmap-toggle.hidden {
             visibility: hidden;
         }
-
         /* Connecting lines */
         .mindmap-list {
             padding-left: 40px;
@@ -1141,8 +1085,6 @@
         .mindmap-root > li::before, .mindmap-root > li > .mindmap-node-container::before {
             display: none;
         }
-    
-        
         /* Styles pour les sous-onglets d'Analyse des Offres */
         .sub-tab-nav {
             display: flex;
@@ -1166,7 +1108,6 @@
             font-weight: 600;
         }
         .sub-tab-link:hover { color: var(--nord0); }
-        
         /* Navigation des fournisseurs */
         .vendor-nav {
             display: flex;
@@ -1197,7 +1138,6 @@
             width: 100%; min-height: 150px; border: 1px solid var(--nord4);
             border-radius: 6px; padding: 10px; font-family: inherit; font-size: 0.95em;
         }
-
         /* --- STYLES POUR AO GRILLE (Traduit de Tailwind) --- */
         .ao-container { padding: 5px; }
         .ao-header {
@@ -1209,7 +1149,6 @@
             color: var(--nord10); margin: 0;
         }
         .ao-header p { margin-top: 8px; font-size: 1.1em; color: var(--grey); }
-
         .ao-sommaire {
             margin-bottom: 30px; padding: 20px;
             background-color: var(--nord6);
@@ -1226,7 +1165,6 @@
         .ao-sommaire a { color: var(--nord10); font-weight: 500; text-decoration: none; }
         .ao-sommaire a:hover { text-decoration: underline; }
         .ao-sommaire a.bold { color: var(--nord9); font-weight: 700; }
-
         .ao-section-card {
             background-color: #fff; padding: 25px; border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.07);
@@ -1237,7 +1175,6 @@
             color: var(--nord9); margin-bottom: 20px;
             padding-bottom: 15px; border-bottom: 2px solid var(--nord6);
         }
-
         .ao-table-wrapper { overflow-x: auto; }
         .ao-table { width: 100%; min-width: 1000px; border-collapse: collapse; }
         .ao-table thead { background-color: var(--nord6); }
@@ -1256,13 +1193,11 @@
         .ao-table .row-total td { color: var(--nord0); }
         .ao-table .cost-note { font-size: 0.85em; color: var(--grey); }
         .ao-table .nogo-note { font-size: 0.85em; color: var(--nord11); font-weight: 600; }
-
         .star-rating {
             font-size: 1.4rem; color: var(--nord13); /* Yellow */
             letter-spacing: 0.1em;
         }
         .star-rating-placeholder { color: var(--grey); font-size: 0.9em; font-style: italic; }
-
         .ao-accordion-group { margin-top: 30px; display: flex; flex-direction: column; gap: 20px; }
         .ao-accordion-item {
             background-color: #fff; border-radius: 12px;
@@ -1288,7 +1223,6 @@
             transition: transform 0.3s ease;
         }
         .ao-accordion-button.open svg { transform: rotate(180deg); }
-
         .ao-accordion-content {
             display: none; overflow: hidden;
             transition: max-height 0.3s ease-out;
@@ -1303,7 +1237,6 @@
         }
         .ao-accordion-section.sec-go-nogo { background-color: #ffeb99; }
         .ao-accordion-section.sec-main { background-color: var(--nord14); color: var(--nord0); }
-
         .ao-grid-row {
             display: grid; grid-template-columns: repeat(12, 1fr);
             gap: 20px; padding: 15px 0; border-bottom: 1px solid var(--nord6);
@@ -1319,7 +1252,6 @@
             .ao-grid-analysis { grid-column: span 5; }
             .ao-grid-source { grid-column: span 3; }
         }
-
         .ao-pill {
             display: inline-block; padding: 5px 12px; border-radius: 15px;
             font-weight: 600; font-size: 0.9em; text-align: center; width: 130px;
@@ -1329,7 +1261,6 @@
         .ao-pill.na { background-color: var(--nord6); color: var(--grey); border: 1px solid var(--nord4); }
         .ao-pill.lot { background-color: #81a1c140; color: var(--nord9); border: 1px solid var(--nord9); }
         .ao-pill.placeholder { color: var(--grey); background-color: var(--nord6); font-style: italic; }
-
         .ao-analysis-card {
             background-color: #fff; border: 1px solid var(--nord6);
             border-radius: 6px; padding: 10px 15px;
@@ -1341,7 +1272,6 @@
             border-radius: 6px; padding: 8px 12px;
             font-size: 0.85em; color: var(--grey); font-style: italic;
         }
-        
         .ao-tooltip-container { position: relative; cursor: pointer; }
         .ao-tooltip-text {
             visibility: hidden; width: 280px; background-color: var(--nord0);
@@ -1357,7 +1287,6 @@
             border-color: var(--nord0) transparent transparent transparent;
         }
         .ao-tooltip-container:hover .ao-tooltip-text { visibility: visible; opacity: 1; }
-
         .ao-podium-container {
             display: flex; align-items: flex-end; justify-content: center;
             height: 250px; gap: 10px; margin: 40px auto; flex-wrap: wrap;
@@ -1379,7 +1308,80 @@
         .ao-podium-score .star-rating { font-size: 1.2rem; }
         .ao-podium-score .unranked-text-nogo { color: var(--nord11); font-size: 0.9em; font-weight: 600; }
         .ao-podium-score .unranked-text-eval { color: var(--nord4); font-size: 0.9em; }
-  </style>
+.faq-container h4 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: var(--nord0);
+    font-size: 1.3em;
+}
+.faq-container .faq-intro-text {
+    font-size: 0.95em;
+    color: var(--grey);
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+.faq-list-dl dt {
+    font-weight: 600;
+    color: var(--nord0);
+    font-size: 1.05em;
+    padding: 12px 15px;
+    background-color: var(--nord6);
+    border-radius: 6px 6px 0 0;
+    border: 1px solid var(--nord4);
+    border-bottom: none;
+    margin-top: 15px;
+}
+.faq-list-dl dd {
+    font-size: 0.95em;
+    line-height: 1.6;
+    color: var(--grey);
+    padding: 15px;
+    margin-left: 0; /* Override browser default */
+    border: 1px solid var(--nord4);
+    border-radius: 0 0 6px 6px;
+    background-color: #fff;
+}
+
+/* --- Styles pour la FAQ Simplybook --- */
+.faq-container {
+    margin-top: 25px;
+    border-top: 2px solid var(--nord6);
+    padding-top: 20px;
+}
+.faq-container h4 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: var(--nord0);
+    font-size: 1.3em;
+}
+.faq-container .faq-intro-text {
+    font-size: 0.95em;
+    color: var(--grey);
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+.faq-list-dl dt {
+    font-weight: 600;
+    color: var(--nord0);
+    font-size: 1.05em;
+    padding: 12px 15px;
+    background-color: var(--nord6);
+    border-radius: 6px 6px 0 0;
+    border: 1px solid var(--nord4);
+    border-bottom: none;
+    margin-top: 15px;
+}
+.faq-list-dl dd {
+    font-size: 0.95em;
+    line-height: 1.6;
+    color: var(--grey);
+    padding: 15px;
+    margin-left: 0; /* Override browser default */
+    border: 1px solid var(--nord4);
+    border-radius: 0 0 6px 6px;
+    background-color: #fff;
+}
+</style>
 </head>
 <body>
 <div class="sidebar" id="sidebar">
@@ -1941,7 +1943,141 @@
 <label style="display: block; margin-bottom: 5px; font-weight: 500;">
          Notes :
         </label>
-<textarea class="ao-textarea" placeholder="Saisissez vos notes..."></textarea>
+<div class="faq-container"><h4>Foire Aux Questions (FAQ)</h4><p class="faq-intro-text">Absolument. Voici une FAQ de 20 questions-réponses, pertinentes dans le cadre de l'appel d'offres pour la refonte de l'outil Agenda, basées sur les informations fournies dans les sources.</p><dl class="faq-list-dl"><dt>1. Quelle est la dénomination sociale de l'entreprise soumissionnaire et sa forme juridique ?</dt><dd>La dénomination ou raison sociale de l'entreprise est ACTENCY, et sa forme juridique est une Société par actions simplifiée (SAS).</dd><dt>2. Quel est le capital social et le numéro d'immatriculation au RCS d'ACTENCY ?</dt><dd>Le capital social est de 445 000,00 Euros. Son numéro d'immatriculation au RCS est 500 309 125 R.C.S. Strasbourg.</dd><dt>3. Qui assure la présidence d'ACTENCY et quelles sont les activités principales de la société ?</dt><dd>Le Président est la société ALLIANCE OF DIGITAL BUILDERS, une Société par actions simplifiée. Les activités exercées par ACTENCY comprennent la conception et la vente de produits, applications et services dans le domaine des technologies de l'information et de la communication, y compris le développement web, le développement d'applications mobiles, la vente de produits informatiques et les prestations de services liées aux TIC (formations, marketing, développement).</dd><dt>4. Quelle est la date de mise en œuvre envisagée pour le Produit Minimum Viable (MVP) ?</dt><dd>La livraison envisageable du MVP est prévue pour août 2026, avec un planning d'intention global de 6 mois, débutant par une phase Fondation/Cadrage fin janvier 2026.</dd><dt>5. Quelle méthodologie de gestion de projet est proposée pour la phase de construction (BUILD) ?</dt><dd>La proposition s'appuie sur la méthodologie Agile, plus précisément SCRUM, avec un engagement fort sur le contrôle budgétaire (Engagement SQDC : Sérénité, Sécurité, Qualité, Délais, Coûts).</dd><dt>6. Combien de sprints sont prévus pour le développement de l'applicatif dans la phase BUILD ?</dt><dd>La phase de build de l'applicatif comprend 5 sprints de développement, chaque sprint étant prévu pour une durée de 3 semaines.</dd><dt>7. Quel rôle sera mis à disposition par ACTENCY pour assister le Product Owner (PO) client ?</dt><dd>ACTENCY propose la mise à disposition d'un Proxy Product Owner (PPO) pour accompagner le PO client dans l’affinage et la rédaction des User Stories (US), la structuration du Product Backlog et la participation aux cérémonies des premiers sprints.</dd><dt>8. Comment le contrôle qualité du code est-il garanti tout au long du développement ?</dt><dd>Le socle de développement intègre des pipelines permettant l'exécution de tests via Sonarqube et Code Sniffer. De plus, chaque développement est revu et validé par le Lead Dev du projet, qui s'assure de la cohérence globale des implémentations (Revue humaine des merge request).</dd><dt>9. Quels outils collaboratifs et de gestion de projet seront utilisés ?</dt><dd>Les outils prévus pour la collaboration et la gestion incluent MIRO (idéation/collaboration), AVION (storymapping, synchronisation avec Jira), FIGMA (conception/prototypage), JIRA (gestion des incidents et du cycle de projet), SLACK (communication) et CONFLUENCE (documentation).</dd><dt>10. Quelles sont les fonctions principales du Scrum Master sur le projet ?</dt><dd>Le Scrum Master a pour mission le pilotage opérationnel (suivi des développements), l'assurance du respect de la méthodologie Agile (SCRUM), l'animation des cérémonies (Daily meeting, Rétrospective, Planning) et d'agir comme facilitateur pour maintenir une relation optimale entre le Product Owner et la TEAM DEV.</dd><dt>11. Quelle technologie de base est proposée pour l'application Front-end et pourquoi ?</dt><dd>La proposition mise sur Next.js, un framework React.js, pour construire une solution moderne, flexible et performante. Ce choix permet d'optimiser les ressources, de garantir une navigation fluide et d'assurer l'évolutivité.</dd><dt>12. Comment l'architecture est-elle conçue pour assurer la performance et l'évolutivité de l'outil Agenda ?</dt><dd>Il est proposé une architecture bi-applicative Next.js séparant l'App Prise de RDV (pour les clients) et l'App Gestion de RDV (pour les agents). Cette séparation garantit que chaque partie peut évoluer indépendamment, assurant une expérience rapide pour les clients et une gestion efficace des tableaux de bord pour les agents.</dd><dt>13. Comment la haute disponibilité et la résilience sont-elles garanties pour l'hébergement ?</dt><dd>L'infrastructure sera construite sur Microsoft Azure avec une architecture multi-zones de disponibilité (répartie sur plusieurs datacenters en France). L'objectif de disponibilité attendu est de moins de 2 heures d'indisponibilité par an (99,98%).</dd><dt>14. Quel dispositif de sécurité est prévu pour la protection périmétrique de l'application web ?</dt><dd>Un service de Web Application Firewall (WAF) managé par SCAFE est prévu. Ce service s'appuie sur l'appliance UBIKA WAAP Gateway, qui est une solution souveraine et certifiée ANSSI.</dd><dt>15. Comment la conformité au RGPD est-elle assurée, notamment concernant la localisation des données ?</dt><dd>La conformité RGPD stricte est assurée en utilisant la région Azure "France Centre", garantissant que 100% des données sont hébergées et traitées sur le territoire français. ACTENCY a également des agents de protection des données (DPO) impliqués dans la validation de l'architecture.</dd><dt>16. Comment la migration des données historiques sera-t-elle gérée pour éviter toute interruption de service ?</dt><dd>L'infrastructure sera mise en place pour permettre une migration des données historiques avec une approche "zéro downtime" (sans aucune coupure de service pour les utilisateurs).</dd><dt>17. Quelles sont les principales intégrations d'Intelligence Artificielle (IA) proposées ?</dt><dd>L'offre propose d'explorer l'intégration d'IA pour : La Prise de rendez-vous intelligente (par exemple, identification du véhicule et proposition de créneaux). L'Automatisation du planning pour attribuer intelligemment les créneaux en fonction des disponibilités des contrôleurs et des centres.</dd><dt>18. Comment la gestion du mode hors ligne est-elle implémentée pour garantir la continuité de service des agents ?</dt><dd>La fonctionnalité hors ligne utilise Next PWA (pour rendre l'application accessible), IndexedDB et Dexie.js (pour le stockage local des données). Les données enregistrées localement sont automatiquement synchronisées avec la base de données principale dès que la connexion Internet est rétablie.</dd><dt>19. Quel est le coût total prévisionnel hors taxes pour la phase de construction (BUILD) de l'applicatif ?</dt><dd>Le budget prévisionnel HT pour l'applicatif (hors hébergement) est de 231 401 €.</dd><dt>20. Quel est le coût total annuel estimatif de la phase de Maintien en Condition Opérationnelle (RUN) et d'hébergement ?</dt><dd>Le coût total estimatif annuel HT de la phase RUN (Applicatif + Hébergement + MCO + Incident) est de 43 271,84 €. Ce montant inclut 25 268,00 € pour le Forfait de Maintien en Condition Opérationnel et 13 971,84 € pour l'estimation budgétaire de l'hébergement.</dd></dl></div><div class="report-container" style="line-height: 1.6; text-align: left; padding-top: 15px;">
+<h4>Note de Synthèse : Proposition de Refonte de l'Outil Agenda SGS par Actency</h4>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">Résumé Exécutif</h5>
+<p>Ce document synthétise la proposition d'Actency pour la refonte complète de l'outil Agenda de SGS AUTO. Face à une solution existante souffrant d'une dette technique et d'une technologie obsolète, le projet vise à moderniser la plateforme pour optimiser la performance, renforcer la sécurité, et améliorer significativement l'expérience utilisateur pour les clients et les agents des 2 000 centres de contrôle technique. L'objectif est de consolider la position de leader de SGS en construisant un avantage concurrentiel durable.</p>
+<p>La solution proposée par Actency s'articule autour de trois axes stratégiques :</p>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li><strong>Une architecture technique moderne et performante :</strong> Utilisation du framework Next.js avec une architecture "bi-applicative" (une application pour la prise de rendez-vous, une pour la gestion) afin d'optimiser la performance et la maintenance. La solution inclut nativement un mode hors-ligne pour garantir la continuité de service.</li>
+<li><strong>Une méthodologie Agile maîtrisée :</strong> Un projet découpé en trois phases (Lancement/Cadrage, Construction MVP, Maintien/Évolution) avec un engagement fort sur la Sécurité, la Qualité, les Délais et les Coûts (SQDC), garantissant visibilité et flexibilité.</li>
+<li><strong>Un hébergement sécurisé et hautement disponible :</strong> Une infrastructure sur Microsoft Azure (région France Centre pour conformité RGPD), orchestrée via Kubernetes (AKS), et sécurisée par un Web Application Firewall (WAF) managé et certifié ANSSI. Le service inclut un Maintien en Condition Opérationnelle (MCO) complet avec des garanties de temps d'intervention et de rétablissement strictes.</li>
+</ul>
+<p>Le budget prévisionnel pour la phase de construction (BUILD) s'élève à <strong>231 401 € HT</strong> pour l'applicatif et à <strong>41 292,50 € HT</strong> pour la mise en œuvre de l'infrastructure d'hébergement. Les coûts d'exploitation annuels (RUN) sont estimés à <strong>33 213 € HT</strong> pour la maintenance applicative et à <strong>43 272 € HT</strong> pour l'hébergement et l'infogérance.</p>
+<p>Le projet est planifié sur une durée de 6 mois, pour une mise en production en <strong>août 2026</strong>.</p>
+<h4 style="margin-top: 25px;">1. Contexte et Enjeux du Projet</h4>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">1.1. Le Mandat : Modernisation de l'outil Agenda</h5>
+<p>Le projet consiste à refondre l'outil Agenda de SGS AUTO, une plateforme centrale pour la gestion des rendez-vous des clients particuliers et professionnels, ainsi que pour l'optimisation des plannings des contrôleurs dans près de 2 000 centres en France (SÉCURITEST, AUTO SÉCURITÉ, etc.).</p>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">1.2. Problématiques Actuelles</h5>
+<p>L'outil actuel, datant de 2016, repose sur une stack technologique obsolète (Zend Framework 1.12, AngularJS), ce qui engendre une dette technique importante, des coûts opérationnels élevés et des limitations en termes de performance et d'évolutivité.</p>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">1.3. Objectifs Stratégiques de la Refonte</h5>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li><strong>Performance et Coûts :</strong> Réduire la complexité technique et les coûts opérationnels.</li>
+<li><strong>Sécurité :</strong> Mettre en place une plateforme robuste et conforme aux derniers standards.</li>
+<li><strong>Innovation :</strong> Intégrer des services à valeur ajoutée comme des suggestions par IA et l'automatisation des plannings.</li>
+<li><strong>Expérience Utilisateur (UX) :</strong> Proposer des interfaces fluides, intuitives et performantes pour tous les utilisateurs.</li>
+<li><strong>Avantage Concurrentiel :</strong> Consolider la position de leader de SGS sur le marché.</li>
+</ul>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">1.4. Exigences Clés de SGS</h5>
+<p>SGS a défini un cahier des charges strict pour le futur socle d'hébergement et de sécurité :</p>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li><strong>Haute Disponibilité:</strong> Niveau critique, avec moins de 2 heures d'indisponibilité par an (99,98%).</li>
+<li><strong>Reprise d'Activité:</strong> RTO (temps de reprise) inférieur à 2 heures et RPO (perte de données) quasi-nulle.</li>
+<li><strong>Sécurité:</strong> Mise en place obligatoire d'un Web Application Firewall (WAF) et d'une protection Anti-DDoS.</li>
+<li><strong>Conformité RGPD:</strong> Hébergement et traitement des données exclusivement au sein de l'Union Européenne.</li>
+<li><strong>Performance &amp; Scalabilité:</strong> Capacité à absorber des pics de charge jusqu'à 2000 requêtes/seconde.</li>
+<li><strong>Migration:</strong> Migration des données historiques sans aucune interruption de service ("zéro downtime").</li>
+<li><strong>Support:</strong> Support technique 24/7/365 pour les incidents critiques d'infrastructure (intervention &lt; 1h).</li>
+<li><strong>Fonctionnalité:</strong> Disponibilité de l'application en cas de coupure réseau (mode hors-ligne).</li>
+</ul>
+<h4 style="margin-top: 25px;">2. Proposition de Solution d'Actency</h4>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">2.1. Approche Méthodologique : L'Agilité Maîtrisée</h5>
+<p>Actency propose une méthodologie Agile structurée en trois phases pour garantir le succès du projet, avec un contrôle budgétaire rigoureux et un engagement sur la Qualité, les Délais et les Coûts (SQDC).</p>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li><strong>Lancement et Cadrage :</strong> Ateliers d'exploration, définition de l'architecture, initialisation du backlog et planification du MVP.</li>
+<li><strong>BUILD (Construction MVP) :</strong> Conception UX/UI, développement des fonctionnalités en sprints, tests et mise en production.</li>
+<li><strong>Maintien / Évolution :</strong> Prise en charge par le Centre de Services pour la maintenance corrective, préventive et évolutive.</li>
+</ul>
+<p>Une formation Agile des équipes SGS est offerte pour assurer un alignement parfait dès le début du projet.</p>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">2.2. Architecture Technique Proposée</h5>
+<p>La solution est conçue pour être moderne, flexible, performante et pérenne.</p>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li><strong>Framework :</strong> Next.js, un framework React.js de référence, pour des interfaces dynamiques, une navigation fluide et une évolutivité facilitée.</li>
+<li><strong>Architecture bi-applicative :</strong> La solution est séparée en deux applications distinctes mais connectées :
+        <ul style="padding-left: 20px; margin-top: 5px;">
+<li><strong>Front App Prise de RDV :</strong> Optimisée pour une expérience client rapide et légère.</li>
+<li><strong>Front App Gestion de RDV :</strong> Conçue pour la complexité des tableaux de bord et des traitements de données côté agent.</li>
+</ul>
+</li>
+<li><strong>Mode Hors Ligne :</strong> L'application sera une Progressive Web App (PWA) utilisant Next PWA et Dexie.js (sur IndexedDB) pour stocker les données localement. Cela garantit une continuité de service totale, même sans connexion internet, avec une synchronisation automatique dès le retour du réseau.</li>
+<li><strong>Qualité du code :</strong> Des outils comme Sonarqube et Code Sniffer, ainsi que des revues de code systématiques par un Lead Développeur, assurent une maintenabilité et une qualité élevées.</li>
+</ul>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">2.3. Potentiel d'Innovation : Intégration de l'IA</h5>
+<p>Actency propose d'explorer deux pistes d'intégration de l'Intelligence Artificielle pour créer une "Plateforme Agentique" SGS :</p>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li><strong>Automatisation de la prise de RDV :</strong> Un agent conversationnel (via des solutions comme VoiceFlow ou N8N) qui simplifie la prise de rendez-vous en demandant uniquement l'immatriculation et les disponibilités de l'utilisateur.</li>
+<li><strong>Agent d'automatisation du planning :</strong> Une IA qui optimise l'attribution des créneaux en fonction des disponibilités des contrôleurs et des ressources des centres, réduisant la charge de travail manuelle.</li>
+</ul>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">2.4. Sécurité et Conformité RGPD</h5>
+<p>La sécurité est intégrée "by design" à chaque étape. Actency dispose de 5 agents de protection des données (DPO) formés pour garantir la conformité RGPD, en respectant les principes de Privacy by Design. Les bases de données ne sont pas accessibles depuis Internet, et tous les mots de passe sont chiffrés.</p>
+<h4 style="margin-top: 25px;">3. Proposition d'Hébergement et d'Infogérance</h4>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">3.1. Socle d'Hébergement sur Microsoft Azure</h5>
+<p>Pour répondre aux exigences de résilience et de souveraineté, l'infrastructure sera construite sur Microsoft Azure.</p>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li><strong>Fiabilité :</strong> Déploiement sur une architecture multi-zones de disponibilité pour atteindre l'objectif de 99,98% de disponibilité.</li>
+<li><strong>Conformité :</strong> Utilisation de la région Azure "France Centre" pour garantir que 100% des données sont hébergées et traitées en France.</li>
+<li><strong>Scalabilité :</strong> Utilisation d'Azure Kubernetes Service (AKS) pour une adaptation automatique aux pics de charge.</li>
+</ul>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">3.2. Sécurité de l'Infrastructure (WAF Managé)</h5>
+<p>La sécurité est assurée par un service de Web Application Firewall (WAF) entièrement managé par la filiale SCAFE. Ce service s'appuie sur l'appliance UBIKA WAAP Gateway, une solution 100% française et souveraine, seule du marché à être certifiée CSPN par l'ANSSI. Elle offre une protection complète contre les attaques connues et inconnues (zero-day).</p>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">3.3. Maintien en Condition Opérationnelle (MCO) et Niveaux de Service (SLA)</h5>
+<p>Un forfait annuel de Maintien en Condition Opérationnelle est proposé pour garantir la stabilité de la plateforme. Il inclut :</p>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li>Monitoring 24/7, gestion des sauvegardes, gestion des certificats SSL.</li>
+<li>Test annuel du Plan de Reprise d'Activité (PRA).</li>
+<li>Astreinte 24/7.</li>
+<li>Comités de pilotage semestriels.</li>
+<li>Un portail client centralisé, Cockpit, pour un suivi en temps réel des performances et de la sécurité.</li>
+</ul>
+<p>Les SLA (Service Level Agreements) incluent des Garanties de Temps d'Intervention (GTI) et de Remise en Service (GTR) strictes, allant de 1h à 4h pour un incident de sévérité 1 selon le niveau de service choisi.</p>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">3.4. Processus de Migration "Zéro Downtime"</h5>
+<p>La mise en service est structurée en quatre phases clés ("Build") pour une migration maîtrisée :</p>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li><strong>Co-conception &amp; Architecture :</strong> Validation du plan technique (DAT, PRA).</li>
+<li><strong>Construction &amp; Automatisation :</strong> Déploiement 100% automatisé via l'Infrastructure as Code (IaC).</li>
+<li><strong>Intégration &amp; Sécurisation :</strong> Connexion de l'application à l'infrastructure et au WAF.</li>
+<li><strong>Validation &amp; Migration :</strong> Tests de performance et de charge, puis exécution de la migration des données sans interruption de service.</li>
+</ul>
+<h4 style="margin-top: 25px;">4. Synthèse Budgétaire</h4>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">4.1. Coûts de Construction (BUILD)</h5>
+<p>La phase de construction du MVP est basée sur 5 sprints de 3 semaines avec une équipe de 4 développeurs (3 ETP).</p>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li><strong>Applicatif:</strong> Lancement, Cadrage, Conception UI, Développement Socle et Fonctionnalités, Pilotage. --- <strong>231 401,00 €</strong></li>
+<li><strong>Hébergement:</strong> Ateliers, Conception, Ingénierie, Construction de l'infrastructure, Tests, Pilotage. --- <strong>41 292,50 €</strong></li>
+<li><strong>TOTAL BUILD:</strong> --- <strong>272 693,50 €</strong></li>
+</ul>
+<p><em>Note : La formation Agile de lancement ("Onboarding") et un atelier sur l'IA sont offerts.</em></p>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">4.2. Coûts d'Exploitation Annuels (RUN)</h5>
+<p>Les coûts annuels couvrent la maintenance applicative et l'infogérance de l'infrastructure.</p>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li><strong>Applicatif:</strong> Maintenance préventive, corrective et évolutive mineure (base de 3 jours/mois). --- <strong>33 212,80 €</strong></li>
+<li><strong>Hébergement:</strong> Coût de l'infrastructure Azure, Forfait MCO, Budget pour incidents/demandes. --- <strong>43 271,84 €</strong></li>
+<li><strong>TOTAL RUN ANNUEL:</strong> --- <strong>76 484,64 €</strong></li>
+</ul>
+<h4 style="margin-top: 25px;">5. Planning Prévisionnel et Engagements</h4>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">5.1. Calendrier du Projet</h5>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li><strong>Lancement / Cadrage :</strong> Fin janvier 2026</li>
+<li><strong>Durée totale estimée :</strong> 6 mois</li>
+<li><strong>Phase de production :</strong> 5 sprints de 3 semaines chacun</li>
+<li><strong>Livraison envisageable :</strong> Août 2026</li>
+</ul>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">5.2. Engagements d'Actency</h5>
+<p>Actency s'engage sur plusieurs points pour garantir la réussite et la sécurité du projet :</p>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li><strong>Onboarding Agile:</strong> OFFERT : Formation de 2 jours pour les équipes SGS par un expert certifié.</li>
+<li><strong>Transfert BUILD/RUN:</strong> OFFERT : Phase d'initialisation et d'immersion pour un passage de relais fluide.</li>
+<li><strong>Garantie:</strong> 3 mois de garantie post-mise en production.</li>
+<li><strong>Respect du Budget:</strong> Garantie du respect du budget défini pour chaque sprint.</li>
+<li><strong>Non-régression:</strong> Garantie de non-régression des fonctionnalités livrées.</li>
+<li><strong>Pénalité de retard:</strong> 200 € par jour ouvré de retard non justifié sur le planning.</li>
+</ul>
+<h4 style="margin-top: 25px;">6. Informations sur le Prestataire : Actency et le Groupe AODB</h4>
+<p><strong>Actency</strong> est une Société par actions simplifiée (SAS) au capital de 445 000 €, immatriculée à Strasbourg. Spécialiste depuis plus de 18 ans des solutions digitales en environnements critiques, elle propose une expertise complète allant du conseil à la cybersécurité.</p>
+<p><strong>Alliance of Digital Builders (AODB) :</strong> Actency est co-fondateur de l'AODB, un groupe réunissant 8 filiales et 200 collaborateurs experts du numérique en France et à l'international (CA de 22 M€). Le groupe inclut des entités spécialisées comme <strong>SCAFE</strong> (Cloud &amp; DevOps) et <strong>EURELIS</strong> (IA &amp; Data).</p>
+<p><strong>Certifications :</strong> Les équipes d'Actency et de l'AODB possèdent de nombreuses certifications dans des domaines variés : gestion de projet (Scrum, Prince2), UX, technologies (Acquia, Drupal), Cloud &amp; DevOps (AWS, Azure, Kubernetes) et Sécurité (Fortinet).</p>
+<p><strong>Engagements RSE :</strong> Actency applique une charte RSE rigoureuse, avec un indice d'égalité femme/homme de 78/100 en 2023, le label Numérique Responsable (Niveau 1), et un programme de réinsertion (POEI) en partenariat avec Pôle Emploi ayant permis de former plus de 80 demandeurs d'emploi.</p>
+</div><textarea class="ao-textarea" placeholder="Saisissez vos notes..."></textarea>
 </div>
 <div class="vendor-content hidden" id="vendor-agendize">
 <h3>
@@ -1953,7 +2089,169 @@
 <label style="display: block; margin-bottom: 5px; font-weight: 500;">
          Notes :
         </label>
-<textarea class="ao-textarea" placeholder="Saisissez vos notes..."></textarea>
+<div class="faq-container"><h4>Foire Aux Questions (FAQ)</h4><p class="faq-intro-text">Absolument. Voici une FAQ de 20 questions-réponses pertinentes, basées sur les documents fournis, dans le cadre de votre appel d'offres (AO) pour la solution Agendize.</p><dl class="faq-list-dl"><dt>1. Quel est l'engagement stratégique d'Agendize dans le cadre de ce projet avec le Groupe SGS ?</dt><dd>Agendize se positionne comme un partenaire stratégique dont la proposition repose sur une approche hybride, combinant le déploiement de sa solution existante dans sa version native et des développements sur mesure pour répondre précisément aux besoins du groupe, notamment en matière de gestion du panier de prestations. L'objectif est de concrétiser une vision commune visant à concevoir une solution moderne, sécurisée, innovante et pérenne.</dd><dt>2. Quelle est l'approche méthodologique privilégiée pour l'évolution de la solution Agendize ?</dt><dd>L'approche est axée sur la co-construction, impliquant une organisation conjointe entre les équipes SGS et les équipes produit d'Agendize. Cette démarche vise à faire évoluer la solution existante jusqu'à 100% de la couverture fonctionnelle attendue. Elle s'appuie sur des ateliers métiers réguliers et un cycle agile d'évolution continue pour intégrer et déployer rapidement de nouvelles fonctionnalités.</dd><dt>3. Quels sont les principaux clients d'Agendize cités dans la documentation ?</dt><dd>Agendize accompagne des leaders mondiaux depuis plus de 10 ans. Parmi les clients qui leur font confiance figurent EDF, Allianz, Club Med, et ProBTP.</dd><dt>4. Quel est le mode d'hébergement privilégié par Agendize pour le projet du Groupe SGS ?</dt><dd>La solution est disponible en mode SaaS mutualisé, dédié ou sur serveurs On-Premise. Compte tenu des exigences élevées de performance, de sécurité et de personnalisation du Groupe SGS, Agendize recommande fortement l'approche SaaS dédié.</dd><dt>5. Quels sont les avantages du mode SaaS dédié par rapport aux autres options ?</dt><dd>L'approche SaaS dédié garantit une performance optimale, une stabilité face à un trafic massif et des pics de charge, un Time-to-market accéléré, l'isolation totale des données, une conformité renforcée (RGPD, hébergement souverain, audits sécurité), l'accès immédiat aux nouvelles releases, une haute disponibilité et une sécurité accrue.</dd><dt>6. Quel est le prestataire d'hébergement annuel prévu pour l'offre SaaS dédié ?</dt><dd>L'hébergement annuel en SaaS dédié est prévu chez OVH.</dd><dt>7. Quelle est la Garantie de Taux de Disponibilité (GTD) annuelle assurée par Agendize ?</dt><dd>Agendize s'engage sur une Garantie de Taux de Disponibilité (GTD) annuelle du Service de 99%. Cette garantie exclut les plages de maintenance mensuelles, les opérations programmées, les cas de Force Majeure et les interruptions demandées par le Client.</dd><dt>8. Quelles sont les principales intégrations techniques spécifiques prévues pour le Groupe SGS dans la phase de build ?</dt><dd>La phase de build inclut des développements spécifiques pour l'intégration de plusieurs outils du Groupe SGS, notamment Adelsoft, SIR, LemonWay, Payzen, BrevoMail, et Pilote.</dd><dt>9. Quel rôle joue l'architecture API-First d'Agendize dans ce projet ?</dt><dd>L'architecture API-First garantit que la solution s'intègre naturellement avec l'écosystème SGS (AdelSoft, SIR, PayZen, etc.) et assure une interopérabilité durable et une agilité technique élevée. Les briques fonctionnelles peuvent être interconnectées de manière sécurisée via des API REST documentées et standardisées.</dd><dt>10. Comment la solution Agendize gère-t-elle les processus métiers automatisés ?</dt><dd>Le module de workflow d'Agendize permet d'automatiser les processus en liant des événements émis par la solution (nouveaux rendez-vous pris, annulés, début d’un rendez-vous, réception d’un formulaire, etc.) à des actions internes ou externes (envoi d’un email/SMS, appel d’une API).</dd><dt>11. Comment Agendize gère-t-elle la personnalisation des informations client lors de la prise de rendez-vous ?</dt><dd>Agendize permet d'associer à chaque type de rendez-vous des champs complémentaires entièrement personnalisables afin de collecter les informations nécessaires en amont (ex. plaque d’immatriculation, numéro de contrat). Ces formulaires peuvent être adaptés par établissement ou par réseau.</dd><dt>12. Quel est le planning global du projet d'implémentation pour le module Agenda SGS ?</dt><dd>La durée totale du projet est de 12 mois, s'étendant de Janvier à Décembre 2026. L'objectif est d'assurer la mise en service du module Agenda SGS à l’échelle nationale d’ici la fin 2026.</dd><dt>13. Comment est organisée la phase de mise en service ?</dt><dd>La phase de mise en service (Septembre à Décembre 2026) vise une adoption homogène sur l'ensemble du réseau SGS. Elle s'appuie sur une méthode progressive combinant le déploiement par vagues régionales, des formations ciblées par profil et la mise à disposition de supports pédagogiques complets.</dd><dt>14. Quel est le public cible concerné par la formation ?</dt><dd>Le plan de formation et d'accompagnement concerne les 5 000 utilisateurs. Les formations sont ciblées par profil : Formation technique (Administrateurs IT, Support niveau 1), Formation fonctionnelle (Chefs de centre, responsables régionaux) et Formation à l’utilisation (Collaborateurs, planificateurs).</dd><dt>15. Quelle est l'unité de mesure utilisée par Agendize pour la facturation des licences ?</dt><dd>Le modèle économique repose sur les licences mois-utilisateurs, qui correspondent à une licence active pour un utilisateur pendant un mois. C'est l'unité de mesure qui permet de calculer la volumétrie totale et d’adapter le coût.</dd><dt>16. Quel est le volume de licences inclus dans le pack initial de déploiement pour 5 000 utilisateurs ?</dt><dd>Le pack initial de déploiement comprend 60 000 mois-utilisateurs (calculé sur 5 000 utilisateurs x 12 mois).</dd><dt>17. Quel est le délai accordé au client pour utiliser le pack initial de déploiement ?</dt><dd>Le pack initial de 60 000 mois-utilisateurs doit être utilisé avant le 31 janvier 2028.</dd><dt>18. Comment est calculée la révision annuelle du prix du contrat ?</dt><dd>Sauf mention contraire, le prix annuel est révisé selon la formule suivante : P = Po + (Po x 3x (S-So)/So), où P est le prix révisé, Po est le prix en vigueur avant révision, S est l’indice SYNTEC de novembre n-1, et So est l’indice SYNTEC de novembre n-2.</dd><dt>19. Agendize détient-elle des certifications de sécurité pour ses systèmes ?</dt><dd>Oui, Agendize détient la certification ISO/IEC 27001:2022 pour le Système de Management de la Sécurité de l’Information (SMSI) couvrant l'ensemble des modules fonctionnels de la plateforme (SaaS mutualisé, dédié, On-Premise) et tous les services supports.</dd><dt>20. Quels sont les engagements d'Agendize en matière environnementale et de RSE dans le cadre de son activité ?</dt><dd>Agendize reconnaît sa responsabilité dans la protection de l'environnement et s'engage à réduire son empreinte carbone. Ses objectifs incluent la réduction de la consommation d’énergie (via l'optimisation des bureaux et l'utilisation de centres de données alimentés par énergies renouvelables/compensées carbone, ex. OVH, Eolas), la gestion responsable des équipements informatiques (recyclage via partenaires certifiés), et la Responsabilité numérique (conception de logiciels sobres en ressources). Agendize mesure également régulièrement ses impacts environnementaux et fixe des objectifs de réduction.</dd></dl></div><div class="report-container" style="line-height: 1.6; text-align: left; padding-top: 15px;">
+<h4>Synthèse de Briefing : Agendize</h4>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">Résumé Exécutif</h5>
+<p>Ce document présente une synthèse exhaustive de la société Agendize, un éditeur français de logiciels SaaS spécialisé dans les solutions de prise de rendez-vous et d'engagement client. Agendize se positionne comme un leader sur son marché, accompagnant des grands comptes tels qu'EDF, Allianz et Club Med dans la digitalisation de leurs parcours clients.</p>
+<p>L'analyse des documents révèle une entreprise structurée, dotée d'une forte culture de la sécurité (certifiée ISO/IEC 27001:2022) et d'un engagement marqué en matière de responsabilité sociétale et environnementale (RSE), formalisé par des politiques internes et l'adhésion à des codes de conduite externes comme celui de SGS.</p>
+<p>Un projet stratégique majeur est au cœur de la documentation : une proposition de partenariat de co-construction avec le Groupe SGS pour moderniser sa solution de planification. Cette offre, chiffrée et planifiée sur 12 mois, met en lumière le modèle économique scalable d'Agendize, basé sur des licences "mois-utilisateurs", et ses capacités techniques avancées, notamment une architecture API-First et des options d'hébergement flexibles (SaaS dédié, On-Premise).</p>
+<p>Sur le plan financier, Agendize affiche un revenu annuel récurrent (ARR) de 2,5 M€, a réalisé une levée de fonds de 3,6 M€ en 2024, et bénéficie d'une forte satisfaction client avec 0% de churn. La société est une Société par Actions Simplifiée (SAS) au capital de 223 850,00 €, dirigée par son Président, Alexandre Rambaud, avec un siège social à Lyon et un établissement à Troyes.</p>
+<h4 style="margin-top: 25px;">1. Profil de l'Entreprise Agendize</h4>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">Identité Juridique et Financière</h5>
+<ul style="padding-left: 20px; margin-top: 10px; list-style-type: disc;">
+<li><strong>Raison Sociale:</strong> AGENDIZE</li>
+<li><strong>Forme Juridique:</strong> Société par actions simplifiée (SAS)</li>
+<li><strong>Capital Social:</strong> 223 850,00 €</li>
+<li><strong>Siège Social:</strong> 33 Rue de la République, 69002 Lyon, France</li>
+<li><strong>Établissement Principal:</strong> 12, Rue Bégand, Troyes, France</li>
+<li><strong>Immatriculation:</strong> 449 162 403 R.C.S. Lyon</li>
+<li><strong>N° TVA Intracom.:</strong> FR 81 449 162 403</li>
+<li><strong>Dirigeant Principal:</strong> Alexandre Gabriel Marie Rambaud, Président</li>
+<li><strong>Banque:</strong> CIC ENTREPRISE MARNE LA VALLEE</li>
+<li><strong>Note Financière:</strong> Décision de non-dissolution en date du 25/10/2018 suite à des capitaux propres devenus inférieurs à la moitié du capital social.</li>
+</ul>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">Activité et Positionnement</h5>
+<p>Agendize est un éditeur de logiciels spécialisé dans les solutions d'engagement client opérées en mode SaaS. L'entreprise a pour mission "d’améliorer la relation entre les secteurs publics ou privés et leurs clients et / ou collaborateurs en digitalisant leurs services". Sa solution principale de prise de rendez-vous en ligne et de gestion de la relation client vise à automatiser les parcours pour optimiser l'expérience client. L'entreprise se présente comme un "leader français sur le marché des solutions de prise de rendez-vous et de planification".</p>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">Chiffres Clés et Performance</h5>
+<ul style="padding-left: 20px; margin-top: 10px; list-style-type: disc;">
+<li><strong>Satisfaction Client:</strong> 96% (Taux de satisfaction)</li>
+<li><strong>Note Moyenne:</strong> 4,8 / 5</li>
+<li><strong>Taux de Churn:</strong> 0%</li>
+<li><strong>Revenu Annuel Récurrent (ARR):</strong> 2,5 M€</li>
+<li><strong>Levée de Fonds (2024):</strong> 3,6 M€</li>
+<li><strong>Portefeuille Clients:</strong> + 50 Grands Comptes et ETI (Inclut EDF, Allianz, Club Med, ProBTP)</li>
+<li><strong>Effectifs R&amp;D:</strong> 50% des effectifs internalisés en R&amp;D</li>
+<li><strong>Impact Carbone:</strong> 153 tCO₂e (Soit 6,1 tCO₂e par collaborateur, qualifié de "bas pour le secteur")</li>
+<li><strong>Statut:</strong> Solution 100% Française</li>
+</ul>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">Équipe Dirigeante et Personnels Clés</h5>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li><strong>Alexandre Rambaud :</strong> Président</li>
+<li><strong>Clément Lejeune :</strong> DGA Opérations / Directeur Produit et Opérations</li>
+<li><strong>Riad Djouama :</strong> Directeur de Comptes Stratégiques</li>
+<li><strong>Cédric Peyruqueou :</strong> Directeur R&amp;D et Infra</li>
+<li><strong>Marie Ruszkiewicz :</strong> Directrice Administrative</li>
+<li><strong>Thomas Picart :</strong> Directeur de Projet</li>
+</ul>
+<h4 style="margin-top: 25px;">2. Proposition Stratégique pour le Groupe SGS</h4>
+<p>Agendize a élaboré une réponse détaillée à un appel d'offres du Groupe SGS visant à remplacer sa solution d'agenda interne, qui souffre d'une "dette technique importante".</p>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">Contexte du Projet</h5>
+<p>Le Groupe SGS cherche à moderniser son outil de gestion de rendez-vous pour :</p>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li>Optimiser les performances et réduire les coûts.</li>
+<li>Garantir un niveau de sécurité conforme aux standards les plus récents.</li>
+<li>Bénéficier d'innovations continues (IA, automatisations).</li>
+<li>Améliorer l'expérience utilisateur et client.</li>
+</ul>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">Approche Proposée par Agendize</h5>
+<p>Agendize propose une approche de "co-construction" reposant sur une vision hybride :</p>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li><strong>Déploiement initial</strong> de la solution Agendize existante en version native.</li>
+<li><strong>Développements sur mesure</strong> pour couvrir 100% des besoins métiers spécifiques de SGS.</li>
+<li><strong>Fourniture d'une</strong> solution évolutive, intégrée et scalable.</li>
+</ul>
+<p>Cette démarche vise à éviter les écueils d'une solution entièrement spécifique (dette technique, coûts de maintenance élevés, délais de livraison longs).</p>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">Proposition Financière</h5>
+<p>La proposition est structurée en deux phases : "Build" (construction) et "Run" (exploitation).</p>
+<ul style="padding-left: 20px; margin-top: 10px; list-style-type: disc;">
+<li><strong>Phase Build:</strong> Mise en œuvre de la solution, incluant développements spécifiques SGS (206 JH), développements Core Solution (190 JH), déploiement et formation (85 JH). --- <strong>Coût Total HT: 279 650,00 €</strong></li>
+<li><strong>Phase Run:</strong> Pack initial de 60 000 mois-utilisateurs (pour 5 000 utilisateurs sur 12 mois). Utilisable avant le 31/01/2028. --- <strong>Coût Total HT: 299 400,00 €</strong></li>
+<li><strong>Licence suppl.:</strong> Coût unitaire pour 1 mois-utilisateur additionnel. --- <strong>Coût Total HT: 4,99 €</strong></li>
+</ul>
+<p><strong>Services Additionnels Annuels :</strong></p>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li>Hébergement en SaaS dédié OVH : <strong>52 000 € HT</strong></li>
+<li>Nom de domaine personnalisé : <strong>1 850 € HT</strong></li>
+<li>Chef de Projet dédié (40 JH/an) : <strong>31 800,00 € HT</strong></li>
+</ul>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">Planning de Déploiement</h5>
+<p>Le projet est planifié sur une durée de <strong>12 mois</strong>, de janvier à décembre 2026.</p>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li><strong>T1-T2 :</strong> Intégrations techniques (AdelSoft, SIR, PILOTE, Payzen, LemonWay, BrevoMail, SMSMode).</li>
+<li><strong>T2-T3 :</strong> Paramétrage fonctionnel et mise en marque privée.</li>
+<li><strong>T4 :</strong> Déploiement progressif sur l'ensemble des centres SGS et formation des 5 000 utilisateurs.</li>
+</ul>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">Architecture et Hébergement</h5>
+<p>Agendize recommande une approche <strong>SaaS dédié</strong> pour le Groupe SGS afin de garantir des performances optimales, une isolation des données et une conformité renforcée. La solution est également disponible en <strong>SaaS mutualisé</strong> et <strong>On-Premise</strong>. L'architecture est conçue comme "API-First" pour s'intégrer nativement à l'écosystème de SGS.</p>
+<h4 style="margin-top: 25px;">3. Offre de Services et Capacités Techniques</h4>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">Modules Fonctionnels de la Plateforme</h5>
+<p>La solution Agendize s'articule autour des modules principaux suivants, décrits dans le contrat type :</p>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li><strong>Prise et gestion de rendez-vous en ligne :</strong> Permet aux clients finaux de prendre rendez-vous selon les disponibilités. Inclut la personnalisation des widgets, des formulaires, des notifications, et l'intégration de paiements en ligne.</li>
+<li><strong>Planification :</strong> Organisation des plannings des collaborateurs et visualisation des taux d'occupation.</li>
+<li><strong>Événements :</strong> Organisation d'ateliers collectifs, gestion des participants et formulaires d'inscription sur-mesure.</li>
+<li><strong>Gestion de File d’attente :</strong> File d'attente virtuelle pour les établissements physiques.</li>
+<li><strong>Base de contacts :</strong> CRM centralisant les fiches contacts, l'historique des rendez-vous et des communications.</li>
+<li><strong>Gestion de Formulaires :</strong> Création de formulaires en ligne personnalisés.</li>
+<li><strong>Workflows :</strong> Moteur d'automatisation pour lier des événements (ex: nouveau RDV) à des actions (ex: appel d'une API externe).</li>
+<li><strong>Rapports :</strong> Accès à des rapports personnalisables et exportables sur l'activité.</li>
+</ul>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">Capacités d'Intégration et API</h5>
+<p>L'architecture <strong>API-First</strong> est un pilier de l'offre. La solution expose une API de type REST (RESTful) et des mécanismes de watchers (webhooks). Sauf conditions spécifiques, l'utilisation de l'API est limitée à <strong>2500 appels par heure</strong>.</p>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">Niveaux de Service (SLA)</h5>
+<p>L'Annexe 1 du contrat de services définit les engagements suivants :</p>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li><strong>Garantie de Taux de Disponibilité (GTD) :</strong> <strong>99%</strong> sur une base annuelle.</li>
+<li><strong>Fenêtre de Maintenance :</strong> Programmée en période de trafic minimal (22h00-02h00, heure de France), ne dépassant pas 4 heures par mois, avec un préavis de 48 heures.</li>
+<li><strong>Temps de Réponse du Widget :</strong> Le widget doit être rendu en moins de <strong>500 ms</strong> (temps serveur).</li>
+<li><strong>Support Technique :</strong> Les demandes sont traitées via un système de tickets, du lundi au vendredi de 9h à 18h (heure de France métropolitaine).</li>
+</ul>
+<h4 style="margin-top: 25px;">4. Engagements en Matière de RSE, Éthique et Sécurité</h4>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">Politique Environnementale</h5>
+<p>Signée le 6 octobre 2025 par Marie Ruszkiewicz et Alexandre Rambaud, la politique environnementale d'Agendize s'engage à réduire son empreinte carbone à travers cinq axes principaux :</p>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li><strong>Réduction de la consommation d’énergie :</strong> Optimisation des bureaux et utilisation de datacenters alimentés par des énergies renouvelables (ex: OVH, Eolas).</li>
+<li><strong>Gestion responsable des équipements informatiques :</strong> Allongement de la durée de vie, réemploi, recyclage, et achat de matériel labellisé (Energy Star, EPEAT Gold).</li>
+<li><strong>Mobilité et déplacements :</strong> Favorisation du télétravail et des transports à faible émission.</li>
+<li><strong>Responsabilité numérique :</strong> Conception de logiciels sobres et sensibilisation des clients.</li>
+<li><strong>Sensibilisation et formation :</strong> Formation des collaborateurs à la sobriété numérique et aux éco-gestes.</li>
+</ul>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">Code de Conduite et Responsabilité Sociale</h5>
+<p>Le Code de Conduite interne, validé par le Président, engage Agendize et ses collaborateurs à respecter des principes stricts :</p>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li>Respect des <strong>lois</strong> et réglementations en vigueur.</li>
+<li><strong>Non-discrimination</strong> et respect des droits humains fondamentaux.</li>
+<li><strong>Interdiction du travail forcé et du travail des enfants</strong>, en accord avec la Convention 138 de l'OIT.</li>
+<li><strong>Liberté d'association</strong> et de négociation collective.</li>
+<li><strong>Politique anticorruption</strong> stricte, interdisant toute forme de pot-de-vin.</li>
+<li><strong>Confidentialité</strong> des données clients et <strong>respect de la vie privée</strong>.</li>
+<li>Protection de la <strong>propriété intellectuelle</strong>.</li>
+<li><strong>Politique anti-représailles</strong> pour protéger les lanceurs d'alerte.</li>
+</ul>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">Sécurité et Conformité</h5>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li><strong>Certification ISO/IEC 27001:2022 :</strong> Le périmètre de certification couvre l'ensemble des modules fonctionnels de la plateforme (SaaS mutualisé, dédié, On-Premise) et tous les services supports. Le certificat est valide du 12/12/2024 au 11/12/2027.</li>
+<li><strong>Conformité RGPD :</strong> L'entreprise met l'accent sur le respect du RGPD et de la loi Informatique et Libertés. Le client est responsable de la configuration de sa politique de confidentialité via la plateforme (consentements, durée de conservation).</li>
+</ul>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">Adhésion aux Normes des Clients</h5>
+<p>Agendize démontre sa capacité à s'aligner sur les exigences de ses clients en signant le <strong>Code de conduite des fournisseurs de SGS</strong> le 6 octobre 2025. Ce code engage les fournisseurs sur cinq principes : l'excellence professionnelle, les droits de la personne, la santé et la sécurité, l'environnement et la collectivité.</p>
+<h4 style="margin-top: 25px;">5. Références Clients et Preuves de Confiance</h4>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">Portefeuille de Clients</h5>
+<p>Agendize met en avant des collaborations avec de nombreuses entreprises de premier plan, parmi lesquelles :</p>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li>Allianz</li>
+<li>Orange Business Services</li>
+<li>AG2R LA MONDIALE</li>
+<li>Agirc-Arrco</li>
+<li>Club Med</li>
+<li>Jardiland</li>
+<li>Veolia</li>
+<li>EDF</li>
+<li>ProBTP</li>
+</ul>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">Témoignages</h5>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li><strong>Grégory Polchetti, Tenexa :</strong> "Agendize est le système de planification qui répond à tous nos besoins, très détaillé et surtout très flexible."</li>
+<li><strong>Justine Fleury, Club Med :</strong> "Agendize a montré quelque chose de différent en termes d'adaptabilité et de flexibilité."</li>
+<li><strong>Tobias Gruenewald, Allianz :</strong> "L'outil est extrêmement facile à utiliser tout en offrant suffisamment d'options pour le personnaliser."</li>
+</ul>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">Études de Cas (Projets Majeurs)</h5>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li><strong>EDF :</strong> Depuis janvier 2025, déploiement de la prise de rendez-vous sur l'ensemble des centres de contacts internes, couvrant 3 marchés et 4 000 collaborateurs.</li>
+<li><strong>FÉDÉRATION AGIRC-ARRCO :</strong> Utilisation de la solution pour gérer les rendez-vous des conseillers retraite (événements, rendez-vous individuels) sur tout le territoire.</li>
+<li><strong>ProBTP :</strong> Le groupe de protection sociale utilise Agendize pour ses 200 agences conseil, offrant une protection sociale à 3,4 millions d'adhérents.</li>
+</ul>
+</div><textarea class="ao-textarea" placeholder="Saisissez vos notes..."></textarea>
 </div>
 <div class="vendor-content hidden" id="vendor-itec">
 <h3>
@@ -1965,7 +2263,146 @@
 <label style="display: block; margin-bottom: 5px; font-weight: 500;">
          Notes :
         </label>
-<textarea class="ao-textarea" placeholder="Saisissez vos notes..."></textarea>
+<div class="faq-container"><h4>Foire Aux Questions (FAQ)</h4><p class="faq-intro-text">Absolument. Voici une FAQ de 20 questions-réponses pertinentes, basées sur les documents fournis, dans le cadre de votre appel d'offres (AO) pour la solution PTI Calendar.</p><dl class="faq-list-dl"><dt>1. Quel est l'objectif principal de la proposition de solution PTI CALENDAR ?</dt><dd>L'objectif est de mettre en place un outil alliant modernité et performance, tout en optimisant et garantissant les impératifs budgétaires de SGS. La solution vise également à traiter la dette technologique signalée par SGS et à améliorer l'expérience utilisateur.</dd><dt>2. Qui sont les principaux partenaires impliqués dans la réponse à cette consultation ?</dt><dd>La réponse à la consultation est proposée par SGS AUTO, en collaboration avec son partenaire WIth, membre actif du GIE SynerGie Tech.</dd><dt>3. Quelles sont les principales phases du projet proposées et leur durée ?</dt><dd>Les principales phases du projet sont : Phase préparatoire (3 semaines), Phase de conception (12 semaines), Phase de construction (9 mois, 15 sprints de 2 semaines), Phase de formation (3 mois), et Phase de pilotage (11 mois).</dd><dt>4. Quel est le coût total (HT) estimé pour la phase de construction (BUILD) du projet, incluant le buffer AI/Automatisations ?</dt><dd>Le budget total HT pour la phase BUILD s'élève à 346 075 € HT, incluant la phase préparatoire, conception, construction, formation, et un buffer projet/AI (62 520 € HT).</dd><dt>5. Quelles technologies clés composent la stack technique proposée ?</dt><dd>La solution utilise Python/Django pour le Backend, Svelte pour le Frontend, et PostgreSQL 18 pour les bases de données, garantissant robustesse, performance et sécurité.</dd><dt>6. Quel niveau de disponibilité (SLA) est garanti par l'option d'hébergement privilégiée, et sur quelle architecture repose-t-elle ?</dt><dd>La solution par défaut garantit un SLA à 99,99%. Cela est rendu possible par un hébergement cloud (AWS) avec une architecture Multi-AZ assurant une triple redondance dans 3 data centers différents en Europe.</dd><dt>7. La solution est-elle conçue pour supporter la charge de travail actuelle et future de SGS ?</dt><dd>Oui. L'architecture est conçue pour absorber 70 utilisateurs actifs simultanés, 2300 connexions totales, et supporter jusqu'à 1200 RPS (Requêtes par seconde) en moyenne, et jusqu'à 2000 RPS lors des pics.</dd><dt>8. Comment est gérée la continuité de service minimale en cas de perte de connexion dans les centres ?</dt><dd>La solution propose un mode hors-ligne. Elle utilise une base de données via événements et une Queue locale (cache persistant) dans le navigateur pour garantir la consultation et la création de rendez-vous. Les événements sont synchronisés dès le retour du réseau.</dd><dt>9. Quel engagement est pris concernant la migration des 100 Go de données existantes ?</dt><dd>L'engagement est une migration zéro downtime et une intégrité totale. La méthodologie inclut une analyse, une migration initiale par Snapshot et une synchronisation incrémentale continue.</dd><dt>10. Comment la proposition intègre-t-elle l'Intelligence Artificielle (IA) ?</dt><dd>L'IA est optimisée pour améliorer l'expérience. Les fonctionnalités incluent le Chatbot (FAQ), les Filtres intelligents (recherche en langage naturel), et la Prédiction automatique de durée de rendez-vous et d'affectation.</dd><dt>11. Quels sont les quatre parcours clés couverts par la solution Agenda ?</dt><dd>La solution propose quatre parcours clés : Portail client particulier, Portail client professionnel, Portail call center, et Portail centre de contrôle (incluant les vues Contrôleur et Gestionnaire).</dd><dt>12. Quels sont les bénéfices métier pour le Client Professionnel (Gestionnaire de Flottes) ?</dt><dd>La solution B2B vise à fidéliser les flottes. Elle permet la centralisation de la planification, l'optimisation des créneaux pour limiter l'immobilisation, et le suivi précis des états de conformité.</dd><dt>13. Comment le parcours Call Center est-il optimisé ?</dt><dd>Le parcours dédié vise à réduire la durée des appels. Il offre une interface de saisie rapide, une visualisation instantanée des disponibilités, et un routage intelligent des dossiers/agents.</dd><dt>14. Comment l'expérience utilisateur du Responsable de centre est-elle améliorée ?</dt><dd>Le parcours de gestion permet de maximiser la rentabilité via l'optimisation intelligente des plannings, le suivi en temps réel des performances, et une analyse avancée de l'activité.</dd><dt>15. Comment la conformité au RGPD est-elle assurée dans la solution ?</dt><dd>La conformité est assurée à trois niveaux : le chiffrement de toutes les données personnelles, une documentation complète sur la gestion des données, et la mise en place d'un mécanisme de consentement aux cookies.</dd><dt>16. Quel est le rôle des Comités de Pilotage (COPILs) dans la gouvernance stratégique ?</dt><dd>Les COPILs sont trimestriels et servent à la validation des orientations majeures, à la revue budgétaire et calendaire, et aux arbitrages stratégiques. Le CTO et le Directeur Général d'ITEC y participent.</dd><dt>17. Quel est le délai de prise en charge (GTI) et de résolution (GTR) garanti pour un incident de niveau CRITIQUE ?</dt><dd>Pour un incident CRITIQUE (indisponibilité totale), le GTI garanti est de 1 heure et le GTR est de 4 heures.</dd><dt>18. Comment sont calculées les pénalités en cas d'indisponibilité complète de la solution ?</dt><dd>En cas d'indisponibilité complète, les pénalités sont calculées sur 100 % de la perte de CA estimée sur la durée d’indisponibilité, avec un plafond de 5 % du contrat annuel.</dd><dt>19. Combien d'utilisateurs en centre doivent être formés et quel est l'objectif de cette phase ?</dt><dd>L'objectif est la formation de 5 000 utilisateurs en centre. Cette phase vise à rendre les utilisateurs autonomes et à transférer la maîtrise de la solution à l'équipe projet SGS.</dd><dt>20. Quels sont les engagements pris concernant la réversibilité de la solution en fin de contrat ?</dt><dd>L'engagement est de garantir une transition fluide pour que SGS puisse reprendre la gestion en toute autonomie. Ceci comprend une documentation complète, le transfert de connaissances, et la mise à disposition des actifs (code source, BDD).</dd></dl></div><div class="report-container" style="line-height: 1.6; text-align: left; padding-top: 15px;">
+<h4>Synthèse de la Proposition Technique : Solution PTI CALENDAR pour SGS</h4>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">Résumé Exécutif</h5>
+<p>Ce document synthétise la proposition technique soumise par ITEC et son partenaire WITH pour la refonte de la solution de gestion d'agenda de SGS, désignée "PTI CALENDAR SOLUTION". L'offre vise à répondre au Lot 2 de la consultation en remplaçant la solution actuelle, marquée par une dette technologique, par une plateforme moderne, performante et évolutive.</p>
+<p>La proposition s'articule autour de la création d'un outil multi-plateforme (Desktop, mobile) centré sur l'expérience utilisateur et les besoins métier de divers profils. La solution repose sur une architecture technique robuste (Python/Django, Svelte, PostgreSQL 18) hébergée sur une infrastructure cloud AWS à haute disponibilité (99,99%), conçue pour gérer 2300 connexions simultanées et jusqu'à 2000 requêtes par seconde en pic.</p>
+<p>Le projet est structuré en une phase de construction (BUILD) de 11 mois, décomposée en étapes (préparation, conception, développement agile, formation), pour un budget total de <strong>346 075 € HT</strong>. Une enveloppe optionnelle de 47 230 € HT est prévue pour l'IA. La phase d'exploitation (RUN) inclut la maintenance, le support, une astreinte 24/7 et une gouvernance semestrielle, pour un budget annuel de <strong>274 190 € HT</strong>.</p>
+<p>Les éléments différenciateurs mis en avant sont l'expertise dans le secteur automobile (Toyota, Kinto), une méthodologie Agile, un engagement sur la sécurité (ISO 9001 &amp; 27001), et une vision stratégique incluant l'IA. La proposition inclut des SLA stricts, des pénalités, un plan de réversibilité complet et des références solides.</p>
+<h4 style="margin-top: 25px;">1. Contexte et Objectifs du Projet</h4>
+<p>ITEC et WITH répondent à la refonte de l'agenda SGS en identifiant trois enjeux majeurs :</p>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li><strong>La dette technologique :</strong> Surmonter les limitations de la solution actuelle.</li>
+<li><strong>L'évolution de l'expérience utilisateur :</strong> Moderniser les interfaces pour tous les utilisateurs.</li>
+<li><strong>Les attentes en termes d'évolutivité :</strong> Supporter la croissance et les innovations futures.</li>
+</ul>
+<p>Les objectifs stratégiques sont : mettre en place un outil moderne et performant (respectant le budget), proposer une expérience utilisateur innovante, garantir un service sécurisé et robuste, et intégrer l'IA pour donner un avantage concurrentiel.</p>
+<h4 style="margin-top: 25px;">2. Proposition de Valeur et Éléments Différenciateurs</h4>
+<p>L'offre se différencie par :</p>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li><strong>Expertise Métier :</strong> Maîtrise du secteur automobile (Toyota, Kinto, Stellantis).</li>
+<li><strong>Technologie au service du Business :</strong> Conception de solutions générant de la croissance et optimisant les coûts.</li>
+<li><strong>Méthodologie Agile :</strong> Gestion flexible avec une équipe stable sur le BUILD et le RUN.</li>
+<li><strong>Excellence Technique :</strong> Expertise en plateformes complexes (formations AWS, Azure, ISO 27001).</li>
+<li><strong>Accompagnement dans la Transformation Digitale :</strong> Vision stratégique incluant IA, chatbots et automatisations.</li>
+</ul>
+<h4 style="margin-top: 25px;">3. Description de la Solution Proposée</h4>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">3.1. Parcours Utilisateurs et Fonctionnalités Clés</h5>
+<p>La solution est conçue pour 4 personas clés :</p>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li><strong>Client Particulier :</strong> Réservation rapide et autonome, tarifs clairs, rappels.</li>
+<li><strong>Responsable de Centre &amp; Mécanicien :</strong> Maximiser la rentabilité, optimiser les plannings, suivi en temps réel.</li>
+<li><strong>Client Professionnel (Flottes) :</strong> Fidéliser, centraliser la planification, limiter l'immobilisation.</li>
+<li><strong>Agent en Centre d'Appels :</strong> Réduire la durée des appels, outil centralisé, processus simplifié.</li>
+</ul>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">3.2. Fonctionnalités Centrales et Architecture</h5>
+<p>La "Nouvelle solution Agenda" expose une API qui communique avec les quatre portails (Particulier, Pro, Call Center, Centre de contrôle). Elle s'intègre avec des systèmes tiers :</p>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li><strong>ERP :</strong> Adelsoft</li>
+<li><strong>Paiement :</strong> Lemonway, Payzen</li>
+<li><strong>Analytique :</strong> Google Analytics</li>
+<li><strong>Notifications :</strong> Brevo (Email), SMS Mode</li>
+</ul>
+<p>Elle inclut un moteur de réservation temps réel, l'affichage dynamique des tarifs, une BDD centralisée, une console d'administration et la génération de rapports.</p>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">3.3. Intégration de l'Intelligence Artificielle</h5>
+<p>L'IA vise à optimiser l'expérience et l'efficacité :</p>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li><strong>Filtres intelligents :</strong> Recherche en langage naturel.</li>
+<li><strong>Chatbot :</strong> FAQ intuitive et gestion de requêtes simples.</li>
+<li><strong>Prédiction automatique :</strong> Suggestion de durée de RDV et affectation de contrôleur.</li>
+</ul>
+<h4 style="margin-top: 25px;">4. Méthodologie et Planning du Projet</h4>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">4.1. Phases du Projet (BUILD)</h5>
+<p>Le projet de construction (BUILD) est découpé en cinq phases :</p>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li><strong>1. Préparatoire (3 sem, 8 220 €) :</strong> Ateliers de cadrage, validation stack. Livrables : Backlog détaillé, doc architecture.</li>
+<li><strong>2. Conception (12 sem, 36 905 €) :</strong> Spécifications, UX/UI, plan de migration. Livrables : Spécifications, maquettes Figma.</li>
+<li><strong>3. Construction (9 mois, 139 574 €) :</strong> Développement en 15 sprints, tests continus. Livrables : Fonctionnalités testées.</li>
+<li><strong>4. Formation (3 mois, 69 870 €) :</strong> Création de contenus, formation des 5 000 utilisateurs. Livrables : Modules de formation, plan de réversibilité.</li>
+<li><strong>5. Pilotage (11 mois, 28 987 €) :</strong> Gouvernance opérationnelle (sprint reviews) et stratégique (COPILs). Livrables : Rapports de suivi.</li>
+</ul>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">4.2. Calendrier Prévisionnel</h5>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li><strong>Kick-off :</strong> 14 Janvier</li>
+<li><strong>Conception :</strong> Janvier - Avril</li>
+<li><strong>Développements :</strong> 16 Février - Mi-septembre 2026</li>
+<li><strong>Formation :</strong> Septembre - Mi-décembre</li>
+<li><strong>Fenêtre Go-live :</strong> Après mi-septembre</li>
+</ul>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">4.3. Équipe Projet</h5>
+<p>L'équipe inclut un Sponsor Team (CEO, DGA), une Core Team (CTO, Directeur Production) et un Leadership Production (Directrice de projet, Tech Lead).</p>
+<h4 style="margin-top: 25px;">5. Engagements de Service (RUN) et Support</h4>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">5.1. Niveaux de Service (SLA) et Maintenance</h5>
+<p>Les engagements sur les incidents sont :</p>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li><strong>CRITIQUE (Indisponibilité totale) :</strong> GTI 1h, GTR 4h.</li>
+<li><strong>MAJEUR (Dysfonctionnement clé) :</strong> GTI 4h, GTR 24h.</li>
+<li><strong>MINEUR (Anomalie non bloquante) :</strong> GTI 8h, GTR 72h.</li>
+</ul>
+<p>L'engagement de disponibilité est de moins de 2h d'indisponibilité par an (max 2 incidents critiques/an). La maintenance inclut surveillance 24/7, mises à jour de sécurité et tests de performance.</p>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">5.2. Astreinte, Pénalités et Pilotage</h5>
+<p>Une astreinte N1 24/7/365 et N2/N3 (GTI &lt; 1h pour critiques) est en place. Le support fonctionnel est disponible du lun-sam (7h-20h). Les pénalités sont indexées sur la perte de CA estimée (plafond de 1% à 5% du contrat). Des comités de pilotage semestriels assurent le suivi des SLA et du PCA.</p>
+<h4 style="margin-top: 25px;">6. Aspects Techniques Spécifiques</h4>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">6.1. Architecture, Haute Disponibilité et Scalabilité</h5>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li><strong>Stack Technique :</strong> Backend Python/Django, Frontend Svelte, BDD PostgreSQL 18.</li>
+<li><strong>Performance :</strong> Supporte 70 utilisateurs actifs, 2300 connexions totales, et jusqu'à 2000 RPS.</li>
+<li><strong>Haute Disponibilité :</strong> Option 1 (Recommandée) : AWS Multi-AZ (triple redondance), SLA 99,99%. Option 2 : Single-AZ, SLA 99,95%.</li>
+</ul>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">6.2. Sécurité et Conformité RGPD</h5>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li><strong>Sécurité :</strong> Standards OWASP, audits internes/externes, certifications ISO 9001, ISO 27001, ANSSII.</li>
+<li><strong>RGPD :</strong> Conformité à 3 niveaux (Stockage chiffré, Documentation DPO, Consentement cookies).</li>
+</ul>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">6.3. Migration des Données et Mode Hors-Ligne</h5>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li><strong>Migration "Zéro Downtime" :</strong> Stratégie en 4 étapes (Cartographie AdelSoft, Snapshot initial, Synchro continue, Validation).</li>
+<li><strong>Mode Hors-Ligne :</strong> Continuité de service pour consultation/création/modification de RDV. Stockage en file d'attente locale (navigateur) et synchronisation auto au retour du réseau avec résolution de conflits.</li>
+</ul>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">6.4. Réversibilité</h5>
+<p>Un plan complet garantit l'autonomie de SGS en fin de contrat (Documentation, transfert de connaissances, mise à disposition des actifs, tests, gestion RGPD).</p>
+<h4 style="margin-top: 25px;">7. Budget et Tarification</h4>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">7.1. Budget de la Phase de Construction (BUILD) - Total : 346 075 € HT</h5>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li>Phase préparatoire (9 j/h) : 8 220 €</li>
+<li>Phase pilotage (35 j/h) : 28 987 €</li>
+<li>Phase conception (44 j/h) : 36 905 €</li>
+<li>Phase construction (165 j/h) : 139 574 €</li>
+<li>Phase formation (77 j/h) : 69 870 €</li>
+<li>Buffer projet &amp; Enveloppe IA (72 j/h) : 62 520 €</li>
+</ul>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">7.2. Budget de la Phase d'Exploitation (RUN) - Total Annuel : 274 190 € HT</h5>
+<p>Facturation mensuelle lissée à 22 849 €/mois.</p>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li>Hébergement (Option 99,99% SLA) : 74 620 €</li>
+<li>Maintenance applicative &amp; corrective (67 j/h) : 58 480 €</li>
+<li>Maintenance annuelle des interfaces (67 j/h) : 58 480 €</li>
+<li>Support annuel équipe IT SGS (22 j/h) : 19 910 €</li>
+<li>COPIL semestriel (16 j/h) : 14 700 €</li>
+<li>Astreinte 24/7/365 : 48 000 €</li>
+</ul>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">7.3. Alternatives Budgétaires</h5>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li><strong>Hébergement :</strong> Alternative "cost-efficiente" (SLA 99,95%) à 40 300 € HT/an.</li>
+<li><strong>Fonctionnalités IA :</strong> Enveloppe optionnelle de 47 230 € HT dans le BUILD.</li>
+</ul>
+<h4 style="margin-top: 25px;">8. Références Clients et Politique RSE</h4>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">8.1. Références Pertinentes</h5>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li><strong>Toyota Financial Services :</strong> Simulateur de financement (Intégration API, Salesforce).</li>
+<li><strong>Kinto :</strong> Portail B2B de gestion de flotte (Intégration backend, automatisation).</li>
+<li><strong>Cartier :</strong> Solution digitale pour le SAV (RPA, intégration ERP, Adyen, CRM).</li>
+<li><strong>Chanel :</strong> Outil unifié de gestion des réservations (Front-end personnalisé, API Waitwhile, SAP S4H).</li>
+</ul>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">8.2. Politique RSE</h5>
+<p>Engagement basé sur la durabilité, les équilibres humains et la contribution territoriale. Validé par :</p>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li><strong>Ecovadis :</strong> Scores 66/100 et 71/100.</li>
+<li><strong>Index Égalité Femme/Homme.</strong></li>
+<li><strong>Certification Happy@Work.</strong></li>
+</ul>
+</div><textarea class="ao-textarea" placeholder="Saisissez vos notes..."></textarea>
 </div>
 <div class="vendor-content hidden" id="vendor-nexius">
 <h3>
@@ -1977,7 +2414,170 @@
 <label style="display: block; margin-bottom: 5px; font-weight: 500;">
          Notes :
         </label>
-<textarea class="ao-textarea" placeholder="Saisissez vos notes..."></textarea>
+<div class="faq-container"><h4>Foire Aux Questions (FAQ)</h4><p class="faq-intro-text">Absolument. Voici une Foire Aux Questions (FAQ) de 20 questions-réponses pertinentes, basées sur les documents de l'Appel d'Offres (AO) pour la solution GENILINK - PTI Calendar.</p><dl class="faq-list-dl"><dt>1. Quel est l'objectif stratégique principal de la refonte du système d'agenda GENILINK ?</dt><dd>L'objectif est de remplacer l'outil d’agenda centralisé actuel, qui repose sur une architecture obsolète (Zend Framework 1.12, AngularJS, MariaDB) et présente une dette technique significative, par une solution moderne, évolutive et pérenne. Cette refonte vise également à améliorer l'expérience utilisateur et la valeur métier générée.</dd><dt>2. Quels sont les principaux utilisateurs (typologies) que la nouvelle solution Agenda doit couvrir ?</dt><dd>La nouvelle solution doit couvrir quatre typologies d’utilisateurs : les Contrôleurs et Responsables de centres (pour la gestion quotidienne des RDV et plannings), les Clients Particuliers (pour la prise de RDV en ligne sans création de compte), les Clients Professionnels (avec une interface dédiée pour la gestion multi-véhicules), et les Call Centers (avec un outil rapide de planification).</dd><dt>3. Quel volume de rendez-vous annuel la nouvelle architecture doit-elle pouvoir supporter ?</dt><dd>La solution doit avoir la capacité de montée en charge nécessaire pour supporter plus de 7 millions de rendez-vous par an.</dd><dt>4. Quelles sont les principales exigences de SGS en matière de sécurité et de conformité ?</dt><dd>SGS exige une conformité totale au RGPD et aux exigences de protection des données du groupe. Cela inclut la mise en œuvre d'une sécurité multicouche, l'authentification forte (SSO / OAuth2), le chiffrement des flux, la journalisation et la surveillance proactive.</dd><dt>5. Quelles contraintes d'hébergement sont imposées pour le projet ?</dt><dd>Les solutions d’hébergement et d’exploitation doivent être localisées dans l’Union Européenne, en privilégiant les datacenters certifiés ISO 14001 / 27001. L'hébergement proposé est sur des infrastructures cloud souveraines (OVHcloud, Scaleway).</dd><dt>6. Sur quelle architecture logicielle la solution proposée par NEXIUS / ADDINN est-elle basée ?</dt><dd>La solution repose sur une architecture microservices conteneurisée (Kubernetes / Docker), utilisant une stack technique moderne comprenant Node.js / NestJS, React / Next.js, PostgreSQL et Redis.</dd><dt>7. Comment l'Intelligence Artificielle (IA) sera-t-elle intégrée au système d'agenda ?</dt><dd>L'IA sera intégrée via un micro-service Python (ML/LLM) pour introduire des fonctions assistées telles que l’optimisation automatique des plannings, la suggestion dynamique de créneaux, l’affectation intelligente des contrôleurs, et potentiellement un chatbot IA pour la prise de rendez-vous assistée.</dd><dt>8. Comment la continuité de service est-elle garantie pour les centres en cas de coupure réseau ?</dt><dd>La solution prévoit un mode offline (hors ligne) permettant la continuité de service. La lecture et la saisie des RDV locaux sont possibles, avec un stockage temporaire des données via IndexedDB, et une synchronisation automatique dès que la connexion est rétablie (PWA offline).</dd><dt>9. Quels sont les principaux systèmes tiers avec lesquels la nouvelle solution Agenda doit s'interfacer ?</dt><dd>La plateforme doit s'interfacer avec l'outil métier AdelSoft, le référentiel des centres SIR, les passerelles de paiement Payzen / Lemonway, les services de messagerie Brevo Mail et SMS Mode, et l'outil d’assistance Pilote.</dd><dt>10. Quel est le rôle du module d'Administration et Supervision ?</dt><dd>Ce module permet l'interface d'administration centralisée pour la gestion des utilisateurs, des rôles et habilitations (multi-niveau : réseau, centre, utilisateur), des paramètres généraux (horaires, promotions, jours fériés), et fournit un tableau de bord d’activité des centres (taux de remplissage, nombre de RDV, performance).</dd><dt>11. Quel outil est utilisé pour la gestion des accès et de l'identité des utilisateurs ?</dt><dd>La gestion centralisée et sécurisée des identités et accès se fera via Keycloak (OAuth2/OpenID Connect), qui est SSO-ready pour 2026.</dd><dt>12. Quelle méthodologie de gestion de projet est proposée par NEXIUS / ADDINN Group ?</dt><dd>Le projet sera piloté selon une approche Agile / Scrum, garantissant une forte implication du client tout au long du cycle de vie. Les travaux sont divisés en sprints de 2 semaines.</dd><dt>13. Combien de phases le plan de mise en œuvre du projet (Lot 2 : Développement Spécifique) comporte-t-il ?</dt><dd>Le plan de mise en œuvre (Build et Run) est structuré autour de quatre grandes phases : Phase 1 – Cadrage et conception (2 mois), Phase 2 – Développement, intégrations et tests (6 à 8 mois), Phase 3 – Déploiement pilote et validation (2 mois), et Phase 4 – Déploiement national et maintenance (Run) (1+12 mois).</dd><dt>14. Que prévoit la démarche « Secure by Design » pendant la phase de recette ?</dt><dd>En phase de recette, l'approche « Secure by Design » inclut l'élaboration et l'exécution de tests de pénétration (Pentest) réalisés par des experts en sécurité pour identifier les vulnérabilités exploitables.</dd><dt>15. Quelle est la durée totale estimée pour l'ensemble du projet (Build + Run initial) ?</dt><dd>La durée totale estimée du projet (Build + Run) est d'environ 26 mois, comprenant 12 à 14 mois de Build (conception et développement) et 12 mois de maintenance (TMA).</dd><dt>16. Quels sont les livrables associés au jalon M2 (Mois 2) du projet ?</dt><dd>Le jalon M2 correspond à la Validation des spécifications et prototypes. Les livrables associés sont le Dossier d’architecture technique, les maquettes UX/UI validées et les spécifications fonctionnelles détaillées (SFD).</dd><dt>17. Quelle est l'expertise spécifique du consortium NEXIUS / ADDINN dans les projets similaires ?</dt><dd>Le consortium dispose d'une expertise reconnue dans le développement de plateformes métiers sur mesure à forte volumétrie (plusieurs millions de transactions/an), y compris des plateformes nationales et interinstitutionnelles. Ils ont également une expérience solide en interopérabilité de systèmes hétérogènes et en Intelligence Artificielle appliquée.</dd><dt>18. Quel est le coût total estimé (HT) pour l'ensemble du projet (Lot 2) ?</dt><dd>Le coût total estimé pour la conception, le développement, la mise en service et la maintenance (12 mois de Run) de la solution est de 693 000 € HT.</dd><dt>19. Comment le coût total se répartit-il par grandes catégories de travail ?</dt><dd>La majorité du budget est allouée au Développement &amp; Intégrations (54% du total, soit 376 200 € HT). La Conception &amp; Architecture représente 13% (89 100 € HT), et la Maintenance &amp; TMA (12 mois) représente 18% (118 800 € HT).</dd><dt>20. Quels types de coûts ne sont pas inclus dans l'offre financière ?</dt><dd>Les coûts d’exploitation récurrents liés à la consommation de ressources cloud (CPU, RAM, stockage) après la mise en service (phase Run) ne sont pas inclus et restent à la charge de SGS France. De plus, les éventuels coûts facturés par les prestataires tiers (Payzen, Lemonway, Brevo, SMS Mode) et les licences éditeurs non open-source (comme Power BI Pro) sont exclus.</dd></dl></div><div class="report-container" style="line-height: 1.6; text-align: left; padding-top: 15px;">
+<h4>Document d'Information : Proposition de Refonte de la Solution Agenda GENILINK pour SGS France</h4>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">Synthèse Exécutive</h5>
+<p>Ce document synthétise la proposition technique et financière soumise par le consortium NEXIUS IT / ADDINN Group pour la refonte complète de la solution de gestion de rendez-vous "GENILINK - PTI Calendar" de SGS France. Le projet vise à remplacer une application existante, devenue obsolète et grevée d'une dette technique importante, par une plateforme moderne, performante et sécurisée.</p>
+<p>La nouvelle solution, conçue sur une architecture microservices (Node.js, React, Kubernetes), a pour objectif de gérer plus de 7 millions de rendez-vous annuels pour près de 2 000 centres de contrôle technique. Elle intégrera des fonctionnalités avancées, notamment un moteur d'intelligence artificielle pour l'optimisation des plannings, un mode de fonctionnement hors-ligne pour assurer la continuité de service, et des interfaces unifiées et ergonomiques pour quatre profils d'utilisateurs distincts (contrôleurs, clients particuliers, clients professionnels, centres d'appels).</p>
+<p>La mise en œuvre du projet s'articulera autour d'une méthodologie Agile Scrum, découpée en quatre phases principales (cadrage, développement, pilote, déploiement national) pour une durée totale de "Build" estimée entre 12 et 14 mois. Une période de maintenance et de support (TMA) de 12 mois suivra la mise en production. Le coût total du projet est chiffré à <strong>693 000 € HT</strong>, basé sur une charge de travail estimée à 1 400 jours-homme.</p>
+<p>La proposition souligne l'expertise du consortium dans la livraison de plateformes sur mesure à forte volumétrie, l'intégration de systèmes complexes et la conformité aux exigences de sécurité et de protection des données (RGPD).</p>
+<h4 style="margin-top: 25px;">1. Contexte et Objectifs Stratégiques du Projet</h4>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">1.1. Contexte Actuel et Enjeux</h5>
+<p>Le projet s'inscrit dans la stratégie de modernisation numérique de SGS France, qui opère les réseaux SÉCURITEST, AUTO SÉCURITÉ et Vérif’Auto. Le système d'agenda actuel, mis en place en 2016, gère la planification pour près de 2 000 centres et plus de 7 millions de rendez-vous annuels. Cependant, il repose sur une architecture technologique obsolète (Zend Framework 1.12, AngularJS, MariaDB), ce qui entraîne une dette technique significative affectant la performance, la maintenabilité et la sécurité. La refonte vise à surmonter ces limitations et à doter SGS d'une solution pérenne, évolutive et alignée sur les standards technologiques actuels.</p>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">1.2. Portée du Projet</h5>
+<p>La nouvelle plateforme doit répondre aux besoins de quatre typologies d'utilisateurs via des interfaces dédiées mais s'appuyant sur un backend commun et multi-tenant :</p>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li><strong>Contrôleurs et Responsables de centres :</strong> Gestion quotidienne des rendez-vous, des plannings et des ressources.</li>
+<li><strong>Clients Particuliers :</strong> Prise de rendez-vous en ligne simple, sans création de compte obligatoire.</li>
+<li><strong>Clients Professionnels :</strong> Interface pour la gestion de flottes multi-véhicules.</li>
+<li><strong>Centres d'Appels :</strong> Outil de planification rapide pour les opérateurs.</li>
+</ul>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">1.3. Objectifs Stratégiques</h5>
+<p>SGS France a défini cinq objectifs majeurs pour cette refonte :</p>
+<ul style="padding-left: 20px; margin-top: 10px; list-style-type: disc;">
+<li><strong>Modernisation et Performance:</strong> Concevoir une architecture logicielle robuste et performante, capable de supporter plus de 7 millions de RDV/an et d'optimiser la rapidité et la disponibilité.</li>
+<li><strong>Sécurité et Conformité:</strong> Assurer une conformité totale au RGPD, mettre en œuvre une sécurité multicouche (SSO, OAuth2, chiffrement) et garantir un SLA de 99,98% (RTO &lt; 1h, RPO &lt; 15 min).</li>
+<li><strong>Innovation et IA:</strong> Intégrer des fonctions d'IA pour l'optimisation des plannings, la suggestion de créneaux et la prise de rendez-vous assistée par chatbot.</li>
+<li><strong>Expérience Utilisateur Unifiée:</strong> Repenser les interfaces avec un Design System commun pour garantir cohérence, ergonomie et accessibilité, et déployer un mode hors-ligne pour la continuité de service.</li>
+<li><strong>Responsabilité Sociétale et Environnementale (RSE):</strong> Adopter une démarche d'éco-conception logicielle, choisir un hébergement européen certifié (ISO 14001/27001) et réduire l'empreinte carbone.</li>
+</ul>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">1.4. Contraintes Techniques et Volumétrie</h5>
+<p>La solution devra impérativement s'intégrer avec les systèmes existants de SGS (AdelSoft, SIR, Payzen/Lemonway, Brevo Mail, SMS Mode, Pilote) et gérer une volumétrie importante :</p>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li><strong>Rendez-vous :</strong> +7 millions par an.</li>
+<li><strong>Connexions :</strong> 10 000 à 15 000 connexions quotidiennes.</li>
+<li><strong>Comptes utilisateurs :</strong> 5 000 (2 500 responsables, 2 500 contrôleurs).</li>
+<li><strong>Disponibilité :</strong> Tolérance d'indisponibilité inférieure à 2 heures par an.</li>
+</ul>
+<h4 style="margin-top: 25px;">2. Présentation du Consortium Soumissionnaire : NEXIUS IT et ADDINN Group</h4>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">2.1. NEXIUS Group</h5>
+<ul style="padding-left: 20px; margin-top: 10px; list-style-type: disc;">
+<li><strong>Fondation :</strong> 2009.</li>
+<li><strong>Description :</strong> Groupe international de conseil spécialisé en transformation numérique et performance opérationnelle.</li>
+<li><strong>Chiffres clés (2024) :</strong> +250 collaborateurs, +28 M€ de chiffre d'affaires (objectif de 30 M€ pour 2025).</li>
+<li><strong>Structure :</strong> Composé de quatre entités (Nexius Finance, Nexius IT France, Nexius IT Maroc, Nexius Partners).</li>
+<li><strong>Présence internationale :</strong> Paris, Nantes, Lille, Bordeaux, Lyon, Casablanca, Amsterdam, Montréal, Dubaï.</li>
+<li><strong>Domaines d'expertise :</strong> Conseil en stratégie, finance, ingénierie IT (développement, cybersécurité, cloud, data) et management.</li>
+</ul>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">2.2. ADDINN Group</h5>
+<ul style="padding-left: 20px; margin-top: 10px; list-style-type: disc;">
+<li><strong>Fondation :</strong> 2012.</li>
+<li><strong>Description :</strong> Société multinationale de conseil spécialisée en transformation digitale, de la stratégie à la mise en œuvre opérationnelle.</li>
+<li><strong>Structure :</strong> Organisée autour d'une "Digital Factory" avec cinq laboratoires spécialisés (Software, Data, DevOps, Design, Quality).</li>
+<li><strong>Présence internationale :</strong> Siège à Paris et filiales en Tunisie (BNS Engineering, ADDINN Tunisie), en Mauritanie et au Congo-Brazzaville.</li>
+<li><strong>Domaines d'expertise :</strong> Conception de solutions digitales, analyse de données, DevOps, design UX/UI, et conseil métier.</li>
+</ul>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">2.3. Modèle du Consortium</h5>
+<p>Le consortium propose un modèle d'organisation mixte alliant :</p>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li><strong>Proximité client :</strong> Des collaborateurs se déplacent chez le client pour les phases de conseil et de cadrage.</li>
+<li><strong>Efficacité de la livraison :</strong> Une équipe en back-office (Digital Factory) assure le développement.</li>
+</ul>
+<p>Ce modèle vise à offrir une expérience "de bout en bout" (end-to-end), depuis la conception jusqu'à la maintenance, tout en optimisant le rapport coût-délai-budget.</p>
+<h4 style="margin-top: 25px;">3. La Solution Proposée : Refonte de l'Agenda GENILINK</h4>
+<p>La solution est conçue comme une plateforme modulaire, évolutive et sécurisée, découpée en plusieurs modules fonctionnels interdépendants.</p>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">3.1. Découpage Modulaire de la Solution</h5>
+<ul style="padding-left: 20px; margin-top: 10px; list-style-type: disc;">
+<li><strong>1. Administration &amp; Supervision:</strong> Gestion centralisée des utilisateurs, rôles, centres, horaires et paramètres métier. Tableau de bord de supervision.</li>
+<li><strong>2. Authentification &amp; Sécurité:</strong> Authentification unifiée via OAuth2 / OpenID Connect, compatible SSO SGS 2026, MFA, cloisonnement des données.</li>
+<li><strong>3. Interfaçage &amp; API Gateway:</strong> API REST sécurisées pour l'intégration avec les systèmes tiers (AdelSoft, SIR, Payzen, Brevo, etc.).</li>
+<li><strong>4. Gestion des Plannings &amp; RDV:</strong> Planning en temps réel, création/modification/annulation de RDV, gestion des surbookings, affectation par IA.</li>
+<li><strong>5. Espace Client Particulier:</strong> Interface publique responsive pour la prise de RDV sans compte, recherche par plaque et paiement en ligne.</li>
+<li><strong>6. Espace Client Professionnel:</strong> Interface sécurisée pour les clients B2B (flottes) avec suivi des RDV, facturation et exports.</li>
+<li><strong>7. Espace Call Center:</strong> Interface optimisée pour les opérateurs avec consultation des disponibilités en temps réel et recherche rapide.</li>
+<li><strong>8. IA &amp; Automatisation:</strong> Moteur d'assistance pour la suggestion de créneaux optimisés, l'affectation intelligente et l'analyse prédictive.</li>
+<li><strong>9. Gestion Offline:</strong> Fonctionnement continu sans connexion réseau avec stockage local (IndexedDB) et synchronisation automatique.</li>
+<li><strong>10. Reporting &amp; Pilotage:</strong> Tableaux de bord analytiques (volumétrie, taux d'occupation) avec exports (Excel, PDF, Power BI).</li>
+<li><strong>11. Notifications &amp; Communication:</strong> Génération automatique de notifications (e-mail, SMS, push) via des modèles personnalisables.</li>
+</ul>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">3.2. Architecture et Stack Technologique</h5>
+<p>La solution repose sur des principes architecturaux modernes pour garantir la robustesse, la scalabilité et la sécurité.</p>
+<p><strong>Principes d'Architecture :</strong></p>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li><strong>Microservices :</strong> Application découpée en services indépendants et conteneurisés (Docker/Kubernetes) pour plus d'agilité et de résilience.</li>
+<li><strong>Clean Architecture :</strong> Organisation du code en couches distinctes (Présentation, Application, Infrastructure, Domaine) pour améliorer la maintenabilité et la testabilité.</li>
+<li><strong>Secure by Design :</strong> Intégration de la sécurité à chaque étape du cycle de vie du projet, incluant des analyses de code (SAST), des tests dynamiques (DAST) et des tests d'intrusion (Pentest).</li>
+</ul>
+<p><strong>Stack Technologique Principale ("Bill of Materials") :</strong></p>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li><strong>Frontend :</strong> React / Next.js, TypeScript, PWA.</li>
+<li><strong>Backend :</strong> Node.js / NestJS.</li>
+<li><strong>Base de données :</strong> PostgreSQL (données), Redis (cache), Elasticsearch (recherche).</li>
+<li><strong>Authentification :</strong> Keycloak (OAuth2 / OpenID Connect).</li>
+<li><strong>Orchestration :</strong> Kubernetes, Docker.</li>
+<li><strong>API Gateway :</strong> Kong / KrakenD.</li>
+<li><strong>IA &amp; Automatisation :</strong> Python / FastAPI.</li>
+<li><strong>Observabilité &amp; Monitoring :</strong> Stack ELK, Prometheus, Grafana.</li>
+<li><strong>CI/CD :</strong> GitLab.</li>
+<li><strong>Hébergement :</strong> Cloud souverain européen (OVHcloud / Scaleway).</li>
+</ul>
+<h4 style="margin-top: 25px;">4. Méthodologie et Plan de Mise en Œuvre</h4>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">4.1. Approche Méthodologique</h5>
+<p>Le projet sera géré selon la méthodologie <strong>Agile Scrum</strong>, caractérisée par :</p>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li><strong>Sprints :</strong> Cycles de développement de 2 semaines.</li>
+<li><strong>Cérémonies :</strong> Rétrospectives de fin de sprint, démonstrations des livrables (DRP) et planification du backlog.</li>
+<li><strong>Outils :</strong> JIRA pour le suivi des tâches et Testrail pour la gestion des cas de test.</li>
+</ul>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">4.2. Plan de Mise en Œuvre et Jalons</h5>
+<p>Le projet est structuré en quatre phases principales, pour une durée de "Build" de 12 à 14 mois, suivie de 12 mois de maintenance. Durée totale du projet (Build + Run) : Environ 26 mois.</p>
+<ul style="padding-left: 20px; margin-top: 10px; list-style-type: disc;">
+<li><strong>1. Cadrage et Conception (2 mois):</strong> Affiner les besoins, définir l'architecture, prototyper l'UX/UI. Livrables: Spécifications fonctionnelles, maquettes, dossier d'architecture.</li>
+<li><strong>2. Développement &amp; Intégrations (6 à 8 mois):</strong> Développer la plateforme, intégrer les systèmes tiers, réaliser les tests. Livrables: MVP fonctionnel, rapports de tests, documentation technique.</li>
+<li><strong>3. Déploiement Pilote &amp; Validation (2 mois):</strong> Déployer sur 100 centres pilotes, recueillir les retours, stabiliser. Livrables: Rapport de pilote, version "Release Candidate", VSR.</li>
+<li><strong>4. Déploiement National &amp; TMA (1 mois + 12 mois):</strong> Généraliser aux 2 000 centres, former les utilisateurs, assurer le support (SLA 99,98%). Livrables: Mise en production, rapports SLA, documentation utilisateur.</li>
+</ul>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">4.3. Gouvernance du Projet</h5>
+<p>Une gouvernance mixte (NEXIUS/ADDINN et SGS/GENILINK) sera établie avec plusieurs instances de pilotage :</p>
+<ul style="padding-left: 20px; margin-top: 10px; list-style-type: disc;">
+<li><strong>Comité de projet (Hebdomadaire):</strong> Suivi de l'avancement, arbitrage des questions fonctionnelles.</li>
+<li><strong>Comité de pilotage (Mensuelle):</strong> Revue générale, validation des jalons, arbitrages majeurs.</li>
+<li><strong>DRP (Cérémonie agile) (À la fin de chaque sprint):</strong> Présentation du travail accompli et démonstration de la plateforme.</li>
+</ul>
+<h4 style="margin-top: 25px;">5. Proposition Financière</h4>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">5.1. Coût Total et Bases du Chiffrage</h5>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li><strong>Coût total du projet :</strong> 693 000 € HT.</li>
+<li><strong>Charge de travail estimée :</strong> 1 400 jours-homme.</li>
+<li><strong>TJM moyen (équipe mixte) :</strong> 450 €.</li>
+<li><strong>Composition de l'équipe :</strong> 1 Chef de projet/Architecte, 2 développeurs back-end, 2 développeurs front-end, 1 DevOps, 1 UX/UI Designer, 1 QA, 1 Data/IA Engineer.</li>
+<li><strong>Exclusions :</strong> Les coûts des licences tierces (Payzen, Brevo, etc.) et les coûts récurrents d'hébergement en phase de "Run" sont à la charge de SGS France.</li>
+</ul>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">5.2. Ventilation des Coûts (Par Phase de Projet)</h5>
+<ul style="padding-left: 20px; margin-top: 10px; list-style-type: disc;">
+<li><strong>Cadrage &amp; Conception:</strong> 180 JH / 89 100 €</li>
+<li><strong>Développement &amp; Intégrations:</strong> 760 JH / 376 200 €</li>
+<li><strong>Tests &amp; Validation Pilote:</strong> 130 JH / 64 350 €</li>
+<li><strong>Déploiement &amp; VSR:</strong> 90 JH / 44 550 €</li>
+<li><strong>Maintenance &amp; TMA (12 mois):</strong> 240 JH / 118 800 €</li>
+<li><strong>Total:</strong> 1 400 JH / 693 000 €</li>
+</ul>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">5.3. Échéancier de Paiement</h5>
+<p>Les paiements sont jalonnés en fonction de l'avancement du projet :</p>
+<ul style="padding-left: 20px; margin-top: 10px; list-style-type: disc;">
+<li><strong>Démarrage du projet (15%):</strong> 103 950 € (Mois 1)</li>
+<li><strong>Fin de la phase de Cadrage (15%):</strong> 103 950 € (Mois 2)</li>
+<li><strong>Livraison MVP (Back &amp; Front) (20%):</strong> 138 600 € (Mois 6)</li>
+<li><strong>Livraison Modules Clients (15%):</strong> 103 950 € (Mois 10)</li>
+<li><strong>Validation pilote (VSR partielle) (10%):</strong> 69 300 € (Mois 12)</li>
+<li><strong>Déploiement général (VSR) (10%):</strong> 69 300 € (Mois 14)</li>
+<li><strong>Maintenance &amp; TMA (12 mois) (15%):</strong> 103 950 € (Mois 17 à 26)</li>
+</ul>
+<p>L'offre financière est valide pour une durée de 120 jours à compter de sa soumission, soit jusqu'au 9 janvier 2026.</p>
+<h4 style="margin-top: 25px;">6. Équipe Proposée et Expertise Pertinente</h4>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">6.1. Personnel Clé</h5>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li><strong>Dhia HEDFI (Chef de Mission) :</strong> Co-fondateur et CEO d'ADDINN Group, +17 ans d'expérience.</li>
+<li><strong>Nivine ATTOUE (Analyste des données) :</strong> Docteure en informatique, +10 ans d'expérience en IA.</li>
+<li><strong>Ahmed BEN SALEM (Développeur de logiciels) :</strong> Développeur full-stack, 7 ans d'expérience (Angular, Node.js).</li>
+<li><strong>Jameleddine El Kamel (Spécialiste du commerce) :</strong> +30 ans d'expérience, expert en digitalisation.</li>
+<li><strong>Rym LAOUITI (Architecte Technico-Fonctionnel) :</strong> +15 ans d'expérience en modélisation.</li>
+<li><strong>Wissem GRASSI (Expert DevOps) :</strong> 6 ans d'expérience, spécialiste Kubernetes (CKA).</li>
+<li><strong>Ahmed CHABCHOUB (Expert Cybersécurité) :</strong> 19 ans d'expérience, expert en stratégies de sécurité.</li>
+</ul>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">6.2. Expérience et Références</h5>
+<p>Le consortium met en avant une expérience solide dans des projets similaires (transformation digitale, interopérabilité, analytique). Les références notables incluent des projets pour la Douane Tunisienne, la Fédération Tunisienne des Sociétés d'Assurances, et la Société Gabonaise de Transport.</p>
+</div><textarea class="ao-textarea" placeholder="Saisissez vos notes..."></textarea>
 </div>
 <div class="vendor-content hidden" id="vendor-simplybook">
 <h3>
@@ -1986,10 +2586,539 @@
 <a class="button add-button" href="https://sgs.sharepoint.com/sites/fr-it-insideit/serviceachats/Management%20des%20Achats/Forms/AllItems.aspx?id=%2Fsites%2Ffr%2Dit%2Dinsideit%2Fserviceachats%2FManagement%20des%20Achats%2FDocuments%20Administratifs%2FDocument%20RFP%20%5F%20IT%20SEC%20%5F%20RGPD%2FConsultations%2F2025%2FRFP%20%2D%20REFONTE%20AGENDA%20%2D%20WD%2017324%2FREPONSES%20RFP%2FSIMPLYBOOKME&amp;viewid=0d16130d%2Dc55c%2D4cb1%2D8da5%2D7e1f92f220e3&amp;CT=1751361905083&amp;OR=OWA%2DNT%2DMail&amp;CID=cd4c72fa%2D764b%2D052e%2Dac9a%2D8ad11d8aadda&amp;e=5%3Adb70ddaf8f4049279fa75a90ef3d7f42&amp;sharingv2=true&amp;fromShare=true&amp;at=9&amp;FolderCTID=0x0120008FEABFED2651E84D82FB0CFF22DD7750" style="margin-bottom: 15px;" target="_blank">
          Ouvrir le dossier SharePoint ↗
         </a>
-<label style="display: block; margin-bottom: 5px; font-weight: 500;">
-         Notes :
-        </label>
-<textarea class="ao-textarea" placeholder="Saisissez vos notes..."></textarea>
+<div class="faq-container"><h4>Foire Aux Questions (FAQ)</h4><p class="faq-intro-text">Ce document de FAQ (Foire Aux Questions) synthétise rapidement les informations clés contenues dans l'ensemble des sources fournies.</p><dl class="faq-list-dl"><dt>1. Quelle certification SimplyBook.me Ltd détient-elle pour son Système de Management de la Sécurité de l'Information (SMSI)?</dt><dd>SimplyBook.me Ltd a établi et mis en œuvre un SMSI conforme à la norme internationale ISO/IEC 27001:2022. Ce SMSI a été certifié par NQA.</dd><dt>2. Quel est le niveau de sécurité attribué à l'application SBPay.me suite au test d'intrusion (PenTest) effectué par UnderDefense?</dt><dd>L'évaluation de la posture de sécurité pour le test d'intrusion de l'application Web SBPay.me a reçu la note A (Excellent). Ce niveau signifie que la sécurité dépasse les normes de « Meilleure Pratique de l'Industrie ».</dd><dt>3. Quels types de tests d'intrusion ont été effectués sur l'application SimplyBook.me principale en 2024?</dt><dd>UnderDefense a réalisé des tests d'intrusion en boîte grise couvrant le périmètre externe, l'application Web, et l'application Mobile de SimplyBook.me. Les applications Web et Mobile ont toutes deux obtenu la note « Excellent » (A).</dd><dt>4. Où sont hébergées les données de SimplyBook.me et où sont stockées les sauvegardes?</dt><dd>Les données sont hébergées dans des centres de données certifiés ISO:27001 situés en France, au Canada et à Singapour. Les sauvegardes sont stockées dans un centre de données en France.</dd><dt>5. Quelles sont les méthodes de chiffrement utilisées pour les données en transit et au repos?</dt><dd>Pour les données en transit, les communications externes sont chiffrées via des canaux sécurisés avec des protocoles standard (jusqu'à TLS 1.3 avec chiffrement AES-128 / AES-256). Pour les données au repos, seul SOAP et l'historique médical sensible sont chiffrés (RSA-4096) via une fonctionnalité personnalisée, sauf pour les comptes Enterprise stockés sur Google Cloud où le chiffrement par défaut est utilisé.</dd><dt>6. Quelles mesures SimplyBook.me a-t-elle mises en place pour aider à la conformité HIPAA?</dt><dd>SimplyBook.me, agissant en tant qu'Associé Commercial (Business Associate), a mis en œuvre des contrôles de sécurité internes (Personnel, Techniques, Incidents) et offre des fonctionnalités logicielles comme le HIPAA custom feature et Google Authenticator pour protéger les Informations de Santé Protégées (PHI). Un Business Associate Agreement (BAA) est disponible.</dd><dt>7. Combien de temps les données personnelles sont-elles conservées après qu'un Utilisateur ait cessé d'utiliser le système?</dt><dd>Si un Utilisateur décide d'arrêter d'utiliser le système, ses données personnelles seront supprimées dans les 30 jours. Cependant, les copies de sauvegarde peuvent être conservées pour un maximum de 90 jours à des fins d'intégrité et de récupération du système.</dd><dt>8. Quelles sont les catégories de personnes concernées (Data Subjects) dont SimplyBook.me est susceptible de traiter les données?</dt><dd>Les données personnelles sont traitées pour trois catégories principales : les Utilisateurs du Système, les Clients des Utilisateurs, et les Autres (comme les employés, partenaires et fournisseurs).</dd><dt>9. Quels sont les objectifs RPO et RTO (Recovery Point/Time Objective) pour les services SimplyBook.me?</dt><dd>Les objectifs RPO/RTO déclarés sont de 24h/48h. Le système garantit une disponibilité minimale de 99,95%.</dd><dt>10. Quelles sont les trois étapes de la récupération des opérations commerciales définies dans le Plan de Continuité d'Activité et de Reprise après Sinistre (BCRP)?</dt><dd>Les étapes sont : Réponse Rapide (≤ 4 heures), Récupération des opérations commerciales d'urgence (≤ 48 heures), et Récupération des opérations commerciales normales (3 à 14 jours).</dd><dt>11. Quels sont les principaux flux de données impliquant un Utilisateur SimplyBook.me?</dt><dd>Les flux incluent la Collecte de Données, le Traitement des Données, l'Interface Admin, le Traitement par SimplyBook.me Ltd et ses Sous-traitants, les Communications (emails/textes), les Transactions (SBPay), le Stockage des Données, et les interactions avec les Clients via le Widget de Réservation ou les Formulaires d'Accès Public.</dd><dt>12. Quels mécanismes de contrôle d'accès sont disponibles pour renforcer la sécurité de connexion pour les utilisateurs du système?</dt><dd>Les fonctionnalités de contrôle d'accès pour les utilisateurs incluent le Verrouillage Automatique du Compte, la Déconnexion Automatique de Session (via la fonction HIPAA), et la possibilité d'activer l'Authentification Multi-Facteurs (MFA) via le Google Authenticator ou le HIPAA custom feature.</dd><dt>13. Quel est l'ordre de priorité des documents en cas de conflit au sein du Master Services Agreement (MSA)?</dt><dd>L'ordre de précédence (du plus élevé au plus bas) est : (1) Conditions Standard, (2) Formulaire de Commande (s'il est émis), (3) Annexes, (4) Business Associate Agreement, (5) Data Processing Agreement, (6) tout autre accord référencé.</dd><dt>14. Quel est le niveau de disponibilité du système (System Availability Level) garanti par le Service Level Agreement (SLA)?</dt><dd>SimplyBook.me garantit une disponibilité (uptime) du système supérieure ou égale à 99,99% par mois civil.</dd><dt>15. Comment le support est-il structuré pour les clients Enterprise?</dt><dd>Les Services comprennent un Chargé de Compte dédié (Account Manager), le Chat en direct disponible 24h/24, du lundi au vendredi via le site Web, et le support par Email disponible 24h/24 en semaine avec une réponse garantie sous quatre (4) heures ouvrables.</dd><dt>16. Quelles sont les limites d'utilisation de l'API imposées dans le cadre de l'Annexe 1 (Utilisation Acceptable du Logiciel) du MSA?</dt><dd>Les appels API sont limités à un maximum de 25 000 appels par période de 24 heures. Le débit de réservation est limité à 50 réservations par 30 secondes.</dd><dt>17. Quelle est la mission et la vision du groupe team.blue, auquel appartient SimplyBook.me Ltd?</dt><dd>La Mission de team.blue est d'unir les compétences technologiques, la diversité des idées et l'expertise locale pour offrir un avantage concurrentiel via des produits et services en ligne. La Vision est de rendre les affaires en ligne plus simples.</dd><dt>18. Quels sont les principaux thèmes matériels identifiés par team.blue dans son évaluation de double matérialité ESG?</dt><dd>Les 9 thèmes matériels prioritaires sont la Cybersécurité, la Confidentialité et sécurité des données, l'Énergie, l'Atténuation du changement climatique, l'Égalité des sexes, la Culture d'entreprise, la Diversité, l'Intelligence Artificielle (IA), et la Formation et Développement.</dd><dt>19. Quelles sont les caractéristiques principales de la Solution Enterprise SimplyBook.me, adaptées pour la gestion de milliers de centres (ex: SGS Auto)?</dt><dd>La Solution Enterprise propose une gestion multi-sites et multi-prestataires via un tableau de bord centralisé (cluster), une sécurité de niveau entreprise (RGPD, HIPAA, ISO 27001, serveur dédié), et des intégrations puissantes via une API conçue pour les développeurs.</dd><dt>20. Quel est le rôle de SimplyBook.me en cas de violation de données personnelles lorsqu'elle agit en tant que Sous-traitant (Data Processor)?</dt><dd>SimplyBook.me doit informer le ou les Responsables du Traitement des Données (Utilisateurs/Data Controllers) concernés par la violation « sans retard injustifié » et les assister dans leur obligation de notifier l'autorité de surveillance et/ou les Personnes Concernées, conformément au RGPD et au DPA.</dd></dl></div><div class="report-container" style="line-height: 1.6; text-align: left; padding-top: 15px;">
+<h4>
+          Résumé Exécutif
+         </h4>
+<p>
+          Ce document synthétise les pratiques de sécurité, l'offre de services et la gouvernance d'entreprise de SimplyBook.me, une filiale du groupe européen team.blue. L'analyse révèle une entreprise dotée d'une posture de sécurité robuste, validée par une certification ISO/IEC 27001:2022 et des tests de pénétration externes obtenant la note "Excellente" (Grade A). La société démontre un engagement ferme envers la conformité réglementaire, notamment le RGPD et la HIPAA, soutenu par un ensemble complet de politiques internes et de fonctionnalités logicielles dédiées.
+         </p>
+<p>
+          L'offre "Enterprise" est conçue pour les organisations multi-sites, offrant une gestion centralisée via un système de "cluster" tout en permettant une autonomie locale. Cette solution est hautement personnalisable et s'appuie sur une API avancée, facilitant l'intégration avec des systèmes tiers (CRM, ERP).
+         </p>
+<p>
+          Sur le plan technique, SimplyBook.me garantit une haute disponibilité (SLA de 99,99 %) grâce à une infrastructure hébergée dans des centres de données certifiés ISO 27001 en Europe, au Canada et à Singapour. Les procédures de sauvegarde et de reprise après sinistre sont rigoureusement définies, avec un RPO de 24 heures et un RTO de 48 heures.
+         </p>
+<p>
+          Intégrée au sein de team.blue, SimplyBook.me s'inscrit dans une stratégie de développement durable ambitieuse, avec des objectifs de réduction des émissions validés par l'initiative Science Based Targets (SBTi) et un engagement en faveur de la diversité et de la gouvernance éthique, en ligne avec les principes du Pacte Mondial des Nations Unies.
+         </p>
+<h4 style="margin-top: 25px;">
+          1. Sécurité, Conformité et Protection des Données
+         </h4>
+<p>
+          SimplyBook.me a mis en place un cadre de sécurité complet, fondé sur des normes internationales et des audits réguliers pour garantir la confidentialité, l'intégrité et la disponibilité des données.
+         </p>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">
+          1.1. Certification et Système de Gestion de la Sécurité de l'Information (SGSI)
+         </h5>
+<p>
+<strong>
+           Certification ISO/IEC 27001:2022 :
+          </strong>
+          Le Système de Gestion de la Sécurité de l'Information (SGSI) de SimplyBook.me est certifié par NQA, un organisme d'accréditation, conformément à la norme ISO/IEC 27001:2022. Cette certification atteste de l'établissement et de la mise en œuvre de contrôles de sécurité rigoureux.
+         </p>
+<p>
+<strong>
+           Politiques Internes :
+          </strong>
+          Le SGSI est soutenu par un ensemble exhaustif de politiques et de procédures internes, revues annuellement. Celles-ci couvrent des domaines critiques tels que :
+         </p>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li>
+           Gestion des risques et des changements
+          </li>
+<li>
+           Gestion des fournisseurs et des relations tierces
+          </li>
+<li>
+           Protection des données et de la vie privée
+          </li>
+<li>
+           Contrôle d'accès et gestion des mots de passe
+          </li>
+<li>
+           Sécurité physique et environnementale
+          </li>
+<li>
+           Gestion des incidents et plan de continuité d'activité
+          </li>
+<li>
+           Développement sécurisé et gestion des vulnérabilités
+          </li>
+<li>
+           Politiques d'utilisation acceptable et de télétravail
+          </li>
+</ul>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">
+          1.2. Tests de Pénétration (PenTests)
+         </h5>
+<p>
+          Des tests de pénétration sont réalisés annuellement par la société tierce UnderDefense LLC pour évaluer la sécurité des applications.
+         </p>
+<p>
+<strong>
+           SimplyBook.me (Application Web &amp; Mobile)
+          </strong>
+</p>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li>
+<strong>
+            Période du test :
+           </strong>
+           Du 9 au 22 août 2024, avec un test de remédiation le 3 octobre 2024.
+          </li>
+<li>
+<strong>
+            Périmètre :
+           </strong>
+           Test de pénétration en "grey-box" du périmètre externe, de l'application web et de l'application mobile.
+          </li>
+<li>
+<strong>
+            Méthodologie :
+           </strong>
+           Basée sur les normes PTES, OWASP Top 10, OWASP Web Security Testing Guide et OSSTMM.
+          </li>
+<li>
+<strong>
+            Résultats :
+           </strong>
+<ul style="padding-left: 20px; margin-top: 5px;">
+<li>
+             Toutes les vulnérabilités identifiées ont été corrigées, à l'exception de 3 problèmes de faible gravité et 1 problème informationnel dont les risques ont été acceptés.
+            </li>
+<li>
+             La posture de sécurité a été jugée "Excellente" (Grade A) pour les applications web et mobile.
+            </li>
+</ul>
+</li>
+</ul>
+<p style="margin-top: 10px;">
+<strong>
+           SBPay.me (Application de Paiement)
+          </strong>
+</p>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li>
+<strong>
+            Période du test :
+           </strong>
+           Du 30 août au 10 septembre 2024, avec un test de remédiation le 15 octobre 2024.
+          </li>
+<li>
+<strong>
+            Périmètre :
+           </strong>
+           Test de pénétration en "grey-box" de l'application web SBPay.me.
+          </li>
+<li>
+<strong>
+            Résultats :
+           </strong>
+<ul style="padding-left: 20px; margin-top: 5px;">
+<li>
+             Toutes les vulnérabilités identifiées ont été corrigées, à l'exception de 2 problèmes de gravité informationnelle dont les risques ont été acceptés.
+            </li>
+<li>
+             La posture de sécurité a été jugée "Excellente" (Grade A).
+            </li>
+</ul>
+</li>
+</ul>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">
+          1.3. Conformité au RGPD et Protection des Données Personnelles
+         </h5>
+<p>
+          SimplyBook.me a mis en place des mesures strictes pour se conformer au Règlement Général sur la Protection des Données (RGPD).
+         </p>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li>
+<strong>
+            Délégué à la Protection des Données (DPO) :
+           </strong>
+           Un DPO a été nommé et peut être contacté à dpo@simplybook.me.
+          </li>
+<li>
+<strong>
+            Catégories de Données Traitées :
+           </strong>
+           Les données traitées incluent des données d'identification, de contact, de communication, d'authentification, de transaction, professionnelles et comportementales. Le traitement de données médicales et de santé est possible via des fonctionnalités spécifiques avec chiffrement au repos.
+          </li>
+<li>
+<strong>
+            Bases Légales :
+           </strong>
+           Le traitement des données repose sur le consentement, l'exécution d'un contrat, le respect d'une obligation légale ou les intérêts légitimes de l'entreprise.
+          </li>
+<li>
+<strong>
+            Partage de Données :
+           </strong>
+           Les données peuvent être partagées au sein du groupe team.blue, avec des sous-traitants listés dans le DPA (Data Processing Agreement), ou avec les autorités légales lorsque la loi l'exige.
+          </li>
+<li>
+<strong>
+            Droits des Personnes Concernées :
+           </strong>
+           Le logiciel permet aux utilisateurs (contrôleurs de données) et à leurs clients d'exercer leurs droits RGPD (accès, rectification, suppression, portabilité) directement depuis l'interface.
+          </li>
+</ul>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">
+          1.4. Conformité HIPAA
+         </h5>
+<p>
+          Pour les entités couvertes par la loi américaine HIPAA (Health Insurance Portability and Accountability Act), SimplyBook.me agit en tant que "Business Associate" et propose un BAA (Business Associate Agreement).
+         </p>
+<p>
+<strong>
+           Garanties de Sécurité :
+          </strong>
+</p>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li>
+<strong>
+            Personnel :
+           </strong>
+           Vérification des antécédents des employés, signature d'accords de confidentialité et formation annuelle obligatoire sur la protection des PHI (Protected Health Information).
+          </li>
+<li>
+<strong>
+            Techniques :
+           </strong>
+           Accès aux ePHI restreint selon les principes du "besoin de savoir" et du "moindre privilège", chiffrement des communications externes (TLS 1.3), sessions à déconnexion automatique et authentification forte (MFA).
+          </li>
+<li>
+<strong>
+            Gestion des Incidents :
+           </strong>
+           Une procédure de gestion des incidents est en place, incluant une investigation dans les 24 heures, une revue légale et des procédures de notification aux entités concernées.
+          </li>
+</ul>
+<p style="margin-top: 10px;">
+<strong>
+           Fonctionnalités Logicielles pour la Conformité HIPAA :
+          </strong>
+</p>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li>
+<strong>
+            HIPAA custom feature :
+           </strong>
+           Active la déconnexion automatique après inactivité et l'authentification à deux facteurs (2FA).
+          </li>
+<li>
+<strong>
+            Google Authenticator :
+           </strong>
+           Offre une couche de sécurité supplémentaire via 2FA.
+          </li>
+<li>
+<strong>
+            Clean History custom feature :
+           </strong>
+           Permet de supprimer automatiquement les anciennes données et réservations pour respecter les politiques de rétention.
+          </li>
+</ul>
+<h4 style="margin-top: 25px;">
+          2. Offre Enterprise et Fonctionnalités Clés
+         </h4>
+<p>
+          La solution Enterprise de SimplyBook.me est conçue pour les réseaux d'entreprises, les franchises et les organisations multi-sites, offrant une plateforme centralisée, évolutive et sécurisée.
+         </p>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">
+          2.1. Modèle "Cluster" pour la Gestion Multi-sites
+         </h5>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li>
+<strong>
+            Compte Central (Admin) :
+           </strong>
+           Un compte "maître" permet de superviser l'ensemble du réseau, de gérer les accès et les droits, et de générer des rapports globaux.
+          </li>
+<li>
+<strong>
+            Sous-comptes (Centres) :
+           </strong>
+           Chaque entité (centre, agence, filiale) dispose de son propre sous-compte, lui permettant de gérer de manière autonome ses services, ses horaires, ses prestataires et ses tarifs.
+          </li>
+<li>
+<strong>
+            Synchronisation et Évolutivité :
+           </strong>
+           Toutes les données sont synchronisées en temps réel. Le système est conçu pour gérer des milliers de centres tout en maintenant une gouvernance centrale et une cohérence à grande échelle.
+          </li>
+</ul>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">
+          2.2. Fonctionnalités Logicielles Avancées
+         </h5>
+<p style="margin-top: 10px;">
+<strong>
+           Réservations Omnicanal
+          </strong>
+<br/>
+          Les clients peuvent réserver via le site web, les réseaux sociaux, les e-mails ou des widgets intégrés.
+         </p>
+<p style="margin-top: 10px;">
+<strong>
+           Calendrier Centralisé
+          </strong>
+<br/>
+          Vue d'ensemble des réservations et des disponibilités de chaque prestataire, avec des options de consultation par jour, semaine ou mois.
+         </p>
+<p style="margin-top: 10px;">
+<strong>
+           Personnalisation
+          </strong>
+<br/>
+          Chaque centre peut avoir sa propre page de réservation personnalisée (logo, couleurs) et configurer des services, types de véhicules, carburants et champs spécifiques.
+         </p>
+<p style="margin-top: 10px;">
+<strong>
+           Gestion des Accès
+          </strong>
+<br/>
+          Plusieurs niveaux d'accès disponibles (Administrateur, Employé Sénior, Employé Débutant, Observateur) pour une gestion sécurisée et adaptée.
+         </p>
+<p style="margin-top: 10px;">
+<strong>
+           Paiement en Ligne
+          </strong>
+<br/>
+          Intégration avec plus de 50 prestataires de paiement. Des intégrations spécifiques (ex: PayZen, Lemonway) peuvent être réalisées via l'API.
+         </p>
+<p style="margin-top: 10px;">
+<strong>
+           Notifications
+          </strong>
+<br/>
+          Confirmations, rappels et mises à jour envoyés par e-mail, SMS et WhatsApp pour réduire les non-présentations.
+         </p>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">
+          2.3. API et Intégrations
+         </h5>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li>
+<strong>
+            API Avancée :
+           </strong>
+           L'API de SimplyBook.me est l'une des plus avancées du marché, avec plus de 400 fonctions organisées par services (publics, administratifs, catalogue).
+          </li>
+<li>
+<strong>
+            Contrôle Total :
+           </strong>
+           Permet de créer, modifier, confirmer et annuler des réservations en temps réel.
+          </li>
+<li>
+<strong>
+            Intégrations :
+           </strong>
+           Facilite la connexion à des systèmes internes comme les CRM, ERP, systèmes RH, ou à des outils tiers comme Google Calendar et Zapier.
+          </li>
+<li>
+<strong>
+            Sécurité :
+           </strong>
+           L'authentification se fait via des jetons sécurisés, dans le respect de la conformité RGPD et ISO 27001.
+          </li>
+</ul>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">
+          2.4. Support Dédié
+         </h5>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li>
+<strong>
+            Gestionnaire de Compte :
+           </strong>
+           Un chargé de compte dédié est assigné pour assurer un accompagnement personnalisé, de l'installation à la gestion quotidienne.
+          </li>
+<li>
+<strong>
+            Support Multilingue :
+           </strong>
+           Le support par chat en direct est disponible 24h/24, 5 jours sur 7, en plusieurs langues, avec un temps de réponse moyen de 10 secondes.
+          </li>
+</ul>
+<h4 style="margin-top: 25px;">
+          3. Infrastructure Technique et Opérations
+         </h4>
+<p>
+          La performance et la fiabilité de la plateforme sont garanties par une infrastructure technique robuste et des procédures opérationnelles rigoureuses.
+         </p>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">
+          3.1. Hébergement et Disponibilité
+         </h5>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li>
+<strong>
+            Centres de Données :
+           </strong>
+           Les données sont hébergées dans des centres de données certifiés ISO 27001 en France, au Canada et à Singapour.
+          </li>
+<li>
+<strong>
+            Comptes Enterprise :
+           </strong>
+           Les comptes Enterprise utilisent par défaut l'hébergement Google Cloud (UE ou Australie), également certifié ISO 27001. D'autres fournisseurs de cloud peuvent être proposés moyennant des frais supplémentaires.
+          </li>
+<li>
+<strong>
+            Disponibilité (SLA) :
+           </strong>
+           Le Master Service Agreement (MSA) garantit une disponibilité du système (uptime) de 99,99 % par mois civil, bien que le SLA officiel soit aligné sur celui de Google Cloud (99,95 %).
+          </li>
+</ul>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">
+          3.2. Chiffrement des Données
+         </h5>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li>
+<strong>
+            Données en Transit :
+           </strong>
+           Toutes les communications externes sont chiffrées via des protocoles standards jusqu'à TLS 1.3 avec un chiffrement AES-128 / AES-256.
+          </li>
+<li>
+<strong>
+            Données au Repos :
+           </strong>
+           Par défaut, le chiffrement des données au repos n'est pas supporté, à l'exception des informations sensibles (commentaires SOAP, historique médical) qui sont chiffrées avec RSA-4096 via une fonctionnalité personnalisée.
+           <br/>
+<em style="font-size: 0.9em;">
+            Note 1 : Les sauvegardes sont chiffrées avant leur transmission vers les serveurs de sauvegarde.
+           </em>
+<br/>
+<em style="font-size: 0.9em;">
+            Note 2 : Pour les comptes Enterprise sur Google Cloud, le chiffrement au repos est activé par défaut.
+           </em>
+</li>
+</ul>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">
+          3.3. Sauvegarde et Reprise d'Activité
+         </h5>
+<p>
+<strong>
+           Politique de Sauvegarde :
+          </strong>
+</p>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li>
+           Des sauvegardes quotidiennes et hebdomadaires sont effectuées automatiquement.
+          </li>
+<li>
+           Les sauvegardes sont compressées et stockées sur des serveurs dédiés et sécurisés dans l'UE.
+          </li>
+<li>
+           La rétention des données est de 15 jours pour les sauvegardes quotidiennes et de 37 jours pour les sauvegardes hebdomadaires.
+          </li>
+</ul>
+<p style="margin-top: 10px;">
+<strong>
+           Tests de Restauration :
+          </strong>
+          Une fois par mois, l'administrateur système effectue une restauration complète des données de plusieurs comptes choisis au hasard pour vérifier l'intégrité, la fiabilité et la rapidité du processus.
+         </p>
+<p style="margin-top: 10px;">
+<strong>
+           Plan de Continuité d'Activité et de Reprise après Sinistre (BCRP) :
+          </strong>
+</p>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li>
+<strong>
+            RPO/RTO :
+           </strong>
+           L'objectif de point de reprise (RPO) est de 24 heures et l'objectif de temps de reprise (RTO) est de 48 heures.
+          </li>
+<li>
+<strong>
+            Équipe BCRP :
+           </strong>
+           Une équipe dédiée est établie pour gérer les incidents, évaluer leur impact et coordonner les actions de reprise.
+          </li>
+<li>
+<strong>
+            Phases de Reprise :
+           </strong>
+           La reprise se déroule en trois étapes : réponse rapide (≤ 4 heures), reprise des opérations d'urgence (≤ 48 heures) et retour à la normale (3-14 jours).
+          </li>
+</ul>
+<h4 style="margin-top: 25px;">
+          4. Gouvernance d'Entreprise et Responsabilité Sociétale (RSE)
+         </h4>
+<p>
+          En tant que membre du groupe team.blue, SimplyBook.me s'inscrit dans une démarche de responsabilité et de durabilité.
+         </p>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">
+          4.1. Groupe team.blue
+         </h5>
+<p>
+          SimplyBook.me fait partie de team.blue, un écosystème de plus de 60 marques et 3 300 employés en Europe, servant 3,3 millions de PME. Le groupe a défini une stratégie de développement durable axée sur trois piliers :
+         </p>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li>
+           Excellence Technologique Durable : Combiner responsabilité climatique et innovation.
+          </li>
+<li>
+           Transformation Numérique Inclusive : Rendre le monde numérique plus juste et accessible.
+          </li>
+<li>
+           Confiance Numérique et Innovation Responsable : Développer des produits fiables et éthiques.
+          </li>
+</ul>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">
+          4.2. Engagements Environnementaux
+         </h5>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li>
+<strong>
+            Objectifs Climatiques :
+           </strong>
+           team.blue s'est engagé à réduire ses émissions absolues de GES (scopes 1 et 2) de 42 % d'ici 2030 (par rapport à 2022), un objectif validé par l'initiative Science Based Targets (SBTi).
+          </li>
+<li>
+<strong>
+            Énergie Renouvelable :
+           </strong>
+           90 % de l'énergie utilisée est renouvelable, avec un objectif de 100 %. 71 % des marques d'hébergement de team.blue sont vérifiées par la Green Web Foundation.
+          </li>
+<li>
+<strong>
+            Mobilité et Déchets :
+           </strong>
+           40 % de la flotte de véhicules a été convertie en véhicules électriques (objectif 100 % d'ici 2027). 100 % des serveurs en fin de vie sont recyclés ou réutilisés.
+          </li>
+</ul>
+<h5 style="margin-top: 15px; margin-bottom: 10px; color: var(--nord0);">
+          4.3. Engagements Sociaux et de Gouvernance
+         </h5>
+<ul style="padding-left: 20px; margin-top: 10px;">
+<li>
+<strong>
+            Diversité et Inclusion :
+           </strong>
+           L'entreprise vise 40 % de diversité de genre dans les nouvelles embauches et a atteint 30 % de représentation féminine au sein de son conseil d'administration et de ses postes de direction.
+          </li>
+<li>
+<strong>
+            Engagement des Employés :
+           </strong>
+           Le taux de participation aux enquêtes d'engagement est de 92 %, avec un score d'engagement de 66 %. Des programmes de développement comme la "team.blue Academy" et "LEAP" sont en place.
+          </li>
+<li>
+<strong>
+            Gouvernance Éthique :
+           </strong>
+           Le groupe a rejoint le Pacte Mondial des Nations Unies en 2024. Un Code de Conduite et un canal d'alerte ("SpeakUp") ont été lancés pour garantir la transparence et l'intégrité. team.blue UK&amp;IE est en cours de certification B Corp, servant de projet pilote pour le reste du groupe.
+          </li>
+<li>
+<strong>
+            Intelligence Artificielle Responsable :
+           </strong>
+           Un Chief AI and Data Officer a été nommé pour développer une politique d'IA responsable axée sur la transparence, l'éthique et la réduction de l'impact environnemental.
+          </li>
+</ul>
+</div>
 </div>
 <div class="vendor-content hidden" id="vendor-microsoft">
 <h3>
@@ -2404,12 +3533,49 @@
 </td>
 </tr>
 <tr>
-<td class="col-critere" style="width: 25%; word-wrap: break-word;">Support (Portail, Niveaux, Langue)</td>
-<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;"><span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">Point fort (Chat 24/5, AM dédié, SLA)</span><span class="ao-tooltip-text">Source: Master Service Agreement (Annexe 2 - SLA)</span></td>
-<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;"><span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">Point fort (Multi-canal 8-18h, GTR 4h)</span><span class="ao-tooltip-text">Source: Réponse Agendize (Accompagnement)</span></td>
-<td class="ao-tooltip-container border-l border-gray-400" style="width: 14%; vertical-align: middle; word-wrap: break-word;"><span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">Bon (Tél/Email 9-18h, SLA contractuels)</span><span class="ao-tooltip-text">Source: Contrat Type (Art 4. SUPPORT) &amp; Offre Technique</span></td>
-<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;"><span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">Bon (Portail/Tél 9-18h, SLA contractuels)</span><span class="ao-tooltip-text">Source: Offre Technique (SUPPORT ET MAINTENANCE)</span></td>
-<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;"><span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">Bon (GLPI 9-18h, SLA contractuels)</span><span class="ao-tooltip-text">Source: Mémoire.pdf (Sect 4.3 - Support)</span></td>
+<td class="col-critere" style="width: 25%; word-wrap: break-word;">
+           Support (Portail, Niveaux, Langue)
+          </td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Point fort (Chat 24/5, AM dédié, SLA)
+           </span>
+<span class="ao-tooltip-text">
+            Source: Master Service Agreement (Annexe 2 - SLA)
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Point fort (Multi-canal 8-18h, GTR 4h)
+           </span>
+<span class="ao-tooltip-text">
+            Source: Réponse Agendize (Accompagnement)
+           </span>
+</td>
+<td class="ao-tooltip-container border-l border-gray-400" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Bon (Tél/Email 9-18h, SLA contractuels)
+           </span>
+<span class="ao-tooltip-text">
+            Source: Contrat Type (Art 4. SUPPORT) &amp; Offre Technique
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Bon (Portail/Tél 9-18h, SLA contractuels)
+           </span>
+<span class="ao-tooltip-text">
+            Source: Offre Technique (SUPPORT ET MAINTENANCE)
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Bon (GLPI 9-18h, SLA contractuels)
+           </span>
+<span class="ao-tooltip-text">
+            Source: Mémoire.pdf (Sect 4.3 - Support)
+           </span>
+</td>
 </tr>
 </tbody>
 <tbody>
@@ -3160,11 +4326,6 @@
        Podium (Basé sur le Coût Total 3 ans)
       </h3>
 <div class="ao-podium-container">
-
-
-
-
-
 <div class="ao-podium-step gold">
 <div class="ao-podium-rank">
          1
@@ -3175,7 +4336,8 @@
 <div class="ao-podium-score">
          617 686 €
         </div>
-</div><div class="ao-podium-step silver">
+</div>
+<div class="ao-podium-step silver">
 <div class="ao-podium-rank">
          2
         </div>
@@ -3185,7 +4347,8 @@
 <div class="ao-podium-score">
          916 200 €
         </div>
-</div><div class="ao-podium-step bronze">
+</div>
+<div class="ao-podium-step bronze">
 <div class="ao-podium-rank">
          3
         </div>
@@ -3195,23 +4358,90 @@
 <div class="ao-podium-score">
          946 660 €
         </div>
-</div><div class="ao-podium-step unranked">
-<div class="ao-podium-rank"> 4 </div>
+</div>
+<div class="ao-podium-step unranked">
+<div class="ao-podium-rank">
+         4
+        </div>
 <div class="ao-podium-name">
          AGENDIZE
         </div>
 <div class="ao-podium-score unranked-text-eval">
          1 177 850 €
         </div>
-</div><div class="ao-podium-step unranked">
-<div class="ao-podium-rank"> 4 </div>
+</div>
+<div class="ao-podium-step unranked">
+<div class="ao-podium-rank">
+         4
+        </div>
 <div class="ao-podium-name">
          ITEC
         </div>
 <div class="ao-podium-score unranked-text-eval">
          1 191 115 €
         </div>
-</div></div><h3 class="ao-section-card-header" style="font-size: 1.5em; margin-top: 40px;">Podium (Basé sur la Note Globale)</h3><div class="ao-podium-container"><div class="ao-podium-step gold" style="height: 100%;"><div class="ao-podium-rank">1</div><div class="ao-podium-name">NEXIUS</div><div class="ao-podium-score">4/5</div></div><div class="ao-podium-step gold" style="height: 100%;"><div class="ao-podium-rank">1</div><div class="ao-podium-name">ACTENCY</div><div class="ao-podium-score">4/5</div></div><div class="ao-podium-step bronze" style="height: 60%;"><div class="ao-podium-rank"> 2 </div><div class="ao-podium-name">AGENDIZE</div><div class="ao-podium-score">3/5</div></div><div class="ao-podium-step bronze" style="height: 60%;"><div class="ao-podium-rank"> 2 </div><div class="ao-podium-name">ITEC</div><div class="ao-podium-score">3/5</div></div><div class="ao-podium-step unranked" style="height: 40%;"><div class="ao-podium-rank"> 3 </div><div class="ao-podium-name">SIMPLYBOOK</div><div class="ao-podium-score">2/5</div></div></div>
+</div>
+</div>
+<h3 class="ao-section-card-header" style="font-size: 1.5em; margin-top: 40px;">
+       Podium (Basé sur la Note Globale)
+      </h3>
+<div class="ao-podium-container">
+<div class="ao-podium-step gold" style="height: 100%;">
+<div class="ao-podium-rank">
+         1
+        </div>
+<div class="ao-podium-name">
+         NEXIUS
+        </div>
+<div class="ao-podium-score">
+         4/5
+        </div>
+</div>
+<div class="ao-podium-step gold" style="height: 100%;">
+<div class="ao-podium-rank">
+         1
+        </div>
+<div class="ao-podium-name">
+         ACTENCY
+        </div>
+<div class="ao-podium-score">
+         4/5
+        </div>
+</div>
+<div class="ao-podium-step bronze" style="height: 60%;">
+<div class="ao-podium-rank">
+         2
+        </div>
+<div class="ao-podium-name">
+         AGENDIZE
+        </div>
+<div class="ao-podium-score">
+         3/5
+        </div>
+</div>
+<div class="ao-podium-step bronze" style="height: 60%;">
+<div class="ao-podium-rank">
+         2
+        </div>
+<div class="ao-podium-name">
+         ITEC
+        </div>
+<div class="ao-podium-score">
+         3/5
+        </div>
+</div>
+<div class="ao-podium-step unranked" style="height: 40%;">
+<div class="ao-podium-rank">
+         3
+        </div>
+<div class="ao-podium-name">
+         SIMPLYBOOK
+        </div>
+<div class="ao-podium-score">
+         2/5
+        </div>
+</div>
+</div>
 <h3 class="ao-section-card-header" style="font-size: 1.5em; margin-top: 40px;">
        Synthèse des Points Clés
       </h3>
