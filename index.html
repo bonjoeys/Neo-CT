@@ -1,16 +1,21 @@
 <!DOCTYPE html>
+
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="robots" content="noindex, nofollow">
-    <title>Priorisons le projet Neo-CT</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-
-    <style>
-        :root {
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="noindex, nofollow" name="robots"/>
+<title>
+   Priorisons le projet Neo-CT
+  </title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js">
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js">
+</script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js">
+</script>
+<style>
+   :root {
             --sidebar-width: 260px;
             --nord0: #2e3440;
             --nord4: #d8dee9;
@@ -1136,586 +1141,2731 @@
         .mindmap-root > li::before, .mindmap-root > li > .mindmap-node-container::before {
             display: none;
         }
-    </style>
+    
+        
+        /* Styles pour les sous-onglets d'Analyse des Offres */
+        .sub-tab-nav {
+            display: flex;
+            gap: 10px;
+            border-bottom: 2px solid var(--nord4);
+            margin-bottom: 20px;
+        }
+        .sub-tab-link {
+            padding: 10px 18px;
+            cursor: pointer;
+            border: none;
+            background-color: transparent;
+            font-size: 1.1em;
+            color: var(--grey);
+            border-bottom: 3px solid transparent;
+            transition: color 0.2s, border-color 0.2s;
+        }
+        .sub-tab-link.active {
+            color: var(--nord10);
+            border-bottom-color: var(--nord10);
+            font-weight: 600;
+        }
+        .sub-tab-link:hover { color: var(--nord0); }
+        
+        /* Navigation des fournisseurs */
+        .vendor-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            background-color: var(--nord6);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .vendor-tab-link {
+            padding: 8px 15px; border: none; border-radius: 6px;
+            background-color: #fff; color: var(--grey); cursor: pointer;
+            font-weight: 500; transition: background-color 0.2s, color 0.2s;
+        }
+        .vendor-tab-link:hover { background-color: var(--nord4); }
+        .vendor-tab-link.active {
+            background-color: var(--nord9);
+            color: #fff;
+            font-weight: 600;
+        }
+        .vendor-content-wrapper {
+            padding: 15px;
+            border: 1px solid var(--nord6);
+            border-radius: 8px;
+        }
+        .ao-textarea {
+            width: 100%; min-height: 150px; border: 1px solid var(--nord4);
+            border-radius: 6px; padding: 10px; font-family: inherit; font-size: 0.95em;
+        }
+
+        /* --- STYLES POUR AO GRILLE (Traduit de Tailwind) --- */
+        .ao-container { padding: 5px; }
+        .ao-header {
+            margin-bottom: 25px; padding-bottom: 15px;
+            border-bottom: 2px solid var(--nord6);
+        }
+        .ao-header h1 {
+            font-size: 2em; font-weight: 600;
+            color: var(--nord10); margin: 0;
+        }
+        .ao-header p { margin-top: 8px; font-size: 1.1em; color: var(--grey); }
+
+        .ao-sommaire {
+            margin-bottom: 30px; padding: 20px;
+            background-color: var(--nord6);
+            border-radius: 8px; border: 1px solid var(--nord4);
+        }
+        .ao-sommaire h2 {
+            font-size: 1.3em; font-weight: 600; color: var(--nord0);
+            margin-top: 0; margin-bottom: 15px;
+        }
+        .ao-sommaire ul {
+            list-style: none; padding: 0; margin: 0;
+            display: flex; flex-wrap: wrap; gap: 10px 20px;
+        }
+        .ao-sommaire a { color: var(--nord10); font-weight: 500; text-decoration: none; }
+        .ao-sommaire a:hover { text-decoration: underline; }
+        .ao-sommaire a.bold { color: var(--nord9); font-weight: 700; }
+
+        .ao-section-card {
+            background-color: #fff; padding: 25px; border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+            border: 1px solid var(--nord4); margin-top: 30px;
+        }
+        .ao-section-card-header {
+            margin-top: 0; font-size: 1.8em; font-weight: 600;
+            color: var(--nord9); margin-bottom: 20px;
+            padding-bottom: 15px; border-bottom: 2px solid var(--nord6);
+        }
+
+        .ao-table-wrapper { overflow-x: auto; }
+        .ao-table { width: 100%; min-width: 1000px; border-collapse: collapse; }
+        .ao-table thead { background-color: var(--nord6); }
+        .ao-table th, .ao-table td {
+            padding: 12px 15px; border-bottom: 1px solid var(--nord4);
+            text-align: left; vertical-align: middle;
+        }
+        .ao-table th {
+            font-size: 0.8em; font-weight: 600;
+            color: var(--grey); text-transform: uppercase;
+        }
+        .ao-table .text-center { text-align: center; }
+        .ao-table .col-critere { font-size: 0.95em; font-weight: 500; color: var(--nord0); }
+        .ao-table .col-critere-light { font-weight: 400; color: var(--grey); }
+        .ao-table .row-total { background-color: var(--nord6); font-weight: 700; }
+        .ao-table .row-total td { color: var(--nord0); }
+        .ao-table .cost-note { font-size: 0.85em; color: var(--grey); }
+        .ao-table .nogo-note { font-size: 0.85em; color: var(--nord11); font-weight: 600; }
+
+        .star-rating {
+            font-size: 1.4rem; color: var(--nord13); /* Yellow */
+            letter-spacing: 0.1em;
+        }
+        .star-rating-placeholder { color: var(--grey); font-size: 0.9em; font-style: italic; }
+
+        .ao-accordion-group { margin-top: 30px; display: flex; flex-direction: column; gap: 20px; }
+        .ao-accordion-item {
+            background-color: #fff; border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+            border: 1px solid var(--nord4); overflow: hidden;
+        }
+        .ao-accordion-button {
+            width: 100%; text-align: left; padding: 20px 25px;
+            display: flex; justify-content: space-between; align-items: center;
+            background-color: #fff; border: none;
+            border-bottom: 1px solid var(--nord6);
+            cursor: pointer; transition: background-color 0.2s;
+        }
+        .ao-accordion-item:first-child .ao-accordion-button { background-color: var(--nord6); }
+        .ao-accordion-button:hover { background-color: var(--nord4); }
+        .ao-accordion-button h2 {
+            font-size: 1.8em; font-weight: 600;
+            color: var(--nord10); margin: 0;
+        }
+        .ao-accordion-button.placeholder h2 { color: var(--grey); }
+        .ao-accordion-button svg {
+            width: 24px; height: 24px; color: var(--nord10);
+            transition: transform 0.3s ease;
+        }
+        .ao-accordion-button.open svg { transform: rotate(180deg); }
+
+        .ao-accordion-content {
+            display: none; overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            max-height: 0; padding: 0;
+        }
+        .ao-accordion-content.open { display: block; max-height: 10000px; }
+        .ao-accordion-content-inner { padding: 25px 30px; display: flex; flex-direction: column; gap: 30px; }
+        .ao-accordion-section h3 {
+            padding: 12px; font-size: 1.1em; font-weight: 600;
+            color: var(--nord0); border-radius: 6px;
+            background-color: var(--nord6); margin: 0 0 20px 0;
+        }
+        .ao-accordion-section.sec-go-nogo { background-color: #ffeb99; }
+        .ao-accordion-section.sec-main { background-color: var(--nord14); color: var(--nord0); }
+
+        .ao-grid-row {
+            display: grid; grid-template-columns: repeat(12, 1fr);
+            gap: 20px; padding: 15px 0; border-bottom: 1px solid var(--nord6);
+        }
+        .ao-grid-row:last-child { border-bottom: none; }
+        .ao-grid-label { grid-column: span 12; }
+        .ao-grid-label label { font-size: 1.05em; font-weight: 600; color: var(--nord0); display: block; }
+        .ao-grid-label p { font-size: 0.85em; color: var(--grey); margin: 5px 0 0 0; }
+        .ao-grid-analysis { grid-column: span 12; }
+        .ao-grid-source { grid-column: span 12; }
+        @media (min-width: 768px) {
+            .ao-grid-label { grid-column: span 4; }
+            .ao-grid-analysis { grid-column: span 5; }
+            .ao-grid-source { grid-column: span 3; }
+        }
+
+        .ao-pill {
+            display: inline-block; padding: 5px 12px; border-radius: 15px;
+            font-weight: 600; font-size: 0.9em; text-align: center; width: 130px;
+        }
+        .ao-pill.go { background-color: #a3be8c40; color: #a3be8c; border: 1px solid #a3be8c; }
+        .ao-pill.no-go { background-color: #bf616a40; color: var(--nord11); border: 1px solid var(--nord11); }
+        .ao-pill.na { background-color: var(--nord6); color: var(--grey); border: 1px solid var(--nord4); }
+        .ao-pill.lot { background-color: #81a1c140; color: var(--nord9); border: 1px solid var(--nord9); }
+        .ao-pill.placeholder { color: var(--grey); background-color: var(--nord6); font-style: italic; }
+
+        .ao-analysis-card {
+            background-color: #fff; border: 1px solid var(--nord6);
+            border-radius: 6px; padding: 10px 15px;
+            font-size: 0.95em; line-height: 1.5; color: var(--nord0);
+        }
+        .ao-analysis-card.placeholder { color: var(--grey); font-style: italic; }
+        .ao-source-card {
+            background-color: var(--nord6); border: 1px dashed var(--nord4);
+            border-radius: 6px; padding: 8px 12px;
+            font-size: 0.85em; color: var(--grey); font-style: italic;
+        }
+        
+        .ao-tooltip-container { position: relative; cursor: pointer; }
+        .ao-tooltip-text {
+            visibility: hidden; width: 280px; background-color: var(--nord0);
+            color: var(--nord6); text-align: left; border-radius: 6px;
+            padding: 8px 12px; position: absolute; z-index: 10;
+            bottom: 125%; left: 50%; margin-left: -140px;
+            opacity: 0; transition: opacity 0.3s;
+            font-size: 0.85em; font-weight: 400; line-height: 1.4; white-space: normal;
+        }
+        .ao-tooltip-text::after {
+            content: ""; position: absolute; top: 100%; left: 50%;
+            margin-left: -5px; border-width: 5px; border-style: solid;
+            border-color: var(--nord0) transparent transparent transparent;
+        }
+        .ao-tooltip-container:hover .ao-tooltip-text { visibility: visible; opacity: 1; }
+
+        .ao-podium-container {
+            display: flex; align-items: flex-end; justify-content: center;
+            height: 250px; gap: 10px; margin: 40px auto; flex-wrap: wrap;
+        }
+        .ao-podium-step {
+            display: flex; flex-direction: column; align-items: center;
+            justify-content: flex-end; width: 140px;
+            background-color: var(--grey); border-radius: 8px 8px 0 0;
+            padding: 15px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center; color: white; position: relative; transition: all 0.3s ease;
+        }
+        .ao-podium-step.gold { height: 100%; background-color: var(--nord13); color: var(--nord0); }
+        .ao-podium-step.silver { height: 80%; background-color: var(--nord4); color: var(--nord0); }
+        .ao-podium-step.bronze { height: 60%; background-color: var(--nord12); }
+        .ao-podium-step.unranked { height: 40%; background-color: var(--grey); }
+        .ao-podium-rank { font-size: 2rem; font-weight: bold; margin-bottom: 10px; }
+        .ao-podium-name { font-size: 1.1rem; font-weight: 600; margin-bottom: 5px; }
+        .ao-podium-score { font-size: 1rem; }
+        .ao-podium-score .star-rating { font-size: 1.2rem; }
+        .ao-podium-score .unranked-text-nogo { color: var(--nord11); font-size: 0.9em; font-weight: 600; }
+        .ao-podium-score .unranked-text-eval { color: var(--nord4); font-size: 0.9em; }
+  </style>
 </head>
 <body>
-    <div class="sidebar" id="sidebar">
-        <h2><span id="db-status-indicator" title="Statut de la connexion"></span> Navigation</h2>
-        <div class="tabs-nav">
-            <button class="tab-link active" data-tab="accueil-container">🏠 Accueil</button>
-
-            <div class="sidebar-section-header">Gestion & Saisie</div>
-            <button class="tab-link" data-tab="controls-container">📝 Gestion des applis, modules et fonctionnalités</button>
-            <button class="tab-link" data-tab="dnd-container">⚖️ Priorisation</button>
-            <button class="tab-link" data-tab="reorg-container">🏗️ Réorganisation Fonctionnalités</button>
-            <button class="tab-link" data-tab="admin-container">⚙️ Administration</button>
-
-            <div class="sidebar-section-header">Analyse & Visualisation</div>
-            <button class="tab-link" data-tab="mvp-container">🚀 Vue MVP (P1)</button>
-            <button class="tab-link" data-tab="mindmap-container">🧱 Carte Structurelle</button>
-            <button class="tab-link" data-tab="priority-mindmap-container">📊 Carte par Priorité</button>
-            <button class="tab-link" data-tab="detail-level-container">📊 Niveau de Détail</button>
-            <button class="tab-link" data-tab="static-mindmap-container">🖼️ Carte Statique</button>
-
-            <div class="sidebar-section-header">Information</div>
-            <button class="tab-link" data-tab="documentation-container">📚 Documentation</button>
-
-        </div>
+<div class="sidebar" id="sidebar">
+<h2>
+<span id="db-status-indicator" title="Statut de la connexion">
+</span>
+    Navigation
+   </h2>
+<div class="tabs-nav">
+<button class="tab-link active" data-tab="accueil-container">
+     🏠 Accueil
+    </button>
+<div class="sidebar-section-header">
+     Gestion &amp; Saisie
     </div>
-
-    <div class="main-content" id="main-content">
-        <div class="top-bar">
-            <button class="sidebar-toggle" id="sidebar-toggle">☰</button>
-            <div class="main-header">
-                <img src="SGS_Logo.png" alt="Logo SGS" class="logo" onerror="this.style.display='none'">
-                <h1>Priorisons le projet Neo-CT</h1>
-                <div class="logo-group-right">
-                    <img src="https://www.securitest.fr/media/securitest-logo.svg" alt="Logo Securitest" class="logo" onerror="this.style.display='none'">
-                    <img src="https://www.autosecurite.com/media/auto-securite-logo.svg" alt="Logo Auto Sécurité" class="logo" onerror="this.style.display='none'">
-                    <img src="Logo_neoct.png" alt="Logo Neo-CT" class="logo logo-neoct" onerror="this.style.display='none'">
-                </div>
-            </div>
+<button class="tab-link" data-tab="controls-container">
+     📝 Gestion des applis, modules et fonctionnalités
+    </button>
+<button class="tab-link" data-tab="dnd-container">
+     ⚖️ Priorisation
+    </button>
+<button class="tab-link" data-tab="reorg-container">
+     🏗️ Réorganisation Fonctionnalités
+    </button>
+<button class="tab-link" data-tab="admin-container">
+     ⚙️ Administration
+    </button>
+<div class="sidebar-section-header">
+     Analyse &amp; Visualisation
+    </div>
+<button class="tab-link" data-tab="mvp-container">
+     🚀 Vue MVP (P1)
+    </button>
+<button class="tab-link" data-tab="mindmap-container">
+     🧱 Carte Structurelle
+    </button>
+<button class="tab-link" data-tab="priority-mindmap-container">
+     📊 Carte par Priorité
+    </button>
+<button class="tab-link" data-tab="detail-level-container">
+     📊 Niveau de Détail
+    </button>
+<button class="tab-link" data-tab="analyse-offres-container">
+     ⚖️ Analyse AO Agenda
+    </button>
+<button class="tab-link" data-tab="static-mindmap-container">
+     🖼️ Carte Statique
+    </button>
+<div class="sidebar-section-header">
+     Information
+    </div>
+<button class="tab-link" data-tab="documentation-container">
+     📚 Documentation
+    </button>
+</div>
+</div>
+<div class="main-content" id="main-content">
+<div class="top-bar">
+<button class="sidebar-toggle" id="sidebar-toggle">
+     ☰
+    </button>
+<div class="main-header">
+<img alt="Logo SGS" class="logo" onerror="this.style.display='none'" src="SGS_Logo.png"/>
+<h1>
+      Priorisons le projet Neo-CT
+     </h1>
+<div class="logo-group-right">
+<img alt="Logo Securitest" class="logo" onerror="this.style.display='none'" src="https://www.securitest.fr/media/securitest-logo.svg"/>
+<img alt="Logo Auto Sécurité" class="logo" onerror="this.style.display='none'" src="https://www.autosecurite.com/media/auto-securite-logo.svg"/>
+<img alt="Logo Neo-CT" class="logo logo-neoct" onerror="this.style.display='none'" src="Logo_neoct.png"/>
+</div>
+</div>
+</div>
+<div class="page-container">
+<div class="accueil-container content-tab" id="accueil-container">
+<h2>
+      📊 Tableau de Bord Synthétique
+     </h2>
+<div id="kpi-container">
+</div>
+<div id="charts-container">
+<div class="chart-wrapper">
+<h3>
+        Répartition par Priorité
+       </h3>
+<canvas id="priorityChart">
+</canvas>
+</div>
+<div class="chart-wrapper">
+<h3 id="p1ByBrickChartTitle">
+        Modules par Appli
+       </h3>
+<div class="chart-legend-filter" id="p1ByBrickFilter">
+</div>
+<canvas id="p1ByBrickChart">
+</canvas>
+</div>
+<div class="chart-wrapper">
+<h3>
+        Modules par Étiquette
+       </h3>
+<canvas id="featuresByTagChart">
+</canvas>
+</div>
+</div>
+</div>
+<div class="controls-container content-tab hidden" id="controls-container">
+<h2>
+      Gestion des applis, modules et fonctionnalités
+     </h2>
+<div class="planning-header">
+<div class="filter-controls">
+<div class="filter-group">
+<label for="brick-filter-planning">
+         Filtrer par appli
+        </label>
+<div class="multi-select-container" id="brick-filter-planning">
+<div class="select-box">
+<span>
+           Toutes les applis
+          </span>
+</div>
+<div class="checkboxes hidden" id="brick-checkboxes-planning">
+<input class="multi-select-search" placeholder="Rechercher..." type="text"/>
+<div class="multi-select-list">
+</div>
+</div>
+</div>
+</div>
+<div class="filter-group">
+<label for="tag-filter-planning">
+         Filtrer par étiquette
+        </label>
+<div class="multi-select-container" id="tag-filter-planning">
+<div class="select-box">
+<span>
+           Toutes les étiquettes
+          </span>
+</div>
+<div class="checkboxes hidden" id="tag-checkboxes-planning">
+<input class="multi-select-search" placeholder="Rechercher..." type="text"/>
+<div class="multi-select-list">
+</div>
+</div>
+</div>
+</div>
+<div class="filter-group">
+<label for="module-filter-planning">
+         Filtrer par module
+        </label>
+<div class="multi-select-container" id="module-filter-planning">
+<div class="select-box">
+<span>
+           Tous les modules
+          </span>
+</div>
+<div class="checkboxes hidden" id="module-checkboxes-planning">
+<input class="multi-select-search" placeholder="Rechercher..." type="text"/>
+<div class="multi-select-list">
+</div>
+</div>
+</div>
+</div>
+<div class="filter-group">
+<label for="feature-filter-planning">
+         Recherche globale
+        </label>
+<input class="header-filter" id="feature-filter-planning" placeholder="Appli, module, fonction..." type="text"/>
+</div>
+</div>
+<p class="project-counter-sync" id="planning-counter">
+</p>
+</div>
+<div class="status-message" id="loader-container">
+<h1>
+       Préparation de l'application...
+      </h1>
+<ul id="loader-steps">
+<li id="step1">
+<span>
+         Connexion à la base de données
+        </span>
+<span class="status">
+</span>
+</li>
+<li id="step2">
+<span>
+         Chargement des paramètres
+        </span>
+<span class="status">
+</span>
+</li>
+<li id="step3">
+<span>
+         ChargEMENT des données
+        </span>
+<span class="status">
+</span>
+</li>
+<li id="step4">
+<span>
+         Affichage de l'interface
+        </span>
+<span class="status">
+</span>
+</li>
+</ul>
+</div>
+<div class="hidden" id="table-wrapper">
+</div>
+<div class="button-group hidden" id="button-group-wrapper">
+<button class="button add-button" id="add-task-btn">
+       Ajouter une appli
+      </button>
+<button class="button add-button" id="add-module-btn" style="background-color: var(--nord9);">
+       Ajouter un module
+      </button>
+</div>
+</div>
+<div class="dnd-container content-tab hidden" id="dnd-container">
+<h2>
+      Priorisation
+     </h2>
+<div class="planning-header">
+<div class="filter-controls">
+<div class="filter-group">
+<label for="brick-filter-dnd">
+         Filtrer par appli
+        </label>
+<div class="multi-select-container" id="brick-filter-dnd">
+<div class="select-box">
+<span>
+           Toutes les applis
+          </span>
+</div>
+<div class="checkboxes hidden" id="brick-checkboxes-dnd">
+<input class="multi-select-search" placeholder="Rechercher..." type="text"/>
+<div class="multi-select-list">
+</div>
+</div>
+</div>
+</div>
+<div class="filter-group">
+<label for="tag-filter-dnd">
+         Filtrer par étiquette
+        </label>
+<div class="multi-select-container" id="tag-filter-dnd">
+<div class="select-box">
+<span>
+           Toutes les étiquettes
+          </span>
+</div>
+<div class="checkboxes hidden" id="tag-checkboxes-dnd">
+<input class="multi-select-search" placeholder="Rechercher..." type="text"/>
+<div class="multi-select-list">
+</div>
+</div>
+</div>
+</div>
+<div class="filter-group">
+<label for="module-filter-dnd">
+         Filtrer par module
+        </label>
+<div class="multi-select-container" id="module-filter-dnd">
+<div class="select-box">
+<span>
+           Tous les modules
+          </span>
+</div>
+<div class="checkboxes hidden" id="module-checkboxes-dnd">
+<input class="multi-select-search" placeholder="Rechercher..." type="text"/>
+<div class="multi-select-list">
+</div>
+</div>
+</div>
+</div>
+<div class="filter-group">
+<label for="feature-filter-dnd">
+         Recherche globale
+        </label>
+<input class="header-filter" id="feature-filter-dnd" placeholder="Module, fonction..." type="text"/>
+</div>
+</div>
+<div class="view-switch-container">
+<label class="switch-label" for="dnd-view-switch">
+        Modules
+       </label>
+<label class="switch">
+<input id="dnd-view-switch" type="checkbox"/>
+<span class="slider round">
+</span>
+</label>
+<label class="switch-label" for="dnd-view-switch">
+        Fonctionnalités
+       </label>
+</div>
+</div>
+<div class="dnd-board">
+<div class="dnd-column">
+<h3>
+        Priorité 1
+       </h3>
+<div class="dnd-list" data-priority="P1" id="dnd-p1">
+</div>
+</div>
+<div class="dnd-column">
+<h3>
+        Priorité 2
+       </h3>
+<div class="dnd-list" data-priority="P2" id="dnd-p2">
+</div>
+</div>
+<div class="dnd-column">
+<h3>
+        Priorité 3
+       </h3>
+<div class="dnd-list" data-priority="P3" id="dnd-p3">
+</div>
+</div>
+<div class="dnd-column">
+<h3>
+        À définir
+       </h3>
+<div class="dnd-list" data-priority="À définir" id="dnd-adefinir">
+</div>
+</div>
+</div>
+</div>
+<div class="dnd-container content-tab hidden" id="reorg-container">
+<h2>
+      Réorganisation des fonctionnalités
+     </h2>
+<div class="planning-header">
+<div class="filter-controls">
+<div class="filter-group">
+<label for="brick-filter-reorg">
+         Filtrer par appli
+        </label>
+<div class="multi-select-container" id="brick-filter-reorg">
+<div class="select-box">
+<span>
+           Toutes les applis
+          </span>
+</div>
+<div class="checkboxes hidden" id="brick-checkboxes-reorg">
+<input class="multi-select-search" placeholder="Rechercher..." type="text"/>
+<div class="multi-select-list">
+</div>
+</div>
+</div>
+</div>
+<div class="filter-group">
+<label for="tag-filter-reorg">
+         Filtrer par étiquette
+        </label>
+<div class="multi-select-container" id="tag-filter-reorg">
+<div class="select-box">
+<span>
+           Toutes les étiquettes
+          </span>
+</div>
+<div class="checkboxes hidden" id="tag-checkboxes-reorg">
+<input class="multi-select-search" placeholder="Rechercher..." type="text"/>
+<div class="multi-select-list">
+</div>
+</div>
+</div>
+</div>
+<div class="filter-group">
+<label for="module-filter-reorg">
+         Filtrer par module
+        </label>
+<div class="multi-select-container" id="module-filter-reorg">
+<div class="select-box">
+<span>
+           Tous les modules
+          </span>
+</div>
+<div class="checkboxes hidden" id="module-checkboxes-reorg">
+<input class="multi-select-search" placeholder="Rechercher..." type="text"/>
+<div class="multi-select-list">
+</div>
+</div>
+</div>
+</div>
+<div class="filter-group">
+<label for="feature-filter-reorg">
+         Recherche globale
+        </label>
+<input class="header-filter" id="feature-filter-reorg" placeholder="Module, fonction..." type="text"/>
+</div>
+</div>
+</div>
+<p style="margin-top: -15px; margin-bottom: 25px; color: var(--grey);">
+      Glissez-déposez une fonctionnalité d'un module à un autre pour la ré-assigner.
+     </p>
+<div class="dnd-board" id="reorg-board">
+</div>
+</div>
+<div class="mvp-container content-tab hidden" id="mvp-container">
+<h2>
+      MVP (P1)
+     </h2>
+<div class="mvp-filter-grid" id="mvp-filter-grid">
+<div class="mvp-filter-card active" data-filter="all">
+<h3>
+        Tout voir
+       </h3>
+</div>
+<div class="mvp-filter-card" data-filter="Adelsoft">
+<h3>
+        MVP Adelsoft
+       </h3>
+</div>
+<div class="mvp-filter-card" data-filter="Agenda">
+<h3>
+        MVP Agenda
+       </h3>
+</div>
+<div class="mvp-filter-card" data-filter="Pilote">
+<h3>
+        MVP Pilote
+       </h3>
+</div>
+</div>
+<div id="mvp-view-content">
+</div>
+</div>
+<div class="admin-container content-tab hidden" id="admin-container">
+<h2>
+      Administration
+     </h2>
+<div class="admin-sections">
+<div class="admin-section" id="admin-priorities">
+<h3>
+        Gestion des Priorités
+       </h3>
+<form class="admin-add-form" id="add-priority-form">
+<input id="new-priority-name" placeholder="Nom de la priorité" required="" type="text"/>
+<button class="button add-button" type="submit">
+         Ajouter
+        </button>
+</form>
+<ul class="admin-list" id="priorities-list">
+</ul>
+</div>
+<div class="admin-section" id="admin-tags">
+<h3>
+        Gestion des Étiquettes
+       </h3>
+<form class="admin-add-form" id="add-tag-form">
+<input id="new-tag-name" placeholder="Nom de l'étiquette" required="" type="text"/>
+<button class="button add-button" type="submit">
+         Ajouter
+        </button>
+</form>
+<ul class="admin-list" id="tags-list">
+</ul>
+</div>
+<div class="admin-section" id="admin-export">
+<h3>
+        Exporter les Données
+       </h3>
+<p>
+        Sauvegardez l'ensemble des données du projet.
+       </p>
+<div class="button-group" style="justify-content: flex-start;">
+<button class="button add-button" id="export-json-btn">
+         Exporter en JSON
+        </button>
+<button class="button add-button" id="export-csv-btn">
+         Exporter en CSV
+        </button>
+</div>
+</div>
+</div>
+<div class="admin-section" id="admin-anomalies">
+<h3>
+       Supervision des Données (Anomalies)
+      </h3>
+<p>
+       Cette section liste les incohérences potentielles dans les données. Cliquez sur un élément pour le corriger.
+      </p>
+<div id="anomalies-container">
+</div>
+</div>
+</div>
+<div class="mindmap-container content-tab hidden" id="mindmap-container">
+<h2>
+      🧱 Carte Structurelle
+     </h2>
+<div class="interactive-mindmap-container" id="interactive-mindmap-container">
+</div>
+</div>
+<div class="priority-mindmap-container content-tab hidden" id="priority-mindmap-container">
+<h2>
+      📊 Carte par Priorité
+     </h2>
+<div class="interactive-mindmap-container" id="priority-mindmap-view">
+</div>
+</div>
+<div class="detail-level-container content-tab hidden" id="detail-level-container">
+<h2>
+      📊 Niveau de Détail des Modules
+     </h2>
+<p>
+      Ce tableau analyse la granularité et la description des fonctionnalités pour chaque module.
+     </p>
+<div id="detail-level-table-container">
+</div>
+</div>
+<div class="admin-container content-tab hidden" id="analyse-offres-container">
+<h2>
+      ⚖️ Analyse AO Agenda
+     </h2>
+<div class="sub-tab-nav">
+<button class="sub-tab-link active" data-subtab="reponses-soumissionnaires">
+       Réponses des soumissionnaires
+      </button>
+<button class="sub-tab-link" data-subtab="grille-evaluation">
+       Grille d'évaluation
+      </button>
+<button class="sub-tab-link" data-subtab="synthese-podium">
+       Synthèse &amp; Podium
+      </button>
+</div>
+<div class="sub-content-tab" id="reponses-soumissionnaires">
+<p>
+       Documents et notes sur les réponses reçues.
+      </p>
+<div class="vendor-nav">
+<button class="vendor-tab-link active" data-vendor="actency">
+        Actency
+       </button>
+<button class="vendor-tab-link" data-vendor="agendize">
+        Agendize
+       </button>
+<button class="vendor-tab-link" data-vendor="itec">
+        Itec
+       </button>
+<button class="vendor-tab-link" data-vendor="nexius">
+        Nexius
+       </button>
+<button class="vendor-tab-link" data-vendor="simplybook">
+        Simplybook
+       </button>
+<button class="vendor-tab-link" data-vendor="microsoft">
+        Microsoft
+       </button>
+</div>
+<div class="vendor-content-wrapper">
+<div class="vendor-content" id="vendor-actency">
+<h3>
+         Actency
+        </h3>
+<a class="button add-button" href="https://sgs.sharepoint.com/sites/fr-it-insideit/serviceachats/Management%20des%20Achats/Forms/AllItems.aspx?id=%2Fsites%2Ffr%2Dit%2Dinsideit%2Fserviceachats%2FManagement%20des%20Achats%2FDocuments%20Administratifs%2FDocument%20RFP%20%5F%20IT%20SEC%20%5F%20RGPD%2FConsultations%2F2025%2FRFP%20%2D%20REFONTE%20AGENDA%20%2D%20WD%2017324%2FREPONSES%20RFP%2FACTENCY&amp;viewid=0d16130d%2Dc55c%2D4cb1%2D8da5%2D7e1f92f220e3&amp;CT=1751361905083&amp;OR=OWA%2DNT%2DMail&amp;CID=cd4c72fa%2D764b%2D052e%2Dac9a%2D8ad11d8aadda&amp;e=5%3Adb70ddaf8f4049279fa75a90ef3d7f42&amp;sharingv2=true&amp;fromShare=true&amp;at=9&amp;FolderCTID=0x0120008FEABFED2651E84D82FB0CFF22DD7750" style="margin-bottom: 15px;" target="_blank">
+         Ouvrir le dossier SharePoint ↗
+        </a>
+<label style="display: block; margin-bottom: 5px; font-weight: 500;">
+         Notes :
+        </label>
+<textarea class="ao-textarea" placeholder="Saisissez vos notes..."></textarea>
+</div>
+<div class="vendor-content hidden" id="vendor-agendize">
+<h3>
+         Agendize
+        </h3>
+<a class="button add-button" href="https://sgs.sharepoint.com/sites/fr-it-insideit/serviceachats/Management%20des%20Achats/Forms/AllItems.aspx?id=%2Fsites%2Ffr%2Dit%2Dinsideit%2Fserviceachats%2FManagement%20des%20Achats%2FDocuments%20Administratifs%2FDocument%20RFP%20%5F%20IT%20SEC%20%5F%20RGPD%2FConsultations%2F2025%2FRFP%20%2D%20REFONTE%20AGENDA%20%2D%20WD%2017324%2FREPONSES%20RFP%2FAGENDIZE&amp;viewid=0d16130d%2Dc55c%2D4cb1%2D8da5%2D7e1f92f220e3&amp;CT=1751361905083&amp;OR=OWA%2DNT%2DMail&amp;CID=cd4c72fa%2D764b%2D052e%2Dac9a%2D8ad11d8aadda&amp;e=5%3Adb70ddaf8f4049279fa75a90ef3d7f42&amp;sharingv2=true&amp;fromShare=true&amp;at=9&amp;FolderCTID=0x0120008FEABFED2651E84D82FB0CFF22DD7750" style="margin-bottom: 15px;" target="_blank">
+         Ouvrir le dossier SharePoint ↗
+        </a>
+<label style="display: block; margin-bottom: 5px; font-weight: 500;">
+         Notes :
+        </label>
+<textarea class="ao-textarea" placeholder="Saisissez vos notes..."></textarea>
+</div>
+<div class="vendor-content hidden" id="vendor-itec">
+<h3>
+         Itec
+        </h3>
+<a class="button add-button" href="https://sgs.sharepoint.com/sites/fr-it-insideit/serviceachats/Management%20des%20Achats/Forms/AllItems.aspx?id=%2Fsites%2Ffr%2Dit%2Dinsideit%2Fserviceachats%2FManagement%20des%20Achats%2FDocuments%20Administratifs%2FDocument%20RFP%20%5F%20IT%20SEC%20%5F%20RGPD%2FConsultations%2F2025%2FRFP%20%2D%20REFONTE%20AGENDA%20%2D%20WD%2017324%2FREPONSES%20RFP%2FITEC&amp;viewid=0d16130d%2Dc55c%2D4cb1%2D8da5%2D7e1f92f220e3&amp;CT=1751361905083&amp;OR=OWA%2DNT%2DMail&amp;CID=cd4c72fa%2D764b%2D052e%2Dac9a%2D8ad11d8aadda&amp;e=5%3Adb70ddaf8f4049279fa75a90ef3d7f42&amp;sharingv2=true&amp;fromShare=true&amp;at=9&amp;FolderCTID=0x0120008FEABFED2651E84D82FB0CFF22DD7750" style="margin-bottom: 15px;" target="_blank">
+         Ouvrir le dossier SharePoint ↗
+        </a>
+<label style="display: block; margin-bottom: 5px; font-weight: 500;">
+         Notes :
+        </label>
+<textarea class="ao-textarea" placeholder="Saisissez vos notes..."></textarea>
+</div>
+<div class="vendor-content hidden" id="vendor-nexius">
+<h3>
+         Nexius
+        </h3>
+<a class="button add-button" href="https://sgs.sharepoint.com/sites/fr-it-insideit/serviceachats/Management%20des%20Achats/Forms/AllItems.aspx?id=%2Fsites%2Ffr%2Dit%2Dinsideit%2Fserviceachats%2FManagement%20des%20Achats%2FDocuments%20Administratifs%2FDocument%20RFP%20%5F%20IT%20SEC%20%5F%20RGPD%2FConsultations%2F2025%2FRFP%20%2D%20REFONTE%20AGENDA%20%2D%20WD%2017324%2FREPONSES%20RFP%2FNEXIUS&amp;viewid=0d16130d%2Dc55c%2D4cb1%2D8da5%2D7e1f92f220e3&amp;CT=1751361905083&amp;OR=OWA%2DNT%2DMail&amp;CID=cd4c72fa%2D764b%2D052e%2Dac9a%2D8ad11d8aadda&amp;e=5%3Adb70ddaf8f4049279fa75a90ef3d7f42&amp;sharingv2=true&amp;fromShare=true&amp;at=9&amp;FolderCTID=0x0120008FEABFED2651E84D82FB0CFF22DD7750" style="margin-bottom: 15px;" target="_blank">
+         Ouvrir le dossier SharePoint ↗
+        </a>
+<label style="display: block; margin-bottom: 5px; font-weight: 500;">
+         Notes :
+        </label>
+<textarea class="ao-textarea" placeholder="Saisissez vos notes..."></textarea>
+</div>
+<div class="vendor-content hidden" id="vendor-simplybook">
+<h3>
+         Simplybook
+        </h3>
+<a class="button add-button" href="https://sgs.sharepoint.com/sites/fr-it-insideit/serviceachats/Management%20des%20Achats/Forms/AllItems.aspx?id=%2Fsites%2Ffr%2Dit%2Dinsideit%2Fserviceachats%2FManagement%20des%20Achats%2FDocuments%20Administratifs%2FDocument%20RFP%20%5F%20IT%20SEC%20%5F%20RGPD%2FConsultations%2F2025%2FRFP%20%2D%20REFONTE%20AGENDA%20%2D%20WD%2017324%2FREPONSES%20RFP%2FSIMPLYBOOKME&amp;viewid=0d16130d%2Dc55c%2D4cb1%2D8da5%2D7e1f92f220e3&amp;CT=1751361905083&amp;OR=OWA%2DNT%2DMail&amp;CID=cd4c72fa%2D764b%2D052e%2Dac9a%2D8ad11d8aadda&amp;e=5%3Adb70ddaf8f4049279fa75a90ef3d7f42&amp;sharingv2=true&amp;fromShare=true&amp;at=9&amp;FolderCTID=0x0120008FEABFED2651E84D82FB0CFF22DD7750" style="margin-bottom: 15px;" target="_blank">
+         Ouvrir le dossier SharePoint ↗
+        </a>
+<label style="display: block; margin-bottom: 5px; font-weight: 500;">
+         Notes :
+        </label>
+<textarea class="ao-textarea" placeholder="Saisissez vos notes..."></textarea>
+</div>
+<div class="vendor-content hidden" id="vendor-microsoft">
+<h3>
+         Microsoft (Bookings)
+        </h3>
+<button class="button" disabled="" style="margin-bottom: 15px;">
+         (Lien SharePoint non fourni)
+        </button>
+<label style="display: block; margin-bottom: 5px; font-weight: 500;">
+         Notes :
+        </label>
+<textarea class="ao-textarea" placeholder="Saisissez vos notes..."></textarea>
+</div>
+</div>
+</div>
+<div class="sub-content-tab hidden" id="grille-evaluation">
+<div class="ao-table-wrapper" style="max-height: 70vh; overflow-y: auto;">
+<table class="ao-table" style="table-layout: fixed; width: 95%;">
+<thead>
+<tr>
+<th style="width: 25%; position: sticky; top: 0; z-index: 10; background-color: var(--nord6);">
+           Critère
+          </th>
+<th class="text-center" style="width: 14%; position: sticky; top: 0; z-index: 10; background-color: var(--nord6);">
+           SIMPLYBOOK
+          </th>
+<th class="text-center" style="width: 14%; position: sticky; top: 0; z-index: 10; background-color: var(--nord6);">
+           AGENDIZE
+          </th>
+<th class="text-center border-l border-gray-400" style="width: 14%; position: sticky; top: 0; z-index: 10; background-color: var(--nord6);">
+           ITEC
+          </th>
+<th class="text-center" style="width: 14%; position: sticky; top: 0; z-index: 10; background-color: var(--nord6);">
+           NEXIUS
+          </th>
+<th class="text-center" style="width: 14%; position: sticky; top: 0; z-index: 10; background-color: var(--nord6);">
+           ACTENCY
+          </th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-total" style="background-color: var(--nord6); font-size: 1.1em;">
+<td colspan="6" style="font-weight: 700; color: var(--nord0); padding-left: 5px;">
+           Solution
+          </td>
+</tr>
+<tr>
+<td class="col-critere" style="width: 25%; word-wrap: break-word;">
+           Type de Réponse
+          </td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Solution Éditeur
+           </span>
+<span class="ao-tooltip-text">
+            Source: Solution de planification Enterprise (p.4, p.16)
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Solution Éditeur
+           </span>
+<span class="ao-tooltip-text">
+            Source: Offre Agendize
+           </span>
+</td>
+<td class="ao-tooltip-container border-l border-gray-400" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Dév. Spécifique
+           </span>
+<span class="ao-tooltip-text">
+            Source: Offre technique ITEC (p.4)
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Dév. Spécifique
+           </span>
+<span class="ao-tooltip-text">
+            Source: Offre Technique NEXIUS (p.4)
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Dév. Spécifique
+           </span>
+<span class="ao-tooltip-text">
+            Source: Grille Fonctionnelle Agenda – ACTENCY.xlsx
+           </span>
+</td>
+</tr>
+<tr>
+<td class="col-critere" style="width: 25%; word-wrap: break-word;">
+           Adéquation fonctionnelle
+          </td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Vigilance (SaaS générique, partiel)
+           </span>
+<span class="ao-tooltip-text">
+            Source: Grille Fonctionnelle Agenda – Copie (3).xlsx (Réponses 'PARTIELLE')
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Point fort (Couverture native élevée)
+           </span>
+<span class="ao-tooltip-text">
+            Source: Grille Fonctionnelle Agenda.csv (Réponses globales)
+           </span>
+</td>
+<td class="ao-tooltip-container border-l border-gray-400" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            À construire (Lot 2, détaillé)
+           </span>
+<span class="ao-tooltip-text">
+            Source: Offre technique ITEC (p.10-14)
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            À construire (Lot 2, très détaillé)
+           </span>
+<span class="ao-tooltip-text">
+            Source: Offre Technique NEXIUS (p.10-19)
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            À construire (Lot 2, MVP+Lots)
+           </span>
+<span class="ao-tooltip-text">
+            Source: Grille Fonctionnelle Agenda – ACTENCY.xlsx
+           </span>
+</td>
+</tr>
+<tr>
+<td class="col-critere" style="width: 25%; word-wrap: break-word;">
+           Qualité UX/UI proposée
+          </td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Bonne (Moderne, épurée)
+           </span>
+<span class="ao-tooltip-text">
+            Source: Solution de planification Enterprise (p.11-12)
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Bonne (Omnicanal)
+           </span>
+<span class="ao-tooltip-text">
+            Source: Agendize_plaquette_generale_2025.pdf (p.1)
+           </span>
+</td>
+<td class="ao-tooltip-container border-l border-gray-400" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Bonne (Mockups, ateliers)
+           </span>
+<span class="ao-tooltip-text">
+            Source: Offre technique ITEC (p.6, p.11)
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Standard (Ateliers, pas de mockups)
+           </span>
+<span class="ao-tooltip-text">
+            Source: Offre Technique NEXIUS (p.6, p.10)
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Point fort (Expertise UX-PM)
+           </span>
+<span class="ao-tooltip-text">
+            Source: Mémoire.pdf (p.2, p.38-40)
+           </span>
+</td>
+</tr>
+<tr>
+<td class="col-critere" style="width: 25%; word-wrap: break-word;">
+           Pertinence des innovations (IA, etc.)
+          </td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Point fort (AI Assistant, WhatsApp)
+           </span>
+<span class="ao-tooltip-text">
+            Source: RFI Genilink_SGS 2025 (2).xlsx (Q25)
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Point fort (Chatbots IA)
+           </span>
+<span class="ao-tooltip-text">
+            Source: Agendize_plaquette_generale_2025.pdf (p.1)
+           </span>
+</td>
+<td class="ao-tooltip-container border-l border-gray-400" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Bonne (Chatbot IA en option)
+           </span>
+<span class="ao-tooltip-text">
+            Source: Offre technique ITEC (p.15)
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Point fort (Axe majeur, IA générative)
+           </span>
+<span class="ao-tooltip-text">
+            Source: Offre Technique NEXIUS (p.6)
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Point fort (Structuré, "Plateforme Agentique")
+           </span>
+<span class="ao-tooltip-text">
+            Source: Mémoire.pdf (p.2, p.45)
+           </span>
+</td>
+</tr>
+</tbody>
+<tbody>
+<tr class="row-total" style="background-color: var(--nord6); font-size: 1.1em;">
+<td colspan="6" style="font-weight: 700; color: var(--nord0); padding-left: 5px;">
+           Technique
+          </td>
+</tr>
+<tr>
+<td class="col-critere" style="width: 25%; word-wrap: break-word;">
+           Respect SLA Critique (&lt; 1h Résolution)
+          </td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            1h Réponse, Résolution non garantie
+           </span>
+<span class="ao-tooltip-text">
+            Source: SBM_MSA_v.3.0. .docx.pdf (p.1 - Enterprise SLAs)
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            GTR &lt; 4h
+           </span>
+<span class="ao-tooltip-text">
+            Source: IT Security Form... - TP Evaluation.csv (Ligne 10.5)
+           </span>
+</td>
+<td class="ao-tooltip-container border-l border-gray-400" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Résolution 4h
+           </span>
+<span class="ao-tooltip-text">
+            Source: Contrat de services ITEC (p.16 - Annexe 1)
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            GTR 4h
+           </span>
+<span class="ao-tooltip-text">
+            Source: Offre Technique NEXIUS (p.20)
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Résolution 4h ouvrées
+           </span>
+<span class="ao-tooltip-text">
+            Source: Annexe 1 - Hébergement.pdf (p.16 - GTR)
+           </span>
+</td>
+</tr>
+<tr>
+<td class="col-critere" style="width: 25%; word-wrap: break-word;">
+           Respect Disponibilité (&lt; 2h/an)
+          </td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            99.9% (8.77h/an)
+           </span>
+<span class="ao-tooltip-text">
+            Source: SBM_MSA_v.3.0. .docx.pdf (p.12 - Art 4.1)
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            99.95% (4.38h/an)
+           </span>
+<span class="ao-tooltip-text">
+            Source: _Contrat type FR (Annexe 1) &amp; IT Security Form (Ligne 10.4)
+           </span>
+</td>
+<td class="ao-tooltip-container border-l border-gray-400" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            99.9% (8.77h/an)
+           </span>
+<span class="ao-tooltip-text">
+            Source: Contrat de services ITEC (p.16 - Annexe 1)
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            99.9% (8.77h/an)
+           </span>
+<span class="ao-tooltip-text">
+            Source: Offre Technique NEXIUS (p.20)
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            99.95% (4.38h/an)
+           </span>
+<span class="ao-tooltip-text">
+            Source: Annexe 1 - Hébergement.pdf (p.13)
+           </span>
+</td>
+</tr>
+<tr>
+<td class="col-critere" style="width: 25%; word-wrap: break-word;">
+           Architecture &amp; Sécurité
+          </td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            ISO 27001, HIPAA, PenTest
+           </span>
+<span class="ao-tooltip-text">
+            Source: Certificate for ISO 27001...jpg &amp; SBM - Letter of Attestation (PenTest)...2024.pdf &amp; IT Security Form... - SBM Completed.xlsx (Q1.1)
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            ISO 27001
+           </span>
+<span class="ao-tooltip-text">
+            Source: Certi-Trust - Certificat ISO 27001 - AGENDIZE - SIGNED.pdf
+           </span>
+</td>
+<td class="ao-tooltip-container border-l border-gray-400" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            ISO 27001
+           </span>
+<span class="ao-tooltip-text">
+            Source: IT Security Form ITEC (Ligne 1.1)
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Architecture Microservices
+           </span>
+<span class="ao-tooltip-text">
+            Source: Offre Technique NEXIUS (p.26)
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            AWS Paris (Multi-AZ)
+           </span>
+<span class="ao-tooltip-text">
+            Source: Annexe 1 - Hébergement.pdf (p.5, p.12)
+           </span>
+</td>
+</tr>
+<tr>
+<td class="col-critere" style="width: 25%; word-wrap: break-word;">
+           Plan de Reprise (Continuité/Sinistre)
+          </td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Robuste (RTO 72h)
+           </span>
+<span class="ao-tooltip-text">
+            Source: SBM_Overview of_ BC_DR Plan.pdf (p.18)
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Standard (BCP/DRP confirmé)
+           </span>
+<span class="ao-tooltip-text">
+            Source: IT Security Form... - TP Evaluation.csv (Ligne 10.3)
+           </span>
+</td>
+<td class="ao-tooltip-container border-l border-gray-400" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Standard (RTO 4h, RPO 24h)
+           </span>
+<span class="ao-tooltip-text">
+            Source: Contrat de services ITEC (p.16 - Annexe 1)
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Standard (RTO 4h, RPO 24h)
+           </span>
+<span class="ao-tooltip-text">
+            Source: Offre Technique NEXIUS (p.22)
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Point fort (Détaillé, RTO &lt; 2h, RPO &lt; 5min)
+           </span>
+<span class="ao-tooltip-text">
+            Source: Annexe 1 - Hébergement.pdf (p.15 - PRA)
+           </span>
+</td>
+</tr>
+<tr>
+<td class="col-critere" style="width: 25%; word-wrap: break-word;">Support (Portail, Niveaux, Langue)</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;"><span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">Point fort (Chat 24/5, AM dédié, SLA)</span><span class="ao-tooltip-text">Source: Master Service Agreement (Annexe 2 - SLA)</span></td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;"><span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">Point fort (Multi-canal 8-18h, GTR 4h)</span><span class="ao-tooltip-text">Source: Réponse Agendize (Accompagnement)</span></td>
+<td class="ao-tooltip-container border-l border-gray-400" style="width: 14%; vertical-align: middle; word-wrap: break-word;"><span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">Bon (Tél/Email 9-18h, SLA contractuels)</span><span class="ao-tooltip-text">Source: Contrat Type (Art 4. SUPPORT) &amp; Offre Technique</span></td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;"><span style="font-size: 0.9em; word-wrap: break-word; white-space: normal; color: var(--grey);">À compléter...</span><span class="ao-tooltip-text">Source: À compléter...</span></td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;"><span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">Bon (GLPI 9-18h, SLA contractuels)</span><span class="ao-tooltip-text">Source: Mémoire.pdf (Sect 4.3 - Support)</span></td>
+</tr>
+</tbody>
+<tbody>
+<tr class="row-total" style="background-color: var(--nord6); font-size: 1.1em;">
+<td colspan="6" style="font-weight: 700; color: var(--nord0); padding-left: 5px;">
+           Projet
+          </td>
+</tr>
+<tr>
+<td class="col-critere" style="width: 25%; word-wrap: break-word;">
+           Engagement livraison Fin 2026
+          </td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            N/A (SaaS Lot 1)
+           </span>
+<span class="ao-tooltip-text">
+            Source: Solution SaaS existante. Pas un projet de dév. long, mais un "Setup rapide" de 10k€. (Source: Solution de planification Enterprise, p.16)
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Go (Fin 2026)
+           </span>
+<span class="ao-tooltip-text">
+            Source: L'offre inclut une phase de "Build" (dév. spécifiques, intégrations) de 280k€. (Source: Modèle économique, p.3)
+           </span>
+</td>
+<td class="ao-tooltip-container border-l border-gray-400" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Go (Fin 2026)
+           </span>
+<span class="ao-tooltip-text">
+            Source: Point fort (Oct 2026) - Offre technique ITEC (p.23 - Planning)
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Go (Fin 2026)
+           </span>
+<span class="ao-tooltip-text">
+            Source: Point fort (MEP 12ème mois) - Offre Technique NEXIUS (p.23)
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Go (Fin 2026)
+           </span>
+<span class="ao-tooltip-text">
+            Source: Point fort (V1 12ème mois) - Mémoire.pdf (p.74 - Macro-planning)
+           </span>
+</td>
+</tr>
+</tbody>
+<tbody>
+<tr class="row-total" style="background-color: var(--nord6); font-size: 1.1em;">
+<td colspan="6" style="font-weight: 700; color: var(--nord0); padding-left: 5px;">
+           Conformité
+          </td>
+</tr>
+<tr>
+<td class="col-critere" style="width: 25%; word-wrap: break-word;">
+           Respect Cession / Exclusivité
+          </td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            N/A (Lot 1)
+           </span>
+<span class="ao-tooltip-text">
+            Source: Grille RFP
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Go (Lot 1 - Exclusivité dev.)
+           </span>
+<span class="ao-tooltip-text">
+            Source: Info RFP (non présent ds les docs)
+           </span>
+</td>
+<td class="ao-tooltip-container border-l border-gray-400" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Go (Cession sources Lot 2)
+           </span>
+<span class="ao-tooltip-text">
+            Source: Contrat de services ITEC (p.10 - Art 16.2)
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Go (Cession sources Lot 2)
+           </span>
+<span class="ao-tooltip-text">
+            Source: Offre Technique NEXIUS (p.21)
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Go (Cession sources Lot 2)
+           </span>
+<span class="ao-tooltip-text">
+            Source: Mémoire.pdf (p.15 - Propriété intellectuelle)
+           </span>
+</td>
+</tr>
+<tr>
+<td class="col-critere" style="width: 25%; word-wrap: break-word;">
+           Qualité réponse RGPD
+          </td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Bonne (DPO, UE)
+           </span>
+<span class="ao-tooltip-text">
+            Source: RGPD_FR- SGS France - Questionnaire (2).xlsx (Q2)
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Bonne (Q° détaillé, DPO)
+           </span>
+<span class="ao-tooltip-text">
+            Source: IT Security Form... - TP Evaluation.csv (Lignes 8.1, 8.3)
+           </span>
+</td>
+<td class="ao-tooltip-container border-l border-gray-400" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Bonne (Conforme, DPO)
+           </span>
+<span class="ao-tooltip-text">
+            Source: Questionnaire RGPD ITEC (Q2, Q3)
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Bonne (Conforme, DPO, France)
+           </span>
+<span class="ao-tooltip-text">
+            Source: Offre Technique NEXIUS (p.26)
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Bonne (DPO, AWS Paris, Q° détaillé)
+           </span>
+<span class="ao-tooltip-text">
+            Source: Questionnaire RGPD.csv (Q2, Q25)
+           </span>
+</td>
+</tr>
+<tr>
+<td class="col-critere" style="width: 25%; word-wrap: break-word;">
+           Qualité réponse RSE (Green IT)
+          </td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Point fort (UN Global Compact, B Corp)
+           </span>
+<span class="ao-tooltip-text">
+            Source: team.blue_impact_report_25 (1).pdf (p.36)
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Bonne (Signataire Code SGS)
+           </span>
+<span class="ao-tooltip-text">
+            Source: Agendize_Politique environnementale_V25.09.pdf
+           </span>
+</td>
+<td class="ao-tooltip-container border-l border-gray-400" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Point fort (Égalité F/H 92%, Éco-conception)
+           </span>
+<span class="ao-tooltip-text">
+            Source: RFI Genilink_SGS - ITEC (Q24)
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Point fort (EcoVadis Silver 2024)
+           </span>
+<span class="ao-tooltip-text">
+            Source: Présentation Nexius Group 2025.pdf (p.4)
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Bonne (Signataire Code SGS, Éco-conception)
+           </span>
+<span class="ao-tooltip-text">
+            Source: SGS Code de Conduite Fournisseur - Signed (1).pdf
+           </span>
+</td>
+</tr>
+</tbody>
+<tbody>
+<tr class="row-total" style="background-color: var(--nord6); font-size: 1.1em;">
+<td colspan="6" style="font-weight: 700; color: var(--nord0); padding-left: 5px;">
+           Coûts
+          </td>
+</tr>
+<tr>
+<td class="col-critere" style="width: 25%; word-wrap: break-word;">
+           Coût Projet (Build / Setup)
+          </td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            10 000 €
+           </span>
+<span class="ao-tooltip-text">
+            Source: Solution de planification Enterprise (p.16)
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            279 650 €
+           </span>
+<span class="ao-tooltip-text">
+            Source: Modèle économique Agendize pour le Groupe SGS.pdf (p.3)
+           </span>
+</td>
+<td class="ao-tooltip-container border-l border-gray-400" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            368 545 €
+           </span>
+<span class="ao-tooltip-text">
+            Source: Offre financière ITEC (p.3)
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            693 000 € (incl. 1 an TMA/Run)
+           </span>
+<span class="ao-tooltip-text">
+            Source: Offre financière NEXIUS (p.7)
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            379 171 €
+           </span>
+<span class="ao-tooltip-text">
+            Source: Annexe 2 - synthèse budgétaire.pdf (p.13)
+           </span>
+</td>
+</tr>
+<tr>
+<td class="col-critere" style="width: 25%; word-wrap: break-word;">
+           Coût Récurrent (Run Annuel stable, post-A1)
+          </td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            272 220 €
+           </span>
+<span class="ao-tooltip-text">
+            Source: Solution de planification Enterprise (p.16 - Prix 2e année)
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            299 400 €
+           </span>
+<span class="ao-tooltip-text">
+            Source: Modèle économique Agendize pour le Groupe SGS.pdf (p.4)
+           </span>
+</td>
+<td class="ao-tooltip-container border-l border-gray-400" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            274 190 €
+           </span>
+<span class="ao-tooltip-text">
+            Source: Offre financière ITEC (p.3)
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            111 600 €
+           </span>
+<span class="ao-tooltip-text">
+            Source: Offre financière NEXIUS (p.7)
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            79 505 €
+           </span>
+<span class="ao-tooltip-text">
+            Source: Annexe 2 - synthèse budgétaire.pdf (p.14)
+           </span>
+</td>
+</tr>
+<tr>
+<td class="col-critere" style="width: 25%; word-wrap: break-word;">
+           Coût Total 3 ans (Build + 3xRun ou équiv.)
+          </td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            946 660 €
+           </span>
+<span class="ao-tooltip-text">
+            Source: Calcul (Y1 402k€ incl. Build + 2xRun 272k€) - Solution de planification (p.16)
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            1 177 850 €
+           </span>
+<span class="ao-tooltip-text">
+            Source: Calcul (Build 279k€ + 3*Run 299k€) - Modèle économique p.3-4
+           </span>
+</td>
+<td class="ao-tooltip-container border-l border-gray-400" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            1 191 115 €
+           </span>
+<span class="ao-tooltip-text">
+            Source: Calcul (Build 368k€ + 3*Run 274k€) - Offre financière (p.3)
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            916 200 €
+           </span>
+<span class="ao-tooltip-text">
+            Source: Calcul (Build 693k€ incl. A1 + 2*Run 111.6k€) - Offre financière (p.7)
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            617 686 €
+           </span>
+<span class="ao-tooltip-text">
+            Source: Calcul (Build 379k€ + 3*Run 79.5k€)
+           </span>
+</td>
+</tr>
+<tr>
+<td class="col-critere" style="width: 25%; word-wrap: break-word;">
+           Risque Contractuel (Droit applicable)
+          </td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Majeur (Droit Chypre, Tribunal Limassol)
+           </span>
+<span class="ao-tooltip-text">
+            Source: SBM_MSA_v.3.0. .docx.pdf (p.29 - Art 12.11, 12.12)
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Faible (Droit Français)
+           </span>
+<span class="ao-tooltip-text">
+            Source: _Contrat type FR 26 avril 2024.docx (p.1)
+           </span>
+</td>
+<td class="ao-tooltip-container border-l border-gray-400" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Faible (Droit Français)
+           </span>
+<span class="ao-tooltip-text">
+            Source: Contrat de services ITEC (p.13 - Art 24)
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Faible (Droit Français)
+           </span>
+<span class="ao-tooltip-text">
+            Source: Offre Technique NEXIUS (p.27)
+           </span>
+</td>
+<td class="ao-tooltip-container" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            Faible (Droit Français)
+           </span>
+<span class="ao-tooltip-text">
+            Source: 2025_10_16 Extrait KBIS - ACTENCY.pdf
+           </span>
+</td>
+</tr>
+</tbody>
+<tbody>
+<tr class="row-total" style="background-color: var(--nord6); font-size: 1.1em;">
+<td colspan="6" style="font-weight: 700; color: var(--nord0); padding-left: 5px;">
+           Notation
+          </td>
+</tr>
+<tr>
+<td class="col-critere" style="width: 25%; word-wrap: break-word;">
+           Note Adéquation (Solution Éditeur)
+          </td>
+<td class="ao-tooltip-container text-center" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 1.2em; letter-spacing: 1px;">
+<span style="color: var(--nord10);">
+             ★★
+            </span>
+<span style="color: var(--nord4);">
+             ☆☆☆
+            </span>
+</span>
+<span class="ao-tooltip-text">
+            Source: Adéquation fonctionnelle partielle, grille indique 'Vigilance'.
+           </span>
+</td>
+<td class="ao-tooltip-container text-center" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 1.2em; letter-spacing: 1px;">
+<span style="color: var(--nord10);">
+             ★★★★
+            </span>
+<span style="color: var(--nord4);">
+             ☆
+            </span>
+</span>
+<span class="ao-tooltip-text">
+            Source: Couverture fonctionnelle native très élevée ('Point Fort').
+           </span>
+</td>
+<td class="text-center border-l border-gray-400" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; color: var(--grey);">
+            N/A
+           </span>
+</td>
+<td class="text-center" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; color: var(--grey);">
+            N/A
+           </span>
+</td>
+<td class="text-center" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; color: var(--grey);">
+            N/A
+           </span>
+</td>
+</tr>
+<tr>
+<td class="col-critere" style="width: 25%; word-wrap: break-word;">
+           Note Adéquation (Dév. Spécifique)
+          </td>
+<td class="text-center" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; color: var(--grey);">
+            N/A
+           </span>
+</td>
+<td class="text-center" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; color: var(--grey);">
+            N/A
+           </span>
+</td>
+<td class="ao-tooltip-container text-center border-l border-gray-400" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 1.2em; letter-spacing: 1px;">
+<span style="color: var(--nord10);">
+             ★★★
+            </span>
+<span style="color: var(--nord4);">
+             ☆☆
+            </span>
+</span>
+<span class="ao-tooltip-text">
+            Source: Réponse standard 'À construire', semble complète.
+           </span>
+</td>
+<td class="ao-tooltip-container text-center" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 1.2em; letter-spacing: 1px;">
+<span style="color: var(--nord10);">
+             ★★★★
+            </span>
+<span style="color: var(--nord4);">
+             ☆
+            </span>
+</span>
+<span class="ao-tooltip-text">
+            Source: Réponse 'très détaillée', ce qui est un bon point.
+           </span>
+</td>
+<td class="ao-tooltip-container text-center" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 1.2em; letter-spacing: 1px;">
+<span style="color: var(--nord10);">
+             ★★★★
+            </span>
+<span style="color: var(--nord4);">
+             ☆
+            </span>
+</span>
+<span class="ao-tooltip-text">
+            Source: Approche projet (MVP+Lots) claire et structurée.
+           </span>
+</td>
+</tr>
+<tr>
+<td class="col-critere" style="width: 25%; word-wrap: break-word;">
+           Note Technique &amp; Sécurité
+          </td>
+<td class="ao-tooltip-container text-center" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 1.2em; letter-spacing: 1px;">
+<span style="color: var(--nord10);">
+             ★★
+            </span>
+<span style="color: var(--nord4);">
+             ☆☆☆
+            </span>
+</span>
+<span class="ao-tooltip-text">
+            Source: Points forts sur ISO 27001/PenTest, mais SLA hors cible (Dispo 99.9% et GTR) et RTO très long (72h).
+           </span>
+</td>
+<td class="ao-tooltip-container text-center" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 1.2em; letter-spacing: 1px;">
+<span style="color: var(--nord10);">
+             ★★★
+            </span>
+<span style="color: var(--nord4);">
+             ☆☆
+            </span>
+</span>
+<span class="ao-tooltip-text">
+            Source: ISO 27001 et Dispo 99.95%, mais GTR hors cible (&lt;4h) et RTO/RPO standard.
+           </span>
+</td>
+<td class="ao-tooltip-container text-center border-l border-gray-400" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 1.2em; letter-spacing: 1px;">
+<span style="color: var(--nord10);">
+             ★★
+            </span>
+<span style="color: var(--nord4);">
+             ☆☆☆
+            </span>
+</span>
+<span class="ao-tooltip-text">
+            Source: ISO 27001, mais SLA hors cible (Dispo 99.9% et GTR 4h).
+           </span>
+</td>
+<td class="ao-tooltip-container text-center" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 1.2em; letter-spacing: 1px;">
+<span style="color: var(--nord10);">
+             ★★
+            </span>
+<span style="color: var(--nord4);">
+             ☆☆☆
+            </span>
+</span>
+<span class="ao-tooltip-text">
+            Source: Architecture Microservices, mais SLA hors cible (Dispo 99.9% et GTR 4h).
+           </span>
+</td>
+<td class="ao-tooltip-container text-center" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 1.2em; letter-spacing: 1px;">
+<span style="color: var(--nord10);">
+             ★★★★
+            </span>
+<span style="color: var(--nord4);">
+             ☆
+            </span>
+</span>
+<span class="ao-tooltip-text">
+            Source: Meilleure offre technique : Dispo 99.95%, RTO/RPO excellent (&lt;2h, &lt;5min), AWS Paris.
+           </span>
+</td>
+</tr>
+<tr>
+<td class="col-critere" style="width: 25%; word-wrap: break-word;">
+           Note Pilotage Projet &amp; RSE
+          </td>
+<td class="ao-tooltip-container text-center" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 1.2em; letter-spacing: 1px;">
+<span style="color: var(--nord10);">
+             ★★★★
+            </span>
+<span style="color: var(--nord4);">
+             ☆
+            </span>
+</span>
+<span class="ao-tooltip-text">
+            Source: RSE 'Point Fort' (B Corp). Livraison N/A car setup SaaS.
+           </span>
+</td>
+<td class="ao-tooltip-container text-center" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 1.2em; letter-spacing: 1px;">
+<span style="color: var(--nord10);">
+             ★★★★
+            </span>
+<span style="color: var(--nord4);">
+             ☆
+            </span>
+</span>
+<span class="ao-tooltip-text">
+            Source: Engagement clair sur le planning (phase Build) et RSE 'Bonne'.
+           </span>
+</td>
+<td class="ao-tooltip-container text-center border-l border-gray-400" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 1.2em; letter-spacing: 1px;">
+<span style="color: var(--nord10);">
+             ★★★★★
+            </span>
+<span style="color: var(--nord4);">
+</span>
+</span>
+<span class="ao-tooltip-text">
+            Source: RSE 'Point Fort' et engagement clair sur le planning.
+           </span>
+</td>
+<td class="ao-tooltip-container text-center" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 1.2em; letter-spacing: 1px;">
+<span style="color: var(--nord10);">
+             ★★★★★
+            </span>
+<span style="color: var(--nord4);">
+</span>
+</span>
+<span class="ao-tooltip-text">
+            Source: RSE 'Point Fort' (EcoVadis) et engagement clair sur le planning.
+           </span>
+</td>
+<td class="ao-tooltip-container text-center" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 1.2em; letter-spacing: 1px;">
+<span style="color: var(--nord10);">
+             ★★★★
+            </span>
+<span style="color: var(--nord4);">
+             ☆
+            </span>
+</span>
+<span class="ao-tooltip-text">
+            Source: Engagement clair sur le planning et RSE 'Bonne'.
+           </span>
+</td>
+</tr>
+<tr>
+<td class="col-critere" style="width: 25%; word-wrap: break-word;">
+           Note Coûts &amp; Risques
+          </td>
+<td class="ao-tooltip-container text-center" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 1.2em; letter-spacing: 1px;">
+<span style="color: var(--nord10);">
+             ★
+            </span>
+<span style="color: var(--nord4);">
+             ☆☆☆☆
+            </span>
+</span>
+<span class="ao-tooltip-text">
+            Source: Risque contractuel 'Majeur' (Droit Chypre) et coût total élevé (947k€).
+           </span>
+</td>
+<td class="ao-tooltip-container text-center" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 1.2em; letter-spacing: 1px;">
+<span style="color: var(--nord10);">
+             ★★
+            </span>
+<span style="color: var(--nord4);">
+             ☆☆☆
+            </span>
+</span>
+<span class="ao-tooltip-text">
+            Source: Coût total très élevé (1.18M€), mais risque légal faible.
+           </span>
+</td>
+<td class="ao-tooltip-container text-center border-l border-gray-400" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 1.2em; letter-spacing: 1px;">
+<span style="color: var(--nord10);">
+             ★★
+            </span>
+<span style="color: var(--nord4);">
+             ☆☆☆
+            </span>
+</span>
+<span class="ao-tooltip-text">
+            Source: Coût total le plus élevé (1.19M€), mais risque légal faible.
+           </span>
+</td>
+<td class="ao-tooltip-container text-center" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 1.2em; letter-spacing: 1px;">
+<span style="color: var(--nord10);">
+             ★★★
+            </span>
+<span style="color: var(--nord4);">
+             ☆☆
+            </span>
+</span>
+<span class="ao-tooltip-text">
+            Source: Coût total élevé (916k€), mais risque légal faible.
+           </span>
+</td>
+<td class="ao-tooltip-container text-center" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 1.2em; letter-spacing: 1px;">
+<span style="color: var(--nord10);">
+             ★★★★★
+            </span>
+<span style="color: var(--nord4);">
+</span>
+</span>
+<span class="ao-tooltip-text">
+            Source: Meilleure offre : Coût total le plus bas (618k€) et risque légal faible.
+           </span>
+</td>
+</tr>
+<tr>
+<td class="col-critere" style="width: 25%; word-wrap: break-word;">
+           NOTE GLOBALE (CALCULÉE)
+          </td>
+<td class="ao-tooltip-container text-center" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            2/5
+           </span>
+<span class="ao-tooltip-text">
+            Moyenne arithmétique des 4 notes de la Section 6.
+           </span>
+</td>
+<td class="ao-tooltip-container text-center" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            3/5
+           </span>
+<span class="ao-tooltip-text">
+            Moyenne arithmétique des 4 notes de la Section 6.
+           </span>
+</td>
+<td class="ao-tooltip-container text-center border-l border-gray-400" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            3/5
+           </span>
+<span class="ao-tooltip-text">
+            Moyenne arithmétique des 4 notes de la Section 6.
+           </span>
+</td>
+<td class="ao-tooltip-container text-center" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            4/5
+           </span>
+<span class="ao-tooltip-text">
+            Moyenne arithmétique des 4 notes de la Section 6.
+           </span>
+</td>
+<td class="ao-tooltip-container text-center" style="width: 14%; vertical-align: middle; word-wrap: break-word;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            4/5
+           </span>
+<span class="ao-tooltip-text">
+            Moyenne arithmétique des 4 notes de la Section 6.
+           </span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sub-content-tab hidden" id="synthese-podium">
+<h3 class="ao-section-card-header" style="font-size: 1.5em; margin-top: 10px;">
+       Podium (Basé sur le Coût Total 3 ans)
+      </h3>
+<div class="ao-podium-container">
+<div class="ao-podium-step bronze">
+<div class="ao-podium-rank">
+         3
         </div>
-
-        <div class="page-container">
-            <div id="accueil-container" class="accueil-container content-tab">
-                <h2>📊 Tableau de Bord Synthétique</h2>
-                <div id="kpi-container"></div>
-                <div id="charts-container">
-                    <div class="chart-wrapper">
-                        <h3>Répartition par Priorité</h3>
-                        <canvas id="priorityChart"></canvas>
-                    </div>
-                    <div class="chart-wrapper">
-                        <h3 id="p1ByBrickChartTitle">Modules par Appli</h3>
-                        <div id="p1ByBrickFilter" class="chart-legend-filter">
-                            </div>
-                        <canvas id="p1ByBrickChart"></canvas>
-                    </div>
-                    <div class="chart-wrapper">
-                        <h3>Modules par Étiquette</h3>
-                        <canvas id="featuresByTagChart"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <div id="controls-container" class="controls-container content-tab hidden">
-                <h2>Gestion des applis, modules et fonctionnalités</h2>
-                 <div class="planning-header">
-                    <div class="filter-controls">
-                        <div class="filter-group">
-                            <label for="brick-filter-planning">Filtrer par appli</label>
-                            <div id="brick-filter-planning" class="multi-select-container">
-                                <div class="select-box">
-                                    <span>Toutes les applis</span>
-                                </div>
-                                <div id="brick-checkboxes-planning" class="checkboxes hidden">
-                                    <input type="text" class="multi-select-search" placeholder="Rechercher...">
-                                    <div class="multi-select-list"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="filter-group">
-                            <label for="tag-filter-planning">Filtrer par étiquette</label>
-                            <div id="tag-filter-planning" class="multi-select-container">
-                                <div class="select-box">
-                                    <span>Toutes les étiquettes</span>
-                                </div>
-                                <div id="tag-checkboxes-planning" class="checkboxes hidden">
-                                    <input type="text" class="multi-select-search" placeholder="Rechercher...">
-                                    <div class="multi-select-list"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="filter-group">
-                            <label for="module-filter-planning">Filtrer par module</label>
-                            <div id="module-filter-planning" class="multi-select-container">
-                                <div class="select-box">
-                                    <span>Tous les modules</span>
-                                </div>
-                                <div id="module-checkboxes-planning" class="checkboxes hidden">
-                                    <input type="text" class="multi-select-search" placeholder="Rechercher...">
-                                    <div class="multi-select-list"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="filter-group">
-                            <label for="feature-filter-planning">Recherche globale</label>
-                            <input type="text" id="feature-filter-planning" class="header-filter" placeholder="Appli, module, fonction...">
-                        </div>
-                    </div>
-                     <p id="planning-counter" class="project-counter-sync"></p>
-                </div>
-
-                <div id="loader-container" class="status-message">
-                    <h1>Préparation de l'application...</h1>
-                    <ul id="loader-steps">
-                        <li id="step1"><span>Connexion à la base de données</span><span class="status"></span></li>
-                        <li id="step2"><span>Chargement des paramètres</span><span class="status"></span></li>
-                        <li id="step3"><span>ChargEMENT des données</span><span class="status"></span></li>
-                        <li id="step4"><span>Affichage de l'interface</span><span class="status"></span></li>
-                    </ul>
-                </div>
-
-                <div id="table-wrapper" class="hidden"></div>
-
-                <div id="button-group-wrapper" class="button-group hidden">
-                    <button class="button add-button" id="add-task-btn">Ajouter une appli</button>
-                    <button class="button add-button" id="add-module-btn" style="background-color: var(--nord9);">Ajouter un module</button>
-                </div>
-            </div>
-
-            <div id="dnd-container" class="dnd-container content-tab hidden">
-                <h2>Priorisation</h2>
-                <div class="planning-header">
-                    <div class="filter-controls">
-                        <div class="filter-group">
-                            <label for="brick-filter-dnd">Filtrer par appli</label>
-                            <div id="brick-filter-dnd" class="multi-select-container">
-                                <div class="select-box">
-                                    <span>Toutes les applis</span>
-                                </div>
-                                <div id="brick-checkboxes-dnd" class="checkboxes hidden">
-                                    <input type="text" class="multi-select-search" placeholder="Rechercher...">
-                                    <div class="multi-select-list"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="filter-group">
-                            <label for="tag-filter-dnd">Filtrer par étiquette</label>
-                            <div id="tag-filter-dnd" class="multi-select-container">
-                                <div class="select-box">
-                                    <span>Toutes les étiquettes</span>
-                                </div>
-                                <div id="tag-checkboxes-dnd" class="checkboxes hidden">
-                                    <input type="text" class="multi-select-search" placeholder="Rechercher...">
-                                    <div class="multi-select-list"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="filter-group">
-                            <label for="module-filter-dnd">Filtrer par module</label>
-                            <div id="module-filter-dnd" class="multi-select-container">
-                                <div class="select-box">
-                                    <span>Tous les modules</span>
-                                </div>
-                                <div id="module-checkboxes-dnd" class="checkboxes hidden">
-                                    <input type="text" class="multi-select-search" placeholder="Rechercher...">
-                                    <div class="multi-select-list"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="filter-group">
-                            <label for="feature-filter-dnd">Recherche globale</label>
-                            <input type="text" id="feature-filter-dnd" class="header-filter" placeholder="Module, fonction...">
-                        </div>
-                    </div>
-                    <div class="view-switch-container">
-                        <label for="dnd-view-switch" class="switch-label">Modules</label>
-                        <label class="switch">
-                            <input type="checkbox" id="dnd-view-switch">
-                            <span class="slider round"></span>
-                        </label>
-                        <label for="dnd-view-switch" class="switch-label">Fonctionnalités</label>
-                    </div>
-                </div>
-                <div class="dnd-board">
-                    <div class="dnd-column">
-                        <h3>Priorité 1</h3>
-                        <div id="dnd-p1" class="dnd-list" data-priority="P1"></div>
-                    </div>
-                    <div class="dnd-column">
-                        <h3>Priorité 2</h3>
-                        <div id="dnd-p2" class="dnd-list" data-priority="P2"></div>
-                    </div>
-                    <div class="dnd-column">
-                        <h3>Priorité 3</h3>
-                        <div id="dnd-p3" class="dnd-list" data-priority="P3"></div>
-                    </div>
-                    <div class="dnd-column">
-                        <h3>À définir</h3>
-                        <div id="dnd-adefinir" class="dnd-list" data-priority="À définir"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="reorg-container" class="dnd-container content-tab hidden">
-                <h2>Réorganisation des fonctionnalités</h2>
-                <div class="planning-header">
-                    <div class="filter-controls">
-                        <div class="filter-group">
-                            <label for="brick-filter-reorg">Filtrer par appli</label>
-                            <div id="brick-filter-reorg" class="multi-select-container">
-                                <div class="select-box">
-                                    <span>Toutes les applis</span>
-                                </div>
-                                <div id="brick-checkboxes-reorg" class="checkboxes hidden">
-                                    <input type="text" class="multi-select-search" placeholder="Rechercher...">
-                                    <div class="multi-select-list"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="filter-group">
-                            <label for="tag-filter-reorg">Filtrer par étiquette</label>
-                            <div id="tag-filter-reorg" class="multi-select-container">
-                                <div class="select-box">
-                                    <span>Toutes les étiquettes</span>
-                                </div>
-                                <div id="tag-checkboxes-reorg" class="checkboxes hidden">
-                                    <input type="text" class="multi-select-search" placeholder="Rechercher...">
-                                    <div class="multi-select-list"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="filter-group">
-                            <label for="module-filter-reorg">Filtrer par module</label>
-                            <div id="module-filter-reorg" class="multi-select-container">
-                                <div class="select-box">
-                                    <span>Tous les modules</span>
-                                </div>
-                                <div id="module-checkboxes-reorg" class="checkboxes hidden">
-                                    <input type="text" class="multi-select-search" placeholder="Rechercher...">
-                                    <div class="multi-select-list"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="filter-group">
-                            <label for="feature-filter-reorg">Recherche globale</label>
-                            <input type="text" id="feature-filter-reorg" class="header-filter" placeholder="Module, fonction...">
-                        </div>
-                    </div>
-                </div>
-                <p style="margin-top: -15px; margin-bottom: 25px; color: var(--grey);">Glissez-déposez une fonctionnalité d'un module à un autre pour la ré-assigner.</p>
-                <div id="reorg-board" class="dnd-board">
-                    </div>
-            </div>
-
-            <div id="mvp-container" class="mvp-container content-tab hidden">
-                <h2>MVP (P1)</h2>
-                 <div id="mvp-filter-grid" class="mvp-filter-grid">
-                    <div class="mvp-filter-card active" data-filter="all">
-                        <h3>Tout voir</h3>
-                    </div>
-                    <div class="mvp-filter-card" data-filter="Adelsoft">
-                        <h3>MVP Adelsoft</h3>
-                    </div>
-                    <div class="mvp-filter-card" data-filter="Agenda">
-                        <h3>MVP Agenda</h3>
-                    </div>
-                    <div class="mvp-filter-card" data-filter="Pilote">
-                       <h3>MVP Pilote</h3>
-                    </div>
-                </div>
-                <div id="mvp-view-content">
-                    </div>
-            </div>
-
-             <div id="admin-container" class="admin-container content-tab hidden">
-                <h2>Administration</h2>
-                <div class="admin-sections">
-                    <div id="admin-priorities" class="admin-section">
-                        <h3>Gestion des Priorités</h3>
-                        <form id="add-priority-form" class="admin-add-form">
-                            <input type="text" id="new-priority-name" placeholder="Nom de la priorité" required>
-                            <button type="submit" class="button add-button">Ajouter</button>
-                        </form>
-                        <ul id="priorities-list" class="admin-list"></ul>
-                    </div>
-                    <div id="admin-tags" class="admin-section">
-                        <h3>Gestion des Étiquettes</h3>
-                        <form id="add-tag-form" class="admin-add-form">
-                            <input type="text" id="new-tag-name" placeholder="Nom de l'étiquette" required>
-                            <button type="submit" class="button add-button">Ajouter</button>
-                        </form>
-                         <ul id="tags-list" class="admin-list"></ul>
-                    </div>
-                     <div id="admin-export" class="admin-section">
-                        <h3>Exporter les Données</h3>
-                        <p>Sauvegardez l'ensemble des données du projet.</p>
-                        <div class="button-group" style="justify-content: flex-start;">
-                            <button id="export-json-btn" class="button add-button">Exporter en JSON</button>
-                            <button id="export-csv-btn" class="button add-button">Exporter en CSV</button>
-                        </div>
-                    </div>
-                </div>
-                <div id="admin-anomalies" class="admin-section">
-                    <h3>Supervision des Données (Anomalies)</h3>
-                    <p>Cette section liste les incohérences potentielles dans les données. Cliquez sur un élément pour le corriger.</p>
-                    <div id="anomalies-container">
-                        </div>
-                </div>
-            </div>
-
-            <div id="mindmap-container" class="mindmap-container content-tab hidden">
-                <h2>🧱 Carte Structurelle</h2>
-                <div id="interactive-mindmap-container" class="interactive-mindmap-container"></div>
-            </div>
-
-            <div id="priority-mindmap-container" class="priority-mindmap-container content-tab hidden">
-                <h2>📊 Carte par Priorité</h2>
-                <div id="priority-mindmap-view" class="interactive-mindmap-container"></div>
-            </div>
-
-            <div id="detail-level-container" class="detail-level-container content-tab hidden">
-                 <h2>📊 Niveau de Détail des Modules</h2>
-                 <p>Ce tableau analyse la granularité et la description des fonctionnalités pour chaque module.</p>
-                 <div id="detail-level-table-container">
-                     </div>
-            </div>
-            <div id="static-mindmap-container" class="static-mindmap-container content-tab hidden">
-                <h2>🖼️ Carte Statique</h2>
-                <img src="Map.png" alt="Carte Mentale du Projet" style="width: 100%; height: auto; border-radius: 8px;">
-            </div>
-
-            <div id="documentation-container" class="admin-container content-tab hidden" style="line-height: 1.6;">
-                <h2>📚 Documentation de l'outil de priorisation Neo-CT</h2>
-
-                <h3>Objectif de l'application</h3>
-                <p>
-                    Cette application (SPA - Single Page Application) a été conçue pour centraliser, structurer et prioriser
+<div class="ao-podium-name">
+         SIMPLYBOOK
+        </div>
+<div class="ao-podium-score">
+         946 660 €
+        </div>
+</div>
+<div class="ao-podium-step unranked">
+<div class="ao-podium-rank"> 4 </div>
+<div class="ao-podium-name">
+         AGENDIZE
+        </div>
+<div class="ao-podium-score unranked-text-eval">
+         1 177 850 €
+        </div>
+</div>
+<div class="ao-podium-step unranked">
+<div class="ao-podium-rank"> 4 </div>
+<div class="ao-podium-name">
+         ITEC
+        </div>
+<div class="ao-podium-score unranked-text-eval">
+         1 191 115 €
+        </div>
+</div>
+<div class="ao-podium-step silver">
+<div class="ao-podium-rank">
+         2
+        </div>
+<div class="ao-podium-name">
+         NEXIUS
+        </div>
+<div class="ao-podium-score">
+         916 200 €
+        </div>
+</div>
+<div class="ao-podium-step gold">
+<div class="ao-podium-rank">
+         1
+        </div>
+<div class="ao-podium-name">
+         ACTENCY
+        </div>
+<div class="ao-podium-score">
+         617 686 €
+        </div>
+</div>
+</div><h3 class="ao-section-card-header" style="font-size: 1.5em; margin-top: 40px;">Podium (Basé sur la Note Globale)</h3><div class="ao-podium-container"><div class="ao-podium-step gold" style="height: 100%;"><div class="ao-podium-rank">1</div><div class="ao-podium-name">NEXIUS</div><div class="ao-podium-score">4/5</div></div><div class="ao-podium-step gold" style="height: 100%;"><div class="ao-podium-rank">1</div><div class="ao-podium-name">ACTENCY</div><div class="ao-podium-score">4/5</div></div><div class="ao-podium-step bronze" style="height: 60%;"><div class="ao-podium-rank">3</div><div class="ao-podium-name">AGENDIZE</div><div class="ao-podium-score">3/5</div></div><div class="ao-podium-step bronze" style="height: 60%;"><div class="ao-podium-rank">3</div><div class="ao-podium-name">ITEC</div><div class="ao-podium-score">3/5</div></div><div class="ao-podium-step unranked" style="height: 40%;"><div class="ao-podium-rank">5</div><div class="ao-podium-name">SIMPLYBOOK</div><div class="ao-podium-score">2/5</div></div></div>
+<h3 class="ao-section-card-header" style="font-size: 1.5em; margin-top: 40px;">
+       Synthèse des Points Clés
+      </h3>
+<div class="ao-table-wrapper" style="margin-top: 20px">
+<table class="ao-table" style="table-layout: fixed; width: 95%;">
+<thead>
+<tr>
+<th style="width: 20%; position: sticky; top: 0; z-index: 10; background-color: var(--nord6);">
+           Fournisseur
+          </th>
+<th style="width: 35%; position: sticky; top: 0; z-index: 10; background-color: var(--nord6);">
+           Points Forts
+          </th>
+<th style="width: 35%; position: sticky; top: 0; z-index: 10; background-color: var(--nord6);">
+           Points de Vigilance
+          </th>
+<th class="text-center" style="width: 10%; position: sticky; top: 0; z-index: 10; background-color: var(--nord6);">
+           Note Globale
+          </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="col-critere" style="width: 20%; word-wrap: break-word;">
+           SIMPLYBOOK
+          </td>
+<td style="vertical-align: top; font-size: 0.9em; line-height: 1.5; word-wrap: break-word;">
+<ul>
+<li>
+             Note Pilotage Projet &amp; RSE
+            </li>
+<li>
+             Qualité réponse RSE (Green IT)
+            </li>
+<li>
+             Pertinence des innovations (IA, etc.)
+            </li>
+<li>
+             Qualité UX/UI proposée
+            </li>
+<li>
+             Qualité réponse RGPD
+            </li>
+</ul>
+</td>
+<td style="vertical-align: top; font-size: 0.9em; line-height: 1.5; word-wrap: break-word;">
+<ul>
+<li>
+             Respect SLA Critique (&lt; 1h Résolution)
+            </li>
+<li>
+             Respect Disponibilité (&lt; 2h/an)
+            </li>
+<li>
+             Adéquation fonctionnelle
+            </li>
+</ul>
+</td>
+<td class="text-center" style="vertical-align: middle;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            2/5
+           </span>
+</td>
+</tr>
+<tr>
+<td class="col-critere" style="width: 20%; word-wrap: break-word;">
+           AGENDIZE
+          </td>
+<td style="vertical-align: top; font-size: 0.9em; line-height: 1.5; word-wrap: break-word;">
+<ul>
+<li>
+             Note Pilotage Projet &amp; RSE
+            </li>
+<li>
+             Qualité réponse RSE (Green IT)
+            </li>
+<li>
+             Pertinence des innovations (IA, etc.)
+            </li>
+<li>
+             Qualité UX/UI proposée
+            </li>
+<li>
+             Qualité réponse RGPD
+            </li>
+<li>
+             Adéquation fonctionnelle
+            </li>
+<li>
+             Note Adéquation (Solution Éditeur)
+            </li>
+</ul>
+</td>
+<td style="vertical-align: top; font-size: 0.9em; line-height: 1.5; word-wrap: break-word;">
+<ul>
+<li>
+             Respect Disponibilité (&lt; 2h/an)
+            </li>
+</ul>
+</td>
+<td class="text-center" style="vertical-align: middle;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            3/5
+           </span>
+</td>
+</tr>
+<tr>
+<td class="col-critere" style="width: 20%; word-wrap: break-word;">
+           ITEC
+          </td>
+<td style="vertical-align: top; font-size: 0.9em; line-height: 1.5; word-wrap: break-word;">
+<ul>
+<li>
+             Note Pilotage Projet &amp; RSE
+            </li>
+<li>
+             Qualité réponse RSE (Green IT)
+            </li>
+<li>
+             Pertinence des innovations (IA, etc.)
+            </li>
+<li>
+             Engagement livraison Fin 2026
+            </li>
+<li>
+             Qualité UX/UI proposée
+            </li>
+<li>
+             Qualité réponse RGPD
+            </li>
+</ul>
+</td>
+<td style="vertical-align: top; font-size: 0.9em; line-height: 1.5; word-wrap: break-word;">
+<ul>
+<li>
+             Respect SLA Critique (&lt; 1h Résolution)
+            </li>
+<li>
+             Respect Disponibilité (&lt; 2h/an)
+            </li>
+</ul>
+</td>
+<td class="text-center" style="vertical-align: middle;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            3/5
+           </span>
+</td>
+</tr>
+<tr>
+<td class="col-critere" style="width: 20%; word-wrap: break-word;">
+           NEXIUS
+          </td>
+<td style="vertical-align: top; font-size: 0.9em; line-height: 1.5; word-wrap: break-word;">
+<ul>
+<li>
+             Note Pilotage Projet &amp; RSE
+            </li>
+<li>
+             Qualité réponse RSE (Green IT)
+            </li>
+<li>
+             Pertinence des innovations (IA, etc.)
+            </li>
+<li>
+             Engagement livraison Fin 2026
+            </li>
+<li>
+             Qualité réponse RGPD
+            </li>
+</ul>
+</td>
+<td style="vertical-align: top; font-size: 0.9em; line-height: 1.5; word-wrap: break-word;">
+<ul>
+<li>
+             Respect Disponibilité (&lt; 2h/an)
+            </li>
+</ul>
+</td>
+<td class="text-center" style="vertical-align: middle;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            4/5
+           </span>
+</td>
+</tr>
+<tr>
+<td class="col-critere" style="width: 20%; word-wrap: break-word;">
+           ACTENCY
+          </td>
+<td style="vertical-align: top; font-size: 0.9em; line-height: 1.5; word-wrap: break-word;">
+<ul>
+<li>
+             Note Pilotage Projet &amp; RSE
+            </li>
+<li>
+             Qualité réponse RSE (Green IT)
+            </li>
+<li>
+             Pertinence des innovations (IA, etc.)
+            </li>
+<li>
+             Engagement livraison Fin 2026
+            </li>
+<li>
+             Qualité UX/UI proposée
+            </li>
+<li>
+             Qualité réponse RGPD
+            </li>
+<li>
+             Plan de Reprise (Continuité/Sinistre)
+            </li>
+</ul>
+</td>
+<td style="vertical-align: top; font-size: 0.9em; line-height: 1.5; word-wrap: break-word;">
+<ul>
+<li>
+             Respect SLA Critique (&lt; 1h Résolution)
+            </li>
+<li>
+             Respect Disponibilité (&lt; 2h/an)
+            </li>
+</ul>
+</td>
+<td class="text-center" style="vertical-align: middle;">
+<span style="font-size: 0.9em; word-wrap: break-word; white-space: normal;">
+            4/5
+           </span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="static-mindmap-container content-tab hidden" id="static-mindmap-container">
+<h2>
+      🖼️ Carte Statique
+     </h2>
+<img alt="Carte Mentale du Projet" src="Map.png" style="width: 100%; height: auto; border-radius: 8px;"/>
+</div>
+<div class="admin-container content-tab hidden" id="documentation-container" style="line-height: 1.6;">
+<h2>
+      📚 Documentation de l'outil de priorisation Neo-CT
+     </h2>
+<h3>
+      Objectif de l'application
+     </h3>
+<p>
+      Cette application (SPA - Single Page Application) a été conçue pour centraliser, structurer et prioriser
                     l'ensemble des développements prévus pour le projet Neo-CT. Elle remplace les fichiers Excel statiques
                     par une interface web dynamique, collaborative et connectée à une base de données en temps réel (Firestore).
-                </p>
-
-                <h3>Ce qu'elle propose : les fonctionnalités clés</h3>
-                <ul>
-                    <li><b>Gestion centralisée :</b> Ajouter, modifier et supprimer les "Applis" (briques logicielles),
-                        les "Modules" (fonctionnalités majeures) et les "Fonctionnalités" (sous-tâches ou user stories détaillées).</li>
-                    <li><b>Priorisation visuelle (Drag & Drop) :</b> L'onglet "Priorisation" offre une vue Kanban (P1, P2, P3, À définir)
-                        où les modules peuvent être glissés-déposés pour définir leur priorité.</li>
-                    <li><b>Actions groupées :</b> Cocher plusieurs modules dans l'onglet "Gestion" pour leur appliquer des étiquettes
-                        en masse ou les déplacer vers une autre appli.</li>
-                    <li><b>Vues d'analyse :</b>
-                        <ul>
-                            <li><b>Tableau de bord :</b> KPIs et graphiques sur la répartition des tâches.</li>
-                            <li><b>Vue MVP (P1) :</b> Un focus immédiat sur tous les modules P1, triés par appli et étiquette.</li>
-                            <li><b>Cartes (Mindmaps) :</b> Vues hiérarchiques pour comprendre la structure du projet (par appli ou par priorité).</li>
-                            <li><b>Niveau de Détail :</b> Analyse de la granularité et de la description des modules.</li>
-                        </ul>
-                    </li>
-                    <li><b>Administration :</b> Gérer la liste des étiquettes et des priorités disponibles, et exporter toutes les données.</li>
-                </ul>
-
-                <h3>Comment elle fonctionne ? (Techniquement)</h3>
-                <p>
-                    Tout est contenu dans un seul fichier <code>index.html</code>. L'application utilise :
-                </p>
-                <ul>
-                    <li><b>Firebase (Firestore) :</b> Pour la base de données. Chaque action (ajout, modification, glisser-déposer)
-                        est synchronisée en temps réel avec la base.</li>
-                    <li><b>Chart.js :</b> Pour les graphiques du tableau de bord.</li>
-                    <li><b>Sortable.js :</b> Pour toutes les fonctionnalités de glisser-déposer.</li>
-                    <li><b>Marked.js :</b> Pour afficher les descriptions des fonctionnalités (qui peuvent être écrites en Markdown).</li>
-                </ul>
-            </div>
-
-        </div>
-    </div>
-
-    <div id="kpi-tooltip-container"></div>
-    <div id="reorg-tooltip-container"></div>
-
-    <div id="project-modal" class="modal-overlay hidden">
-        <div class="modal-content">
-            <h3 id="project-modal-title">Ajouter une appli</h3>
-            <form id="project-form" data-existing-features="[]">
-                <input type="hidden" id="project-id">
-                <div>
-                    <label for="project-name">Nom de l'appli</label>
-                    <input type="text" id="project-name" required>
-                </div>
-                <div>
-                    <label for="project-description">Description de l'appli</label>
-                    <textarea id="project-description" rows="3"></textarea>
-                </div>
-
-                <div id="features-section">
-                    <h4>Ajouter des modules (optionnel)</h4>
-                    <div class="feature-inputs">
-                        <input type="text" id="feature-name" placeholder="Nom du nouveau module">
-                        <button type="button" id="add-feature-btn" class="button add-button">Ajouter</button>
-                    </div>
-                </div>
-
-                 <div class="modal-actions">
-                    <button type="submit" class="button save-button">Sauvegarder</button>
-                    <button type="button" id="cancel-project-btn" class="button cancel-button">Annuler</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div id="quick-feature-modal" class="modal-overlay hidden">
-        <div class="modal-content">
-            <h3 id="quick-feature-modal-title">Ajout rapide de modules</h3>
-            <form id="quick-feature-form">
-                <input type="hidden" id="quick-feature-modal-brick-id">
-                <div>
-                    <label for="quick-feature-names">Noms des modules (un par ligne)</label>
-                    <textarea id="quick-feature-names" rows="8" required placeholder="Module A&#10;Module B&#10;Module C"></textarea>
-                </div>
-                <div>
-                    <label for="quick-feature-priority">Priorité pour ce lot</label>
-                    <select id="quick-feature-priority">
-                        </select>
-                </div>
-                 <div class="modal-actions">
-                    <button type="submit" class="button save-button">Ajouter les modules</button>
-                    <button type="button" id="cancel-quick-feature-btn" class="button cancel-button">Annuler</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div id="confirm-modal" class="modal-overlay hidden">
-        <div class="modal-content">
-            <h3 id="confirm-modal-title">Confirmation</h3>
-            <p id="confirm-modal-body">Êtes-vous sûr ?</p>
-            <div class="modal-actions">
-                <button id="cancel-confirm-btn" class="button cancel-button">Annuler</button>
-                <button id="confirm-btn" class="button delete-button">Confirmer</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="edit-feature-modal" class="modal-overlay hidden">
-        <div class="modal-content">
-            <h3 id="edit-feature-modal-title">Modifier le module</h3>
-            <form id="edit-feature-form">
-                <input type="file" id="sub-feature-json-import" accept=".json" class="hidden">
-
-                <div id="edit-feature-brick-selector-group" class="hidden">
-                    <label for="edit-feature-brick-select">Appli parente</label>
-                    <select id="edit-feature-brick-select" required></select>
-                </div>
-
-                <div>
-                    <label for="edit-feature-name">Nom du module</label>
-                    <input type="text" id="edit-feature-name" required>
-                </div>
-                <div>
-                    <label for="edit-feature-priority">Priorité</label>
-                    <select id="edit-feature-priority">
-                       </select>
-                </div>
-                <div>
-                    <label>Étiquettes</label>
-                    <div class="tags-container-modal-edit" id="edit-feature-tags-container"></div>
-                    <div class="tags-editor">
-                         <select class="tag-select" id="edit-feature-tag-select">
-                            </select>
-                        <button type="button" class="add-tag-btn" id="edit-feature-add-new-tag-btn" title="Créer une nouvelle étiquette">+</button>
-                    </div>
-                </div>
-
-                <div id="sub-features-section-modal">
-                    <h4>Fonctionnalités</h4>
-                    <ul id="edit-sub-features-list"></ul>
-                    <div class="feature-inputs" style="flex-direction: column; align-items: stretch; gap: 5px;">
-                        <input type="text" id="sub-feature-name" placeholder="Nom de la fonctionnalité">
-                        <textarea id="sub-feature-description" placeholder="Description (optionnel)" rows="3"></textarea>
-                    </div>
-                     <div style="text-align: right; margin-top: 10px; display: flex; justify-content: flex-end; gap: 10px;" id="sub-feature-actions-container">
-                        <button type="button" id="import-sub-features-btn" class="button add-button" style="background-color: var(--nord13); color: var(--nord0);">Importer JSON</button>
-                        <button type="button" id="add-sub-feature-btn" class="button add-button">Ajouter</button>
-                    </div>
-                </div>
-
-                 <div class="modal-actions">
-                    <button type="button" id="delete-feature-btn-modal" class="button delete-button">Supprimer</button>
-                    <button type="submit" class="button save-button">Sauvegarder</button>
-                    <button type="button" id="cancel-edit-feature-modal-btn" class="button cancel-button">Annuler</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div id="sub-features-view-modal" class="modal-overlay hidden">
-        <div class="modal-content">
-            <h3 id="sub-features-view-modal-title">Fonctionnalités</h3>
-            <div id="sub-features-view-modal-content">
-                </div>
-            <div class="modal-actions">
-                <button type="button" id="cancel-sub-features-view-btn" class="button cancel-button">Fermer</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="info-modal" class="modal-overlay hidden">
-        <div class="modal-content">
-            <h3 id="info-modal-title"></h3>
-            <p id="info-modal-body" style="white-space: pre-wrap;"></p>
-            <div class="modal-actions">
-                <button id="cancel-info-btn" class="button cancel-button">Fermer</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="admin-edit-modal" class="modal-overlay hidden">
-        <div class="modal-content">
-            <h3 id="admin-edit-modal-title">Modifier l'élément</h3>
-            <form id="admin-edit-form">
-                <div>
-                    <label for="admin-edit-name">Nom de l'élément</label>
-                    <input type="text" id="admin-edit-name" required>
-                </div>
-                 <div class="modal-actions">
-                    <button type="submit" class="button save-button">Sauvegarder</button>
-                    <button type="button" id="cancel-admin-edit-btn" class="button cancel-button">Annuler</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div id="bulk-tags-modal" class="modal-overlay hidden">
-        <div class="modal-content">
-            <h3 id="bulk-tags-modal-title">Gérer les étiquettes</h3>
-            <p>Appliquez une ou plusieurs étiquettes aux modules sélectionnés.</p>
-            <form id="bulk-tags-form">
-                <div>
-                    <label>Étiquettes à appliquer</label>
-                     <div class="tags-editor">
-                        <select class="tag-select" id="bulk-tags-select"></select>
-                        <button type="button" class="add-tag-btn" id="bulk-add-new-tag-btn" title="Créer une nouvelle étiquette">+</button>
-                    </div>
-                    <div class="tags-container-modal-edit" id="bulk-tags-container"></div>
-                </div>
-                 <div class="modal-actions">
-                    <button type="submit" class="button save-button">Appliquer</button>
-                    <button type="button" id="cancel-bulk-tags-btn" class="button cancel-button">Annuler</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-     <div id="bulk-move-modal" class="modal-overlay hidden">
-        <div class="modal-content">
-            <h3 id="bulk-move-modal-title">Déplacer les modules</h3>
-            <p>Sélectionnez la nouvelle appli pour les modules sélectionnés.</p>
-            <form id="bulk-move-form">
-                <div>
-                    <label for="bulk-move-brick-select">Nouvelle appli</label>
-                    <select id="bulk-move-brick-select" required></select>
-                </div>
-                 <div class="modal-actions">
-                    <button type="submit" class="button save-button">Déplacer</button>
-                    <button type="button" id="cancel-bulk-move-btn" class="button cancel-button">Annuler</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div id="bulk-action-bar" class="hidden">
-        <span id="bulk-selection-counter">0 sélectionné(s)</span>
-        <button id="bulk-manage-tags-btn" class="button add-button">Gérer les étiquettes</button>
-        <button id="bulk-move-btn" class="button add-button">Déplacer</button>
-    </div>
-
-    <div id="toast-notification">Message</div>
-    <datalist id="tag-suggestions"></datalist>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
+     </p>
+<h3>
+      Ce qu'elle propose : les fonctionnalités clés
+     </h3>
+<ul>
+<li>
+<b>
+        Gestion centralisée :
+       </b>
+       Ajouter, modifier et supprimer les "Applis" (briques logicielles),
+                        les "Modules" (fonctionnalités majeures) et les "Fonctionnalités" (sous-tâches ou user stories détaillées).
+      </li>
+<li>
+<b>
+        Priorisation visuelle (Drag &amp; Drop) :
+       </b>
+       L'onglet "Priorisation" offre une vue Kanban (P1, P2, P3, À définir)
+                        où les modules peuvent être glissés-déposés pour définir leur priorité.
+      </li>
+<li>
+<b>
+        Actions groupées :
+       </b>
+       Cocher plusieurs modules dans l'onglet "Gestion" pour leur appliquer des étiquettes
+                        en masse ou les déplacer vers une autre appli.
+      </li>
+<li>
+<b>
+        Vues d'analyse :
+       </b>
+<ul>
+<li>
+<b>
+          Tableau de bord :
+         </b>
+         KPIs et graphiques sur la répartition des tâches.
+        </li>
+<li>
+<b>
+          Vue MVP (P1) :
+         </b>
+         Un focus immédiat sur tous les modules P1, triés par appli et étiquette.
+        </li>
+<li>
+<b>
+          Cartes (Mindmaps) :
+         </b>
+         Vues hiérarchiques pour comprendre la structure du projet (par appli ou par priorité).
+        </li>
+<li>
+<b>
+          Niveau de Détail :
+         </b>
+         Analyse de la granularité et de la description des modules.
+        </li>
+</ul>
+</li>
+<li>
+<b>
+        Administration :
+       </b>
+       Gérer la liste des étiquettes et des priorités disponibles, et exporter toutes les données.
+      </li>
+</ul>
+<h3>
+      Comment elle fonctionne ? (Techniquement)
+     </h3>
+<p>
+      Tout est contenu dans un seul fichier
+      <code>
+       index.html
+      </code>
+      . L'application utilise :
+     </p>
+<ul>
+<li>
+<b>
+        Firebase (Firestore) :
+       </b>
+       Pour la base de données. Chaque action (ajout, modification, glisser-déposer)
+                        est synchronisée en temps réel avec la base.
+      </li>
+<li>
+<b>
+        Chart.js :
+       </b>
+       Pour les graphiques du tableau de bord.
+      </li>
+<li>
+<b>
+        Sortable.js :
+       </b>
+       Pour toutes les fonctionnalités de glisser-déposer.
+      </li>
+<li>
+<b>
+        Marked.js :
+       </b>
+       Pour afficher les descriptions des fonctionnalités (qui peuvent être écrites en Markdown).
+      </li>
+</ul>
+</div>
+</div>
+</div>
+<div id="kpi-tooltip-container">
+</div>
+<div id="reorg-tooltip-container">
+</div>
+<div class="modal-overlay hidden" id="project-modal">
+<div class="modal-content">
+<h3 id="project-modal-title">
+     Ajouter une appli
+    </h3>
+<form data-existing-features="[]" id="project-form">
+<input id="project-id" type="hidden"/>
+<div>
+<label for="project-name">
+       Nom de l'appli
+      </label>
+<input id="project-name" required="" type="text"/>
+</div>
+<div>
+<label for="project-description">
+       Description de l'appli
+      </label>
+<textarea id="project-description" rows="3"></textarea>
+</div>
+<div id="features-section">
+<h4>
+       Ajouter des modules (optionnel)
+      </h4>
+<div class="feature-inputs">
+<input id="feature-name" placeholder="Nom du nouveau module" type="text"/>
+<button class="button add-button" id="add-feature-btn" type="button">
+        Ajouter
+       </button>
+</div>
+</div>
+<div class="modal-actions">
+<button class="button save-button" type="submit">
+       Sauvegarder
+      </button>
+<button class="button cancel-button" id="cancel-project-btn" type="button">
+       Annuler
+      </button>
+</div>
+</form>
+</div>
+</div>
+<div class="modal-overlay hidden" id="quick-feature-modal">
+<div class="modal-content">
+<h3 id="quick-feature-modal-title">
+     Ajout rapide de modules
+    </h3>
+<form id="quick-feature-form">
+<input id="quick-feature-modal-brick-id" type="hidden"/>
+<div>
+<label for="quick-feature-names">
+       Noms des modules (un par ligne)
+      </label>
+<textarea id="quick-feature-names" placeholder="Module A
+Module B
+Module C" required="" rows="8"></textarea>
+</div>
+<div>
+<label for="quick-feature-priority">
+       Priorité pour ce lot
+      </label>
+<select id="quick-feature-priority">
+</select>
+</div>
+<div class="modal-actions">
+<button class="button save-button" type="submit">
+       Ajouter les modules
+      </button>
+<button class="button cancel-button" id="cancel-quick-feature-btn" type="button">
+       Annuler
+      </button>
+</div>
+</form>
+</div>
+</div>
+<div class="modal-overlay hidden" id="confirm-modal">
+<div class="modal-content">
+<h3 id="confirm-modal-title">
+     Confirmation
+    </h3>
+<p id="confirm-modal-body">
+     Êtes-vous sûr ?
+    </p>
+<div class="modal-actions">
+<button class="button cancel-button" id="cancel-confirm-btn">
+      Annuler
+     </button>
+<button class="button delete-button" id="confirm-btn">
+      Confirmer
+     </button>
+</div>
+</div>
+</div>
+<div class="modal-overlay hidden" id="edit-feature-modal">
+<div class="modal-content">
+<h3 id="edit-feature-modal-title">
+     Modifier le module
+    </h3>
+<form id="edit-feature-form">
+<input accept=".json" class="hidden" id="sub-feature-json-import" type="file"/>
+<div class="hidden" id="edit-feature-brick-selector-group">
+<label for="edit-feature-brick-select">
+       Appli parente
+      </label>
+<select id="edit-feature-brick-select" required="">
+</select>
+</div>
+<div>
+<label for="edit-feature-name">
+       Nom du module
+      </label>
+<input id="edit-feature-name" required="" type="text"/>
+</div>
+<div>
+<label for="edit-feature-priority">
+       Priorité
+      </label>
+<select id="edit-feature-priority">
+</select>
+</div>
+<div>
+<label>
+       Étiquettes
+      </label>
+<div class="tags-container-modal-edit" id="edit-feature-tags-container">
+</div>
+<div class="tags-editor">
+<select class="tag-select" id="edit-feature-tag-select">
+</select>
+<button class="add-tag-btn" id="edit-feature-add-new-tag-btn" title="Créer une nouvelle étiquette" type="button">
+        +
+       </button>
+</div>
+</div>
+<div id="sub-features-section-modal">
+<h4>
+       Fonctionnalités
+      </h4>
+<ul id="edit-sub-features-list">
+</ul>
+<div class="feature-inputs" style="flex-direction: column; align-items: stretch; gap: 5px;">
+<input id="sub-feature-name" placeholder="Nom de la fonctionnalité" type="text"/>
+<textarea id="sub-feature-description" placeholder="Description (optionnel)" rows="3"></textarea>
+</div>
+<div id="sub-feature-actions-container" style="text-align: right; margin-top: 10px; display: flex; justify-content: flex-end; gap: 10px;">
+<button class="button add-button" id="import-sub-features-btn" style="background-color: var(--nord13); color: var(--nord0);" type="button">
+        Importer JSON
+       </button>
+<button class="button add-button" id="add-sub-feature-btn" type="button">
+        Ajouter
+       </button>
+</div>
+</div>
+<div class="modal-actions">
+<button class="button delete-button" id="delete-feature-btn-modal" type="button">
+       Supprimer
+      </button>
+<button class="button save-button" type="submit">
+       Sauvegarder
+      </button>
+<button class="button cancel-button" id="cancel-edit-feature-modal-btn" type="button">
+       Annuler
+      </button>
+</div>
+</form>
+</div>
+</div>
+<div class="modal-overlay hidden" id="sub-features-view-modal">
+<div class="modal-content">
+<h3 id="sub-features-view-modal-title">
+     Fonctionnalités
+    </h3>
+<div id="sub-features-view-modal-content">
+</div>
+<div class="modal-actions">
+<button class="button cancel-button" id="cancel-sub-features-view-btn" type="button">
+      Fermer
+     </button>
+</div>
+</div>
+</div>
+<div class="modal-overlay hidden" id="info-modal">
+<div class="modal-content">
+<h3 id="info-modal-title">
+</h3>
+<p id="info-modal-body" style="white-space: pre-wrap;">
+</p>
+<div class="modal-actions">
+<button class="button cancel-button" id="cancel-info-btn">
+      Fermer
+     </button>
+</div>
+</div>
+</div>
+<div class="modal-overlay hidden" id="admin-edit-modal">
+<div class="modal-content">
+<h3 id="admin-edit-modal-title">
+     Modifier l'élément
+    </h3>
+<form id="admin-edit-form">
+<div>
+<label for="admin-edit-name">
+       Nom de l'élément
+      </label>
+<input id="admin-edit-name" required="" type="text"/>
+</div>
+<div class="modal-actions">
+<button class="button save-button" type="submit">
+       Sauvegarder
+      </button>
+<button class="button cancel-button" id="cancel-admin-edit-btn" type="button">
+       Annuler
+      </button>
+</div>
+</form>
+</div>
+</div>
+<div class="modal-overlay hidden" id="bulk-tags-modal">
+<div class="modal-content">
+<h3 id="bulk-tags-modal-title">
+     Gérer les étiquettes
+    </h3>
+<p>
+     Appliquez une ou plusieurs étiquettes aux modules sélectionnés.
+    </p>
+<form id="bulk-tags-form">
+<div>
+<label>
+       Étiquettes à appliquer
+      </label>
+<div class="tags-editor">
+<select class="tag-select" id="bulk-tags-select">
+</select>
+<button class="add-tag-btn" id="bulk-add-new-tag-btn" title="Créer une nouvelle étiquette" type="button">
+        +
+       </button>
+</div>
+<div class="tags-container-modal-edit" id="bulk-tags-container">
+</div>
+</div>
+<div class="modal-actions">
+<button class="button save-button" type="submit">
+       Appliquer
+      </button>
+<button class="button cancel-button" id="cancel-bulk-tags-btn" type="button">
+       Annuler
+      </button>
+</div>
+</form>
+</div>
+</div>
+<div class="modal-overlay hidden" id="bulk-move-modal">
+<div class="modal-content">
+<h3 id="bulk-move-modal-title">
+     Déplacer les modules
+    </h3>
+<p>
+     Sélectionnez la nouvelle appli pour les modules sélectionnés.
+    </p>
+<form id="bulk-move-form">
+<div>
+<label for="bulk-move-brick-select">
+       Nouvelle appli
+      </label>
+<select id="bulk-move-brick-select" required="">
+</select>
+</div>
+<div class="modal-actions">
+<button class="button save-button" type="submit">
+       Déplacer
+      </button>
+<button class="button cancel-button" id="cancel-bulk-move-btn" type="button">
+       Annuler
+      </button>
+</div>
+</form>
+</div>
+</div>
+<div class="hidden" id="bulk-action-bar">
+<span id="bulk-selection-counter">
+    0 sélectionné(s)
+   </span>
+<button class="button add-button" id="bulk-manage-tags-btn">
+    Gérer les étiquettes
+   </button>
+<button class="button add-button" id="bulk-move-btn">
+    Déplacer
+   </button>
+</div>
+<div id="toast-notification">
+   Message
+  </div>
+<datalist id="tag-suggestions">
+</datalist>
+<script type="module">
+   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-auth.js";
         import { getFirestore, collection, onSnapshot, addDoc, doc, updateDoc, deleteDoc, serverTimestamp, writeBatch, setDoc, getDoc, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore.js";
 
@@ -1729,7 +3879,53 @@
             measurementId: "G-Q4WRLB2MT7"
         };
 
-        window.onload = async () => {
+        
+            // ##### FONCTIONS D'EXPORT AJOUTÉES (Version 4, sans backticks) #####
+            const downloadFile = (content, fileName, contentType) => {
+                const a = document.createElement("a");
+                const file = new Blob([content], { type: contentType });
+                a.href = URL.createObjectURL(file);
+                a.download = fileName;
+                a.click();
+                URL.revokeObjectURL(a.href);
+            };
+
+            const exportToJSON = (data) => {
+                const jsonData = JSON.stringify(data, null, 2);
+                downloadFile(jsonData, 'neo-ct-export.json', 'application/json;charset=utf-8;');
+            };
+
+            const exportToCSV = (data) => {
+                const escapeCSV = (str) => {
+                    const s = (str || '').toString();
+                    const escaped = s.replace(/"/g, '""');
+                    return '"' + escaped + '"';
+                };
+                const headers = ['Appli_Nom', 'Module_Nom', 'Module_Priorite', 'Module_Tags', 'Nombre_Fonctionnalites'];
+                let csvRows = [headers.join(',')];
+
+                data.forEach(appli => {
+                    (appli.features || []).forEach(module => {
+                        const tags = (module.tags || []).join(' | ');
+                        const subFeatureCount = (module.subFeatures || []).length;
+                        const row = [
+                            appli.name,
+                            module.name,
+                            module.priority || 'À définir',
+                            tags,
+                            subFeatureCount.toString()
+                        ];
+                        csvRows.push(row.map(escapeCSV).join(','));
+                    });
+                });
+                
+                const csvString = csvRows.join('\r\n');
+                downloadFile(csvString, 'neo-ct-export-modules.csv', 'text/csv;charset=utf-8;');
+            };
+            // ##### FIN FONCTIONS D'EXPORT #####
+
+
+            window.onload = async () => {
 
             const step1 = document.getElementById('step1');
             const step2 = document.getElementById('step2');
@@ -1879,6 +4075,7 @@
                 if (targetId === 'mindmap-container') renderInteractiveMindMap();
                 if (targetId === 'priority-mindmap-container') renderPriorityMindMap();
                 if (targetId === 'detail-level-container') renderDetailLevelView(); // AJOUTÉ
+                if (targetId === 'analyse-offres-container') setupAnalyseOffresListeners();
             };
 
 
@@ -2729,6 +4926,81 @@
                 tableHTML += `</tbody></table>`;
                 container.innerHTML = tableHTML;
             };
+
+            
+            
+            // ##### NOUVELLE FONCTION setupAnalyseOffresListeners (Onglets & Accordéon) #####
+            const setupAnalyseOffresListeners = () => {
+                const container = document.getElementById('analyse-offres-container');
+                if (!container || container.dataset.listenersAttached) return; // Évite les doublons
+
+                const subTabNav = container.querySelector('.sub-tab-nav');
+                const vendorNav = container.querySelector('.vendor-nav');
+                const accordionContainer = container.querySelector('#grille-evaluation');
+
+                // 1. Écouteurs pour "Grille" vs "Réponses"
+                if(subTabNav) {
+                    subTabNav.addEventListener('click', (e) => {
+                        const targetBtn = e.target.closest('.sub-tab-link');
+                        if (!targetBtn) return;
+                        
+                        const targetSubtab = targetBtn.dataset.subtab;
+                        
+                        container.querySelectorAll('.sub-tab-link').forEach(btn => btn.classList.remove('active'));
+                        targetBtn.classList.add('active');
+                        
+                        container.querySelectorAll('.sub-content-tab').forEach(tab => {
+                            tab.classList.toggle('hidden', tab.id !== targetSubtab);
+                        });
+                    });
+                }
+
+                // 2. Écouteurs pour les onglets Fournisseurs
+                if(vendorNav) {
+                    vendorNav.addEventListener('click', (e) => {
+                        const targetBtn = e.target.closest('.vendor-tab-link');
+                        if (!targetBtn) return;
+                        
+                        const targetVendor = targetBtn.dataset.vendor;
+                        
+                        container.querySelectorAll('.vendor-tab-link').forEach(btn => btn.classList.remove('active'));
+                        targetBtn.classList.add('active');
+                        
+                        container.querySelectorAll('.vendor-content').forEach(tab => {
+                            tab.classList.toggle('hidden', tab.id !== 'vendor-' + targetVendor);
+                        });
+                    });
+                }
+                
+                // 3. Écouteurs pour l'Accordéon de la Grille
+                if (accordionContainer) {
+                    accordionContainer.addEventListener('click', (e) => {
+                        const button = e.target.closest('.ao-accordion-button');
+                        if (!button) return;
+                        
+                        const targetId = button.getAttribute('data-target');
+                        const targetContent = document.getElementById(targetId);
+                        if (!targetContent) return;
+                        
+                        const isOpen = targetContent.classList.contains('open');
+                        
+                        if (isOpen) {
+                            targetContent.classList.remove('open');
+                            targetContent.style.maxHeight = null;
+                            button.classList.remove('open');
+                        } else {
+                            targetContent.classList.add('open');
+                            targetContent.style.maxHeight = '10000px'; // Valeur large
+                            button.classList.add('open');
+                        }
+                    });
+                }
+
+                container.dataset.listenersAttached = 'true'; // Marquer comme initialisé
+            };
+
+            // ##### FIN NOUVELLE FONCTION #####
+
 
             const renderInteractiveMindMap = () => {
                 const container = document.getElementById('interactive-mindmap-container');
@@ -3860,8 +6132,28 @@
                     document.querySelectorAll('.checkboxes').forEach(el => el.classList.add('hidden'));
                 }
             });
+            
             document.querySelectorAll('.multi-select-container').forEach(el => el.addEventListener('click', e => e.stopPropagation()));
+
+            // ##### NOUVEAUX ÉCOUTEURS POUR L'EXPORT #####
+            document.getElementById('export-json-btn').addEventListener('click', () => {
+                if (!appState || !appState.currentTasks || appState.currentTasks.length === 0) {
+                    showToast("Aucune donnée à exporter.", "error");
+                    return;
+                }
+                exportToJSON(appState.currentTasks);
+                showToast("Export JSON généré !", "success");
+            });
+
+            document.getElementById('export-csv-btn').addEventListener('click', () => {
+                 if (!appState || !appState.currentTasks || appState.currentTasks.length === 0) {
+                    showToast("Aucune donnée à exporter.", "error");
+                    return;
+                }
+                exportToCSV(appState.currentTasks);
+                showToast("Export CSV généré !", "success");
+            });
         };
-    </script>
+  </script>
 </body>
 </html>
