@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="fr">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Pilote - Outil d'Administration
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet"/>
+  <style>
+   /* --- DÉFINITION DES THÈMES --- */
+        :root {
+            --color-primary: #333333;
+            --color-accent-300: #FDBA74; /* orange-300 */
+            --color-accent-500: #FF9900; /* orange-500 */
+            --color-accent-600: #EA580C; /* orange-600 */
+        }
+        [data-theme="securitest"] {
+            --color-primary: #0055A4; /* Sécuritest Bleu */
+            --color-accent-300: #6EE7B7; /* emerald-300 */
+            --color-accent-500: #009E49; /* Sécuritest Vert */
+            --color-accent-600: #059669; /* emerald-600 */
+        }
+        [data-theme="autosecurite"] {
+            --color-primary: #0077C8; /* Auto Sécurité Bleu */
+            --color-accent-300: #FDE047; /* yellow-300 */
+            --color-accent-500: #FFC800; /* Auto Sécurité Jaune */
+            --color-accent-600: #EAB308; /* yellow-600 */
+        }
+        [data-theme="verifautos"] {
+            --color-primary: #4A4A4A; /* Vérif'autos Gris */
+            --color-accent-300: #FCA5A5; /* red-300 */
+            --color-accent-500: #E51E25; /* Vérif'autos Rouge */
+            --color-accent-600: #DC2626; /* red-600 */
+        }
+        /* --- FIN DES THÈMES --- */
+
+        .active-nav-link {
+            background-color: var(--color-accent-500);
+            color: white;
+            font-weight: 600;
+        }
+
+        .tooltip-container { position: relative; display: inline-flex; align-items: center; justify-content: center; }
+        .tooltip-text { visibility: hidden; width: 140px; background-color: #333; color: #fff; text-align: center; border-radius: 6px; padding: 5px; position: absolute; z-index: 10; bottom: 125%; left: 50%; margin-left: -70px; opacity: 0; transition: opacity 0.3s; font-size: 0.75rem; line-height: 1.2; }
+        .tooltip-container:hover .tooltip-text { visibility: visible; opacity: 1; }
+        .sticky-col, .sticky-header { position: -webkit-sticky; position: sticky; left: 0; z-index: 10; }
+        .table-container tbody tr:nth-child(odd) .sticky-col { background-color: white; }
+        .table-container tbody tr:nth-child(even) .sticky-col { background-color: #F7F7F7; }
+        .table-container tbody tr:hover .sticky-col { background-color: #F3F4F6; }
+        .sticky-header { background-color: var(--color-primary); }
+        .spinner { border: 4px solid rgba(0, 0, 0, 0.1); width: 36px; height: 36px; border-radius: 50%; border-left-color: var(--color-accent-500); animation: spin 1s ease infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        #schedule-modal-content, #edit-controleur-modal-content, #eligibility-modal-content, #edit-prestation-modal-content { max-height: 90vh; }
+        #schedule-edit-grid .config-input[disabled] { background-color: #f3f4f6; cursor: not-allowed; }
+        #schedule-edit-grid td.bg-gray-100 { background-color: #f3f4f6 !important; }
+        .action-cell { min-width: 80px; text-align: right; } /* Pour colonne Actions */
+  </style>
+  <style>
+   /* HIDE SCROLLBAR / CACHER L'ASCENSEUR */
+    html {
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE 10+ */
+    }
+    html::-webkit-scrollbar {
+        display: none; /* Chrome, Safari, Opera */
+    }
+  </style>
+ </head>
+ <body class="bg-gray-100 font-sans">
+  <script>
+   tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': 'var(--color-primary)',
+                        'accent': 'var(--color-accent-500)',
+                        'orange': { 300: 'var(--color-accent-300)', 500: 'var(--color-accent-500)', 600: 'var(--color-accent-600)' },
+                        'soft-gray': '#F7F7F7', 'success': '#10B981', 'danger': '#EF4444',
+                    },
+                },
+            }
+        }
+  </script>
+  <header class="bg-white shadow-md p-4 flex justify-between items-center sticky top-0 z-50 h-[72px]">
+   <div class="min-h-[48px] flex items-center" id="logo-container">
+    <h1 class="text-2xl font-extrabold text-primary" id="default-logo">
+     PILOTE
+     <span class="text-accent">
+      ADMIN
+     </span>
+    </h1>
+    <img alt="Logo Marque" class="hidden h-12" id="brand-logo" src=""/>
+   </div>
+   <div class="flex items-center space-x-4">
+    <div class="text-sm text-primary font-semibold">
+     <label class="sr-only" for="theme-switcher">
+      Choisir un thème
+     </label>
+     <select class="bg-white border border-gray-300 rounded-md p-1.5 text-sm font-semibold text-primary focus:ring-accent focus:border-accent" id="theme-switcher">
+      <option value="pilote">
+       Thème Pilote (Défaut)
+      </option>
+      <option value="securitest">
+       Thème Sécuritest
+      </option>
+      <option value="autosecurite">
+       Thème Auto Sécurité
+      </option>
+      <option value="verifautos">
+       Thème Vérif'autos
+      </option>
+     </select>
+    </div>
+    <div class="text-sm text-primary font-semibold" id="auth-status">
+     Mode Maquette (Démo)
+    </div>
+   </div>
+  </header>
+  <nav class="w-64 h-[calc(100vh-72px)] bg-primary text-gray-200 p-4 fixed top-[72px] left-0 z-40 shadow-lg flex flex-col space-y-2" id="sidebar-nav">
+   <a class="px-3 py-2 rounded-md font-medium transition duration-150 hover:bg-accent hover:text-white" href="#" id="nav-accueil">
+    <i class="fas fa-home mr-2 fa-fw">
+    </i>
+    Accueil
+   </a>
+   <a class="px-3 py-2 rounded-md font-medium transition duration-150 hover:bg-accent hover:text-white" href="#" id="nav-configuration">
+    <i class="fas fa-dollar-sign mr-2 fa-fw">
+    </i>
+    Tarifs &amp; Durées
+   </a>
+   <a class="px-3 py-2 rounded-md font-medium transition duration-150 hover:bg-accent hover:text-white" href="#" id="nav-controleurs">
+    <i class="fas fa-user-shield mr-2 fa-fw">
+    </i>
+    Contrôleurs
+   </a>
+   <a class="px-3 py-2 rounded-md font-medium transition duration-150 hover:bg-accent hover:text-white" href="#" id="nav-prestations">
+    <i class="fas fa-tags mr-2 fa-fw">
+    </i>
+    Prestations
+   </a>
+   <a class="px-3 py-2 rounded-md font-medium transition duration-150 hover:bg-accent hover:text-white" href="#" id="nav-types-vehicules">
+    <i class="fas fa-car mr-2 fa-fw">
+    </i>
+    Types Véhicules
+   </a>
+   <a class="px-3 py-2 rounded-md font-medium transition duration-150 hover:bg-accent hover:text-white" href="#" id="nav-carburants">
+    <i class="fas fa-gas-pump mr-2 fa-fw">
+    </i>
+    Carburants
+   </a>
+  </nav>
+  <main class="p-4 md:p-6 ml-64 max-w-7xl mx-auto">
+   <section class="space-y-8" id="view-accueil">
+    <h2 class="text-3xl font-bold text-primary border-b pb-3 mb-6">
+     Tableau de Bord
+    </h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+     <div class="bg-white p-6 rounded-lg shadow-lg border border-gray-200 space-y-4 flex flex-col">
+      <h3 class="text-xl font-semibold text-primary flex items-center">
+       <i class="fas fa-dollar-sign text-accent mr-3 text-2xl">
+       </i>
+       Configuration Tarifs &amp; Durées
+      </h3>
+      <p class="text-sm text-gray-600 flex-grow">
+       Accédez aux grilles pour définir ou modifier les prix et les temps d'intervention pour chaque prestation, type de véhicule (ou service) et carburant. C'est ici que vous pouvez aussi planifier les futurs changements de tarifs.
+      </p>
+      <div class="pt-4 border-t border-gray-100 flex flex-wrap gap-3">
+       <button class="px-4 py-2 bg-accent text-white text-sm font-semibold rounded-md hover:bg-orange-600 transition duration-150 shadow" onclick="document.getElementById('nav-configuration').click(); document.getElementById('tab-vl').click();">
+        <i class="fas fa-car mr-1">
+        </i>
+        Configurer VL
+       </button>
+       <button class="px-4 py-2 bg-accent text-white text-sm font-semibold rounded-md hover:bg-orange-600 transition duration-150 shadow" onclick="document.getElementById('nav-configuration').click(); document.getElementById('tab-l').click();">
+        <i class="fas fa-motorcycle mr-1">
+        </i>
+        Configurer L
+       </button>
+       <button class="px-4 py-2 bg-blue-100 text-blue-700 text-sm font-semibold rounded-md hover:bg-blue-200 transition duration-150" onclick="document.getElementById('nav-configuration').click();">
+        <i class="fas fa-magic-sparkles mr-1">
+        </i>
+        Assistant IA
+       </button>
+      </div>
+      <p class="text-xs text-gray-500 pt-2 italic">
+       Nécessite que les
+       <a class="text-blue-500 hover:underline" href="#" onclick="document.getElementById('nav-prestations').click();">
+        Prestations
+       </a>
+       ,
+       <a class="text-blue-500 hover:underline" href="#" onclick="document.getElementById('nav-types-vehicules').click();">
+        Types de Véhicules
+       </a>
+       et
+       <a class="text-blue-500 hover:underline" href="#" onclick="document.getElementById('nav-carburants').click();">
+        Carburants
+       </a>
+       soient définis.
+      </p>
+     </div>
+     <div class="bg-white p-6 rounded-lg shadow-lg border border-gray-200 space-y-4 flex flex-col">
+      <h3 class="text-xl font-semibold text-primary flex items-center">
+       <i class="fas fa-user-shield text-accent mr-3 text-2xl">
+       </i>
+       Gestion des Contrôleurs
+      </h3>
+      <p class="text-sm text-gray-600 flex-grow">
+       Ajoutez, modifiez ou désactivez les profils des contrôleurs techniques. Gérez leurs agréments, habilitations et formations nécessaires pour réaliser les différentes prestations.
+      </p>
+      <div class="text-sm font-medium text-gray-700" id="controleurs-stats">
+       Chargement des stats...
+      </div>
+      <div class="pt-4 border-t border-gray-100 flex flex-wrap gap-3">
+       <button class="px-4 py-2 bg-blue-500 text-white text-sm font-semibold rounded-md hover:bg-blue-600 transition duration-150 shadow" onclick="document.getElementById('nav-controleurs').click();">
+        <i class="fas fa-list mr-1">
+        </i>
+        Voir la Liste
+       </button>
+       <button class="px-4 py-2 bg-green-500 text-white text-sm font-semibold rounded-md hover:bg-green-600 transition duration-150 shadow" onclick="document.getElementById('nav-controleurs').click(); document.getElementById('contr-code').focus();">
+        <i class="fas fa-plus mr-1">
+        </i>
+        Ajouter un Contrôleur
+       </button>
+      </div>
+     </div>
+     <div class="bg-white p-6 rounded-lg shadow-lg border border-gray-200 space-y-4 md:col-span-2 flex flex-col">
+      <h3 class="text-xl font-semibold text-primary flex items-center">
+       <i class="fas fa-cogs text-accent mr-3 text-2xl">
+       </i>
+       Paramètres Généraux
+      </h3>
+      <p class="text-sm text-gray-600 flex-grow">
+       Définissez ici les éléments fondamentaux utilisés dans la configuration des tarifs : les différentes prestations proposées par le centre, les types de véhicules acceptés (VL et L), et les carburants reconnus.
+      </p>
+      <div class="pt-4 border-t border-gray-100 flex flex-wrap gap-3">
+       <button class="px-4 py-2 bg-gray-200 text-gray-800 text-sm font-semibold rounded-md hover:bg-gray-300 transition duration-150" onclick="document.getElementById('nav-prestations').click();">
+        <i class="fas fa-tags mr-1">
+        </i>
+        Gérer les Prestations
+       </button>
+       <button class="px-4 py-2 bg-gray-200 text-gray-800 text-sm font-semibold rounded-md hover:bg-gray-300 transition duration-150" onclick="document.getElementById('nav-types-vehicules').click();">
+        <i class="fas fa-car mr-1">
+        </i>
+        /
+        <i class="fas fa-motorcycle mr-1">
+        </i>
+        Gérer les Types de Véhicules
+       </button>
+       <button class="px-4 py-2 bg-gray-200 text-gray-800 text-sm font-semibold rounded-md hover:bg-gray-300 transition duration-150" onclick="document.getElementById('nav-carburants').click();">
+        <i class="fas fa-gas-pump mr-1">
+        </i>
+        Gérer les Carburants
+       </button>
+      </div>
+     </div>
+    </div>
+   </section>
+   <div class="hidden space-y-6" id="view-configuration">
+    <div class="bg-white p-4 rounded-lg shadow-md border border-gray-200">
+     <h3 class="text-lg font-semibold text-primary mb-3">
+      <i class="fas fa-magic-sparkles text-accent">
+      </i>
+      Assistant de configuration
+     </h3>
+     <p class="text-sm text-gray-600 mb-3">
+      Utilisez un langage naturel pour modifier la configuration en masse. Ex: "Mets tous les tarifs 'centre' des CTP VL à 90€" ou "Règle la durée des motos à 30 minutes pour CVP".
+     </p>
+     <div class="flex space-x-3 items-center">
+      <input class="flex-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-accent focus:border-accent" id="config-chat-input" placeholder="Votre demande..." type="text"/>
+      <button class="flex-shrink-0 px-5 py-2 h-10 text-white font-semibold rounded-lg shadow-md bg-accent hover:bg-orange-600 transition duration-200" id="config-chat-submit">
+       <i class="fas fa-check mr-2">
+       </i>
+       Valider
+      </button>
+     </div>
+    </div>
+    <h2 class="text-2xl font-bold text-primary border-b pb-2">
+     Tarifs &amp; Durées
+    </h2>
+    <div class="flex space-x-4 border-b border-gray-300">
+     <a class="py-2 px-4 border-b-2 border-accent text-primary font-semibold transition duration-150" href="#" id="tab-vl">
+      Véhicules Légers (VL)
+     </a>
+     <a class="py-2 px-4 border-b-2 border-transparent text-gray-500 font-semibold transition duration-150" href="#" id="tab-l">
+      Catégorie L (Motos, etc.)
+     </a>
+    </div>
+    <div class="mb-6 bg-white p-4 rounded-lg shadow border border-gray-200" id="summary-vl">
+     <h5 class="text-sm font-bold text-primary mb-2 border-b pb-1 uppercase tracking-wide">
+      Accès Rapide (VL)
+     </h5>
+     <div class="flex flex-wrap gap-x-4 gap-y-2 text-sm" id="summary-links-vl">
+     </div>
+    </div>
+    <div class="hidden mb-6 bg-white p-4 rounded-lg shadow border border-gray-200" id="summary-l">
+     <h5 class="text-sm font-bold text-primary mb-2 border-b pb-1 uppercase tracking-wide">
+      Accès Rapide (L)
+     </h5>
+     <div class="flex flex-wrap gap-x-4 gap-y-2 text-sm" id="summary-links-l">
+     </div>
+    </div>
+    <div class="space-y-12" id="content-vl">
+     <div id="prestation-list-vl">
+     </div>
+     <div class="flex justify-center p-6 border-t border-gray-200">
+      <button class="px-8 py-3 text-white font-semibold rounded-lg shadow-md bg-accent hover:bg-orange-600 transition duration-200 focus:outline-none focus:ring-4 focus:ring-orange-300" id="save-config-btn-vl">
+       Enregistrer la Configuration VL (Démo)
+      </button>
+     </div>
+    </div>
+    <div class="hidden space-y-12" id="content-l">
+     <div id="prestation-list-l">
+     </div>
+     <div class="flex justify-center p-6 border-t border-gray-200">
+      <button class="px-8 py-3 text-white font-semibold rounded-lg shadow-md bg-accent hover:bg-orange-600 transition duration-200 focus:outline-none focus:ring-4 focus:ring-orange-300" id="save-config-btn-l">
+       Enregistrer la Configuration L (Démo)
+      </button>
+     </div>
+    </div>
+   </div>
+   <section class="hidden space-y-8 pt-4" id="view-controleurs">
+    <h2 class="text-2xl font-bold text-primary border-b pb-2">
+     Gestion des Contrôleurs
+    </h2>
+    <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200 space-y-4">
+     <h3 class="text-xl font-semibold text-primary">
+      Ajouter un nouveau Contrôleur
+     </h3>
+     <form class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end" id="add-controleur-form">
+      <div>
+       <label class="block text-sm font-medium text-gray-700" for="contr-code">
+        Code Utilisateur
+       </label>
+       <input class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-accent focus:border-accent" id="contr-code" name="id" required="" type="text"/>
+      </div>
+      <div>
+       <label class="block text-sm font-medium text-gray-700" for="contr-nom">
+        Nom
+       </label>
+       <input class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-accent focus:border-accent" id="contr-nom" name="nom" required="" type="text"/>
+      </div>
+      <div>
+       <label class="block text-sm font-medium text-gray-700" for="contr-prenom">
+        Prénom
+       </label>
+       <input class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-accent focus:border-accent" id="contr-prenom" name="prenom" required="" type="text"/>
+      </div>
+      <div>
+       <label class="block text-sm font-medium text-gray-700" for="contr-workday">
+        Matricule Workday
+       </label>
+       <input class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-accent focus:border-accent" id="contr-workday" name="workdayId" type="text"/>
+      </div>
+      <button class="w-full h-10 px-4 text-white font-semibold rounded-lg shadow-md bg-accent hover:bg-orange-600 transition duration-200" type="submit">
+       Ajouter le Contrôleur
+      </button>
+     </form>
+    </div>
+    <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
+      <h3 class="text-xl font-semibold text-primary" id="controleurs-list-title">
+       Contrôleurs Actifs
+      </h3>
+      <div class="flex space-x-2">
+       <button class="status-filter-btn bg-accent text-white px-3 py-1 rounded-md text-sm transition duration-150" data-status="actifs">
+        Actifs
+       </button>
+       <button class="status-filter-btn bg-gray-200 text-gray-700 px-3 py-1 rounded-md text-sm transition duration-150" data-status="inactifs">
+        Inactifs
+       </button>
+       <button class="status-filter-btn bg-gray-200 text-gray-700 px-3 py-1 rounded-md text-sm transition duration-150" data-status="tous">
+        Tous
+       </button>
+      </div>
+     </div>
+     <div class="overflow-x-auto" id="current-controleurs-list">
+     </div>
+    </div>
+    <div class="mt-8">
+     <h2 class="text-2xl font-bold text-primary border-b pb-2 mb-6">
+      Matrice de Compétences Actives
+     </h2>
+     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+       <h3 class="text-lg font-semibold text-primary mb-3">
+        <i class="fas fa-car text-accent mr-2">
+        </i>
+        Agrément VL
+       </h3>
+       <div class="flex flex-wrap gap-2" id="matrix-vl-list">
+       </div>
+      </div>
+      <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+       <h3 class="text-lg font-semibold text-primary mb-3">
+        <i class="fas fa-motorcycle text-accent mr-2">
+        </i>
+        Agrément L
+       </h3>
+       <div class="flex flex-wrap gap-2" id="matrix-l-list">
+       </div>
+      </div>
+      <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+       <h3 class="text-lg font-semibold text-primary mb-3">
+        <i class="fas fa-fire text-accent mr-2">
+        </i>
+        Habilitation Gaz
+       </h3>
+       <div class="flex flex-wrap gap-2" id="matrix-gaz-list">
+       </div>
+      </div>
+      <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+       <h3 class="text-lg font-semibold text-primary mb-3">
+        <i class="fas fa-bolt text-accent mr-2">
+        </i>
+        Habilitation Électrique
+       </h3>
+       <div class="flex flex-wrap gap-2" id="matrix-elec-list">
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+   <section class="hidden space-y-8 pt-4" id="view-prestations">
+    <h2 class="text-2xl font-bold text-primary border-b pb-2">
+     Administration des Prestations
+    </h2>
+    <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200 space-y-4">
+     <h3 class="text-xl font-semibold text-primary">
+      Ajouter une Nouvelle Prestation
+     </h3>
+     <form class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end" id="add-prestation-form">
+      <div>
+       <label class="block text-sm font-medium text-gray-700" for="presta-name">
+        Nom de la Prestation
+       </label>
+       <input class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-accent focus:border-accent" id="presta-name" name="name" required="" type="text"/>
+      </div>
+      <div>
+       <label class="block text-sm font-medium text-gray-700" for="presta-id">
+        Code (ID court)
+       </label>
+       <input class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-accent focus:border-accent" id="presta-id" maxlength="5" name="id" required="" type="text"/>
+      </div>
+      <button class="w-full h-10 px-4 text-white font-semibold rounded-lg shadow-md bg-accent hover:bg-orange-600 transition duration-200" type="submit">
+       Ajouter
+      </button>
+     </form>
+    </div>
+    <h3 class="text-xl font-semibold text-primary">
+     Prestations Existantes
+    </h3>
+    <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200" id="current-prestations-list">
+     <div id="presta-table-vl">
+     </div>
+     <div class="mt-8" id="presta-table-l">
+     </div>
+    </div>
+   </section>
+   <section class="hidden space-y-8 pt-4" id="view-types-vehicules">
+    <h2 class="text-2xl font-bold text-primary border-b pb-2">
+     Administration des Types de Véhicules
+    </h2>
+    <div class="space-y-4">
+     <h3 class="text-xl font-semibold text-primary border-l-4 border-accent pl-3">
+      Véhicules Légers (VL)
+     </h3>
+     <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200 space-y-4">
+      <h4 class="font-medium text-gray-700">
+       Ajouter un nouveau Type VL
+      </h4>
+      <form class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end" id="add-vehicle-type-form-vl">
+       <div>
+        <label class="block text-sm font-medium text-gray-700" for="type-name-vl">
+         Nom du Type
+        </label>
+        <input class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-accent focus:border-accent" id="type-name-vl" name="label" required="" type="text"/>
+       </div>
+       <div>
+        <label class="block text-sm font-medium text-gray-700" for="type-id-vl">
+         Code (ID court)
+        </label>
+        <input class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-accent focus:border-accent" id="type-id-vl" maxlength="5" name="id" required="" type="text"/>
+       </div>
+       <button class="w-full h-10 px-4 text-white font-semibold rounded-lg shadow-md bg-accent hover:bg-orange-600 transition duration-200" type="submit">
+        Ajouter VL
+       </button>
+      </form>
+      <div class="pt-4" id="current-vehicle-types-list-vl">
+      </div>
+     </div>
+    </div>
+    <div class="space-y-4">
+     <h3 class="text-xl font-semibold text-primary border-l-4 border-accent pl-3">
+      Catégorie L (Motos, etc.)
+     </h3>
+     <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200 space-y-4">
+      <h4 class="font-medium text-gray-700">
+       Ajouter un nouveau Type L
+      </h4>
+      <form class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end" id="add-vehicle-type-form-l">
+       <div>
+        <label class="block text-sm font-medium text-gray-700" for="type-name-l">
+         Nom du Type
+        </label>
+        <input class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-accent focus:border-accent" id="type-name-l" name="label" required="" type="text"/>
+       </div>
+       <div>
+        <label class="block text-sm font-medium text-gray-700" for="type-id-l">
+         Code (ID court)
+        </label>
+        <input class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-accent focus:border-accent" id="type-id-l" maxlength="5" name="id" required="" type="text"/>
+       </div>
+       <button class="w-full h-10 px-4 text-white font-semibold rounded-lg shadow-md bg-accent hover:bg-orange-600 transition duration-200" type="submit">
+        Ajouter L
+       </button>
+      </form>
+      <div class="pt-4" id="current-vehicle-types-list-l">
+      </div>
+     </div>
+    </div>
+   </section>
+   <section class="hidden space-y-8 pt-4" id="view-carburants">
+    <h2 class="text-2xl font-bold text-primary border-b pb-2">
+     Administration des Carburants
+    </h2>
+    <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200 space-y-4">
+     <h3 class="text-xl font-semibold text-primary">
+      Ajouter un Nouveau Carburant
+     </h3>
+     <form class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end" id="add-carburant-form">
+      <div>
+       <label class="block text-sm font-medium text-gray-700" for="carburant-name">
+        Nom du Carburant
+       </label>
+       <input class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-accent focus:border-accent" id="carburant-name" name="name" required="" type="text"/>
+      </div>
+      <div>
+       <label class="block text-sm font-medium text-gray-700" for="carburant-id">
+        Code (ID court, ex: "gpl")
+       </label>
+       <input class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-accent focus:border-accent" id="carburant-id" maxlength="10" name="id" required="" type="text"/>
+      </div>
+      <button class="w-full h-10 px-4 text-white font-semibold rounded-lg shadow-md bg-accent hover:bg-orange-600 transition duration-200" type="submit">
+       Ajouter Carburant
+      </button>
+     </form>
+    </div>
+    <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+     <h3 class="text-xl font-semibold text-primary mb-4">
+      Carburants Existants
+     </h3>
+     <div id="current-carburants-list">
+     </div>
+    </div>
+   </section>
+  </main>
+  <div class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-[60] p-4" id="edit-controleur-modal">
+   <div class="bg-white rounded-lg shadow-2xl max-w-4xl w-full flex flex-col transform transition-all duration-300 scale-95 opacity-0 max-h-[90vh]" id="edit-modal-content">
+    <div class="flex-shrink-0 flex justify-between items-center border-b p-6">
+     <h3 class="text-2xl font-bold text-gray-800" id="edit-controleur-modal-title">
+      Modifier le Contrôleur
+     </h3>
+     <button class="text-gray-500 hover:text-gray-800 text-3xl" id="close-modal-btn">
+      ×
+     </button>
+    </div>
+    <form class="flex flex-col flex-grow min-h-0" id="edit-controleur-form" novalidate="">
+     <div class="p-6 space-y-6 overflow-y-auto">
+      <div>
+       <input id="edit-controleur-id" type="hidden"/>
+       <div class="space-y-4">
+        <div class="flex items-baseline space-x-2">
+         <input class="w-full text-2xl font-bold text-gray-800 border-0 border-b-2 border-gray-200 focus:ring-0 focus:border-accent p-1" id="edit-prenom" name="prenom" placeholder="Prénom" required="" type="text"/>
+         <input class="w-full text-2xl font-bold text-gray-800 border-0 border-b-2 border-gray-200 focus:ring-0 focus:border-accent p-1" id="edit-nom" name="nom" placeholder="Nom" required="" type="text"/>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 pt-2">
+         <div>
+          <label class="block text-sm font-medium text-gray-700" for="edit-code">
+           Code Utilisateur
+          </label>
+          <input class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 bg-gray-100 text-gray-500 cursor-not-allowed" id="edit-code" name="code" readonly="" type="text"/>
+         </div>
+         <div>
+          <label class="block text-sm font-medium text-gray-700" for="edit-workday">
+           Matricule Workday
+          </label>
+          <input class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-accent focus:border-accent" id="edit-workday" name="workdayId" type="text"/>
+         </div>
+        </div>
+        <div class="flex items-center space-x-3 pt-2">
+         <input class="h-4 w-4 text-accent border-gray-300 rounded focus:ring-accent" id="edit-actif" name="actif" type="checkbox"/>
+         <label class="block text-sm font-medium text-gray-900" for="edit-actif">
+          Actif
+         </label>
+        </div>
+       </div>
+      </div>
+      <div>
+       <h4 class="text-lg font-semibold text-gray-800 mb-3 border-b pb-2">
+        Agréments &amp; Formations
+       </h4>
+       <div class="max-h-60 overflow-y-auto border rounded-md" id="controller-accreditations-list">
+        <p class="text-gray-500 italic p-4 text-center">
+         Aucun élément trouvé.
+        </p>
+       </div>
+      </div>
+      <div>
+       <h4 class="text-lg font-semibold text-gray-800 mb-3 border-b pb-2 pt-4">
+        Ajouter un Nouvel Élément
+       </h4>
+       <div class="p-4 bg-gray-50 rounded-md border border-dashed grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 items-end" id="add-accreditation-form">
+        <div>
+         <label class="block text-sm font-medium text-gray-700" for="new-accred-type">
+          Type d'élément
+          <span class="text-red-500">
+           *
+          </span>
+         </label>
+         <select class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-accent focus:border-accent" id="new-accred-type">
+          <option value="">
+           Choisir un type...
+          </option>
+         </select>
+        </div>
+        <div>
+         <label class="block text-sm font-medium text-gray-700" for="new-accred-start">
+          Date de début
+          <span class="text-red-500">
+           *
+          </span>
+         </label>
+         <input class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-accent focus:border-accent" id="new-accred-start" required="" type="date"/>
+        </div>
+        <div>
+         <label class="block text-sm font-medium text-gray-700" for="new-accred-end">
+          Date de fin
+         </label>
+         <input class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-accent focus:border-accent" id="new-accred-end" type="date"/>
+        </div>
+        <div class="hidden" id="new-accred-numero-group">
+         <label class="block text-sm font-medium text-gray-700" for="new-accred-numero">
+          N° Agrément
+          <span class="text-red-500">
+           *
+          </span>
+         </label>
+         <input class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-accent focus:border-accent" id="new-accred-numero" type="text"/>
+        </div>
+        <div>
+         <label class="block text-sm font-medium text-gray-700" for="new-accred-file">
+          Justificatif
+         </label>
+         <input class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-accent file:text-white hover:file:bg-orange-600 file:cursor-pointer" id="new-accred-file" type="file"/>
+        </div>
+        <button class="h-10 px-4 text-white font-semibold rounded-lg shadow-md bg-green-500 hover:bg-green-600 transition duration-200" id="add-accreditation-btn" type="button">
+         Ajouter
+        </button>
+       </div>
+      </div>
+     </div>
+     <div class="flex-shrink-0 mt-auto p-6 border-t flex justify-end space-x-4 sticky bottom-0 bg-white">
+      <button class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300" id="cancel-edit-btn" type="button">
+       Fermer
+      </button>
+      <button class="px-4 py-2 bg-accent text-white font-semibold rounded-md hover:bg-orange-600" type="submit">
+       Enregistrer les Modifications
+      </button>
+     </div>
+    </form>
+   </div>
+  </div>
+  <div class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-[70] p-4" id="schedule-modal">
+   <div class="bg-white rounded-lg shadow-2xl max-w-4xl w-full flex flex-col transform transition-all duration-300 scale-95 opacity-0" id="schedule-modal-content">
+    <div class="flex-shrink-0 flex justify-between items-center border-b p-6">
+     <h3 class="text-2xl font-bold text-gray-800" id="schedule-modal-title">
+      Planification Tarifs/Durées
+     </h3>
+     <button class="text-gray-500 hover:text-gray-800 text-3xl" id="close-schedule-modal-btn">
+      ×
+     </button>
+    </div>
+    <div class="p-6 space-y-6 overflow-y-auto">
+     <div>
+      <h4 class="text-lg font-semibold text-gray-800 mb-3 border-b pb-2">
+       Historique &amp; Planifications
+      </h4>
+      <div class="max-h-60 overflow-y-auto border rounded-md" id="schedule-list-container">
+       <p class="text-gray-500 italic p-4 text-center">
+        Chargement...
+       </p>
+      </div>
+     </div>
+     <div>
+      <h4 class="text-lg font-semibold text-gray-800 mb-3 border-b pb-2 pt-4">
+       Créer une Nouvelle Planification
+      </h4>
+      <form class="flex flex-col sm:flex-row items-end gap-4" id="create-schedule-form">
+       <div>
+        <label class="block text-sm font-medium text-gray-700" for="new-schedule-date">
+         Date d'effet future
+         <span class="text-red-500">
+          *
+         </span>
+        </label>
+        <input class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-accent focus:border-accent" id="new-schedule-date" required="" type="date"/>
+       </div>
+       <button class="h-10 px-4 text-white font-semibold rounded-lg shadow-md bg-accent hover:bg-orange-600 transition duration-200" type="submit">
+        Créer &amp; Modifier
+       </button>
+      </form>
+     </div>
+     <div class="hidden pt-4 border-t mt-4" id="schedule-edit-grid-container">
+      <h4 class="text-lg font-semibold text-primary mb-3" id="schedule-edit-title">
+       Modification pour le JJ/MM/AAAA
+      </h4>
+      <div class="mt-4" id="schedule-edit-grid">
+      </div>
+      <div class="flex justify-end mt-6">
+       <button class="px-6 py-2 bg-green-500 text-white font-semibold rounded-md hover:bg-green-600 transition duration-150" id="save-schedule-btn">
+        Enregistrer cette planification
+       </button>
+      </div>
+     </div>
+    </div>
+    <div class="flex-shrink-0 mt-auto p-6 border-t flex justify-end">
+     <button class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300" id="cancel-schedule-btn" type="button">
+      Fermer
+     </button>
+    </div>
+   </div>
+  </div>
+  <div class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-[75] p-4" id="eligibility-modal">
+   <div class="bg-white rounded-lg shadow-2xl max-w-2xl w-full flex flex-col transform transition-all duration-300 scale-95 opacity-0 max-h-[90vh]" id="eligibility-modal-content">
+    <div class="flex-shrink-0 flex justify-between items-center border-b p-6">
+     <h3 class="text-xl font-bold text-gray-800" id="eligibility-modal-title">
+      Gérer les véhicules éligibles
+     </h3>
+     <button class="text-gray-500 hover:text-gray-800 text-3xl" id="close-eligibility-modal-btn">
+      ×
+     </button>
+    </div>
+    <form class="flex flex-col flex-grow min-h-0" id="eligibility-form">
+     <input id="eligibility-presta-id" type="hidden"/>
+     <div class="p-6 space-y-6 overflow-y-auto">
+      <div class="space-y-3">
+       <div class="flex justify-between items-center">
+        <h4 class="text-lg font-semibold text-primary border-l-4 border-accent pl-3">
+         Véhicules Légers (VL)
+        </h4>
+        <button class="select-all-btn text-xs text-blue-600 hover:underline" data-category="VL" type="button">
+         Tout sélectionner / désélectionner
+        </button>
+       </div>
+       <div class="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2 pl-4 border rounded-md p-4 bg-gray-50" id="eligibility-vl-list">
+       </div>
+      </div>
+      <div class="space-y-3">
+       <div class="flex justify-between items-center">
+        <h4 class="text-lg font-semibold text-primary border-l-4 border-accent pl-2">
+         Catégorie L
+        </h4>
+        <button class="select-all-btn text-xs text-blue-600 hover:underline" data-category="L" type="button">
+         Tout sélectionner / désélectionner
+        </button>
+       </div>
+       <div class="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2 pl-4 border rounded-md p-4 bg-gray-50" id="eligibility-l-list">
+       </div>
+      </div>
+      <p class="text-xs text-gray-500 italic pt-4">
+       *Si aucune case n'est cochée pour VL et L combinés, tous les véhicules (VL &amp; L) seront considérés éligibles par défaut.
+      </p>
+     </div>
+     <div class="flex-shrink-0 mt-auto p-6 border-t flex justify-end space-x-4 sticky bottom-0 bg-white">
+      <button class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300" id="cancel-eligibility-btn" type="button">
+       Annuler
+      </button>
+      <button class="px-4 py-2 bg-green-500 text-white font-semibold rounded-md hover:bg-green-600" type="submit">
+       Enregistrer l'éligibilité
+      </button>
+     </div>
+    </form>
+   </div>
+  </div>
+  <div class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-[78] p-4" id="edit-prestation-modal">
+   <div class="bg-white rounded-lg shadow-2xl max-w-3xl w-full flex flex-col transform transition-all duration-300 scale-95 opacity-0 max-h-[90vh]" id="edit-prestation-modal-content">
+    <div class="flex-shrink-0 flex justify-between items-center border-b p-6">
+     <h3 class="text-xl font-bold text-gray-800" id="edit-prestation-modal-title">
+      Modifier la Prestation
+     </h3>
+     <button class="text-gray-500 hover:text-gray-800 text-3xl" id="close-edit-prestation-modal-btn">
+      ×
+     </button>
+    </div>
+    <form class="flex flex-col flex-grow min-h-0" id="edit-prestation-form">
+     <input id="edit-prestation-original-id" type="hidden"/>
+     <div class="p-6 space-y-6 overflow-y-auto">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+       <div>
+        <label class="block text-sm font-medium text-gray-700" for="edit-presta-code">
+         Code (ID court)
+        </label>
+        <input class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-accent focus:border-accent disabled:bg-gray-100 disabled:cursor-not-allowed" id="edit-presta-code" maxlength="5" name="id" required="" type="text"/>
+        <p class="hidden text-xs text-red-600 mt-1" id="edit-presta-code-warning">
+         Modifier le code peut affecter les tarifs existants.
+        </p>
+        <p class="hidden text-xs text-gray-500 mt-1" id="edit-presta-code-default-msg">
+         Le code d'une prestation par défaut ne peut pas être modifié.
+        </p>
+       </div>
+       <div>
+        <label class="block text-sm font-medium text-gray-700" for="edit-presta-name">
+         Nom de la Prestation
+        </label>
+        <input class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-accent focus:border-accent" id="edit-presta-name" name="name" required="" type="text"/>
+       </div>
+      </div>
+      <div class="pt-4 border-t">
+       <h4 class="text-lg font-semibold text-gray-800 mb-3">
+        Véhicules Éligibles
+       </h4>
+       <div class="space-y-3 mb-4">
+        <div class="flex justify-between items-center">
+         <h5 class="font-medium text-primary border-l-4 border-accent pl-2">
+          Véhicules Légers (VL)
+         </h5>
+         <button class="select-all-edit-btn text-xs text-blue-600 hover:underline" data-category="VL" type="button">
+          Tout sélectionner / désélectionner
+         </button>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2 pl-4 border rounded-md p-4 bg-gray-50" id="edit-eligibility-vl-list">
+        </div>
+       </div>
+       <div class="space-y-3">
+        <div class="flex justify-between items-center">
+         <h5 class="font-medium text-primary border-l-4 border-accent pl-2">
+          Catégorie L
+         </h5>
+         <button class="select-all-edit-btn text-xs text-blue-600 hover:underline" data-category="L" type="button">
+          Tout sélectionner / désélectionner
+         </button>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2 pl-4 border rounded-md p-4 bg-gray-50" id="edit-eligibility-l-list">
+        </div>
+       </div>
+       <p class="text-xs text-gray-500 italic pt-4">
+        *Si aucune case n'est cochée pour VL et L combinés, tous les véhicules (VL &amp; L) seront considérés éligibles par défaut.
+       </p>
+      </div>
+     </div>
+     <div class="flex-shrink-0 mt-auto p-6 border-t flex justify-end space-x-4 sticky bottom-0 bg-white">
+      <button class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300" id="cancel-edit-prestation-btn" type="button">
+       Annuler
+      </button>
+      <button class="px-4 py-2 bg-green-500 text-white font-semibold rounded-md hover:bg-green-600" type="submit">
+       Enregistrer les Modifications
+      </button>
+     </div>
+    </form>
+   </div>
+  </div>
+  <div class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-[80]" id="message-box">
+   <div class="bg-white p-6 rounded-lg shadow-2xl max-w-sm w-full text-center">
+    <div class="hidden" id="spinner-container">
+     <div class="spinner mx-auto mb-4">
+     </div>
+     <h3 class="text-xl font-bold text-gray-800 mb-2" id="message-title-loading">
+      Traitement en cours...
+     </h3>
+     <ul class="text-left text-sm text-gray-600 space-y-2 mt-4" id="loading-steps">
+     </ul>
+    </div>
+    <div id="message-container">
+     <h3 class="text-xl font-bold text-gray-800 mb-2" id="message-title">
+     </h3>
+     <p class="text-gray-600 mb-4" id="message-content">
+     </p>
+     <button class="w-full px-4 py-2 text-white font-semibold rounded-lg bg-primary hover:bg-gray-700 transition duration-200" id="message-close-btn">
+      Fermer
+     </button>
+    </div>
+   </div>
+  </div>
+  <script type="module">
+   // --- GESTION DES THÈMES ---
+        const THEME_ASSETS = { 'pilote': { logo: null }, 'securitest': { logo: 'securitest.png' }, 'autosecurite': { logo: 'auto-securite.png' }, 'verifautos': { logo: 'verifautos.jpg' } };
+        const applyTheme = (themeName) => { document.body.dataset.theme = themeName; state.currentTheme = themeName; localStorage.setItem('piloteAdminTheme', themeName); document.getElementById('theme-switcher').value = themeName; const defaultLogo = document.getElementById('default-logo'); const brandLogo = document.getElementById('brand-logo'); const asset = THEME_ASSETS[themeName]; if (asset && asset.logo) { brandLogo.src = asset.logo; brandLogo.alt = `Logo ${themeName}`; brandLogo.classList.remove('hidden'); defaultLogo.classList.add('hidden'); } else { brandLogo.classList.add('hidden'); defaultLogo.classList.remove('hidden'); } };
+
+        // --- Définition des types de services pour Contre-Visites ---
+        const CV_SERVICE_TYPES = [ { id: 'VISU', label: 'Visuelle' }, { id: 'PONT', label: 'Pont' }, { id: 'BANC_PONT', label: 'Banc + Pont' }, { id: 'POLLU', label: 'Pollution' }, { id: 'BANC_PONT_POLLU', label: 'Banc + Pont + Pollution' } ];
+        const CV_PRESTA_IDS = ['CV', 'CVE', 'CVL']; 
+        
+        // --- Définition des types d'agréments ---
+        const ACCREDITATION_TYPES = {
+            vl: { label: 'Agrément VL', hasNumero: true },
+            l: { label: 'Agrément L', hasNumero: true },
+            gaz: { label: 'Habilitation Gaz', hasNumero: false },
+            elec: { label: 'Habilitation Élec.', hasNumero: false },
+            formations: { label: 'Formation', hasNumero: false }
+        };
+
+        // --- ÉTAT GLOBAL DE L'APPLICATION ---
+        const DEFAULT_CARBURANTS = [ { id: 'essence', label: 'ESSENCE' }, { id: 'diesel', label: 'DIESEL' }, { id: 'gaz', label: 'GAZ / GPL' }, { id: 'hybride', label: 'HYBRIDE' }, { id: 'electrique', label: 'ÉLECTRIQUE' }, ];
+        const state = { currentView: 'accueil', currentTheme: 'pilote', controleurStatusFilter: 'actifs', scheduleModalData: { isOpen: false, category: null, prestaId: null, editingDate: null }, config: { tariffs: { VL: { CTP: { VP: { essence: [ { startDate: '2025-01-01', centre: '80', web: '75' } ], diesel: [ { startDate: '2025-01-01', centre: '85', web: '80' } ] }, VUL: { essence: [ { startDate: '2025-01-01', centre: '90', web: '85' } ] } }, CCMP: { VUL: { diesel: [ {startDate: '2025-01-01', centre: '30', web: '28'} ]}, VUGV: { diesel: [ {startDate: '2025-01-01', centre: '35', web: '33'} ]}} }, L: { CTPL: { MOTO: { essence: [ { startDate: '2025-01-01', centre: '70', web: '65' } ] } } } }, durations: { VL: { CTP: { VP: { essence: [ { startDate: '2025-01-01', unique: '45' } ], diesel: [ { startDate: '2025-01-01', unique: '50' } ] }, VUL: { essence: [ { startDate: '2025-01-01', unique: '55' } ] } }, CCMP: { VUL: { diesel: [ {startDate: '2025-01-01', unique: '15'} ]}, VUGV: { diesel: [ {startDate: '2025-01-01', unique: '20'} ]}} }, L: { CTPL: { MOTO: { essence: [ { startDate: '2025-01-01', unique: '35' } ] } } } }, vehicleTypes: { VL: [ { id: 'VP', label: 'Véhicule Particulier', isDefault: true }, { id: 'VUL', label: 'Utilitaire Léger (- de 3,5t)', isDefault: true }, { id: 'VUGV', label: 'Utilitaire Gros Volume', isDefault: true }, { id: '4X4', label: '4 Roues Motrices', isDefault: true }, { id: 'CC', label: 'Camping-car', isDefault: true }, { id: 'COLL', label: 'Véhicule de Collection', isDefault: true }, ], L: [ { id: 'MOTO', label: 'Motos', isDefault: true }, { id: 'CYCLO', label: 'Cyclos', isDefault: true }, { id: '3R', label: 'Trois Roues (L5e)', isDefault: true }, { id: 'QUAD', label: 'Quads', isDefault: true }, { id: 'VOIT', label: 'Voiturettes (L6e)', isDefault: true }, ] }, prestations: { VL: [ { id: 'CTP', label: 'Contrôle Technique Périodique', fuels: DEFAULT_CARBURANTS.map(f => f.id), isDefault: true, eligibleVehicleTypeIds: [] }, { id: 'CVP', label: 'Contrôle Volontaire Partiel', fuels: DEFAULT_CARBURANTS.map(f => f.id), isDefault: true, eligibleVehicleTypeIds: [] }, { id: 'CVT', label: 'Contrôle Volontaire Total', fuels: DEFAULT_CARBURANTS.map(f => f.id), isDefault: true, eligibleVehicleTypeIds: [] }, { id: 'CV', label: 'Contre Visite', fuels: DEFAULT_CARBURANTS.map(f => f.id), isDefault: true, eligibleVehicleTypeIds: [] }, { id: 'CVE', label: 'Contre Visite Extérieure', fuels: DEFAULT_CARBURANTS.map(f => f.id), isDefault: true, eligibleVehicleTypeIds: [] }, { id: 'CCMP', label: 'Contrôle Complémentaire Pollution', fuels: ['diesel'], isDefault: true, eligibleVehicleTypeIds: ['VUL', 'VUGV'] }, ], L: [ { id: 'CTPL', label: 'Contrôle Technique Périodique L', fuels: ['essence', 'electrique'], isDefault: true, eligibleVehicleTypeIds: [] }, { id: 'CVL', label: 'Contre Visite L', fuels: ['essence', 'electrique'], isDefault: true, eligibleVehicleTypeIds: [] }, ] }, carburants: DEFAULT_CARBURANTS, controleurs: [ { id: 'AB1', prenom: 'Alice', nom: 'Bernard', workdayId: 'EMP1001', actif: true, accreditations: { vl: [ { id: 'v1', startDate: '2022-01-01', endDate: '2027-01-01', numero: '072T1033', file: 'attestation_vl_alice_2022.pdf' }, { id: 'v0', startDate: '2017-01-01', endDate: '2021-12-31', numero: '072T9999', file: 'ancienne_attestation.pdf' } ], l: [], gaz: [{ id: 'g1', startDate: '2023-05-10', endDate: null, numero: '', file: 'certif_gaz_alice.pdf' }], elec: [{ id: 'e1', startDate: '2024-01-15', endDate: '2027-01-14', numero: '', file: 'habilit_elec_alice.pdf' }], formations: [] } }, { id: 'CD2', prenom: 'Charles', nom: 'Dupond', workdayId: 'EMP1002', actif: true, accreditations: { vl: [{ id: 'v1', startDate: '2021-03-15', endDate: '2026-03-14', numero: '072T1034', file: null }], l: [{ id: 'l1', startDate: '2021-03-15', endDate: '2026-03-14', numero: 'L072T001', file: 'attestation_l_charles.pdf' }], gaz: [], elec: [], formations: [] } }, { id: 'EF3', prenom: 'Émilie', nom: 'Fournier', workdayId: 'EMP1003', actif: false, accreditations: { vl: [], l: [{ id: 'l1', startDate: '2020-11-01', endDate: '2025-10-31', numero: 'L072T002', file: null }], gaz: [{ id: 'g1', startDate: '2022-06-01', endDate: '2027-05-31', numero: '', file: null }], elec: [{ id: 'e1', startDate: '2023-01-01', endDate: '2026-12-31', numero: '', file: 'habilit_elec_emilie.pdf' }], formations: [] } }, ] } };
+        
+        // --- Fonctions Utilitaires ---
+        const showLoadingProcess = (steps) => { const messageBox = document.getElementById('message-box'); const spinnerContainer = document.getElementById('spinner-container'); const messageContainer = document.getElementById('message-container'); const stepsList = document.getElementById('loading-steps'); spinnerContainer.classList.remove('hidden'); messageContainer.classList.add('hidden'); stepsList.innerHTML = ''; steps.forEach((step, index) => { const li = document.createElement('li'); li.id = `step-${index}`; li.className = 'flex items-center text-gray-400'; li.innerHTML = `<span class="step-icon w-5 h-5 mr-3 inline-flex items-center justify-center border-2 border-gray-300 rounded-full text-xs font-semibold"></span><span class="step-text">${step}</span>`; stepsList.appendChild(li); }); messageBox.classList.remove('hidden'); messageBox.classList.add('flex'); };
+        const updateLoadingStep = (stepIndex, status) => { const stepLi = document.getElementById(`step-${stepIndex}`); if (!stepLi) return; const iconSpan = stepLi.querySelector('.step-icon'); stepLi.classList.remove('text-gray-400', 'text-gray-800', 'text-red-600'); iconSpan.classList.remove('border-gray-300', 'border-accent', 'bg-accent', 'text-white', 'border-red-500'); iconSpan.innerHTML = ''; if (status === 'loading') { stepLi.classList.add('text-gray-800'); iconSpan.classList.add('border-accent'); iconSpan.innerHTML = `<svg class="animate-spin h-3 w-3 text-accent" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`; } else if (status === 'done') { stepLi.classList.add('text-gray-800'); iconSpan.classList.add('bg-accent', 'border-accent', 'text-white'); iconSpan.innerHTML = '&#10003;'; } else if (status === 'error') { stepLi.classList.add('text-red-600'); iconSpan.classList.add('border-red-500', 'text-red-500'); iconSpan.innerHTML = '!'; } };
+        const showMessage = (title, message, isLoading = false) => { const messageBox = document.getElementById('message-box'); const spinnerContainer = document.getElementById('spinner-container'); const messageContainer = document.getElementById('message-container'); const titleEl = document.getElementById('message-title'); const contentEl = document.getElementById('message-content'); const closeBtn = document.getElementById('message-close-btn'); if (isLoading) { showLoadingProcess([message]); updateLoadingStep(0, 'loading'); return; } spinnerContainer.classList.add('hidden'); messageContainer.classList.remove('hidden'); titleEl.textContent = title; contentEl.textContent = message; closeBtn.classList.remove('hidden'); messageBox.classList.remove('hidden'); messageBox.classList.add('flex'); setTimeout(() => { hideMessage(); }, 3000); };
+        const hideMessage = () => { const messageBox = document.getElementById('message-box'); if (messageBox) { messageBox.classList.add('hidden'); messageBox.classList.remove('flex'); } const spinnerContainer = document.getElementById('spinner-container'); if (spinnerContainer) spinnerContainer.classList.add('hidden'); const messageContainer = document.getElementById('message-container'); if(messageContainer) messageContainer.classList.remove('hidden'); };
+        const formatDate = (dateStr, format = 'dd/mm/yyyy') => { if (!dateStr) return 'N/A'; try { const date = new Date(dateStr); if (isNaN(date.getTime())) { console.warn("FormatDate: Invalid date string provided:", dateStr); return 'Date invalide'; } const day = String(date.getUTCDate()).padStart(2, '0'); const month = String(date.getUTCMonth() + 1).padStart(2, '0'); const year = date.getUTCFullYear(); if (format === 'yyyy-mm-dd') return `${year}-${month}-${day}`; return `${day}/${month}/${year}`; } catch (e) { console.error("Error formatting date:", dateStr, e); return 'Date invalide'; } };
+        const getCurrentConfig = (configArray, targetDateStr = null) => { if (!configArray || !Array.isArray(configArray) || configArray.length === 0) { return null; } const todayStr = targetDateStr || new Date().toISOString().split('T')[0]; const sortedConfigs = [...configArray].sort((a, b) => b.startDate.localeCompare(a.startDate)); const activeConfig = sortedConfigs.find(config => config.startDate <= todayStr); return activeConfig || null; };
+        const getYesterday = (dateString) => { const date = new Date(dateString); if (isNaN(date.getTime())) { console.error("getYesterday: Invalid date string provided:", dateString); return null; } date.setUTCDate(date.getUTCDate() - 1); return date.toISOString().split('T')[0]; };
+        const getActiveAccreditation = (accreditations) => { const now = new Date(); return (accreditations || []).find(acc => { if (!acc.startDate) return false; const startDate = new Date(acc.startDate); if (startDate > now) return false; if (!acc.endDate) return true; const endDate = new Date(acc.endDate); endDate.setHours(23, 59, 59, 999); return startDate <= now && endDate >= now; }); };
+
+        // --- Fonctions de Rendu ---
+        const renderUI = () => { renderConfigAccordions('VL'); renderConfigAccordions('L'); renderVehicleManagementList('VL'); renderVehicleManagementList('L'); renderPrestationManagementList(); renderControleursList(); switchView(state.currentView, true); };
+        const renderFuelCheckboxes = (prestation, category) => { const prestationId = prestation.id; const currentFuels = prestation.fuels || []; const checkboxes = state.config.carburants.map(fuel => { const isChecked = currentFuels.includes(fuel.id); return `<label class="inline-flex items-center space-x-2 cursor-pointer"><input type="checkbox" data-category="${category}" data-presta="${prestationId}" data-fuel="${fuel.id}" ${isChecked ? 'checked' : ''} class="fuel-checkbox form-checkbox h-4 w-4 text-accent border-gray-300 rounded focus:ring-accent"><span class="text-sm text-gray-700">${fuel.label}</span></label>`; }).join(''); return `<div class="flex flex-wrap gap-x-6 gap-y-2 mt-2">${checkboxes}</div>`; };
+        const renderPrestaTable = (category, prestation, allVehicleTypesInCategory) => { const prestationId = prestation.id; const isCvPrestation = CV_PRESTA_IDS.includes(prestationId); let applicableRowItems; let rowHeaderLabel; if (isCvPrestation) { applicableRowItems = CV_SERVICE_TYPES; rowHeaderLabel = "Type de Contre-Visite"; } else { const prestaConfig = state.config.prestations[category].find(p => p.id === prestationId); if (prestaConfig?.eligibleVehicleTypeIds && prestaConfig.eligibleVehicleTypeIds.length > 0) { applicableRowItems = allVehicleTypesInCategory.filter(vt => prestaConfig.eligibleVehicleTypeIds.includes(vt.id)); } else { applicableRowItems = allVehicleTypesInCategory; } rowHeaderLabel = "Type Véhicule"; if (!applicableRowItems || applicableRowItems.length === 0) { return `<div class="p-4 bg-yellow-50 text-center text-yellow-700 rounded-lg">Aucun type de véhicule n'est configuré comme éligible pour cette prestation (${prestationId}) dans cette catégorie (${category}).</div>`; } } const availableFuels = prestation.fuels || state.config.carburants.map(f => f.id); const allFuels = state.config.carburants; const fuelHeaders = allFuels.map((fuel, index) => { const isAvailable = availableFuels.includes(fuel.id); const bgColorClass = isAvailable ? (index % 2 === 0 ? 'bg-gray-800' : 'bg-gray-700') : 'bg-gray-400'; return `<th colspan="3" class="${bgColorClass} text-white px-2 py-2 border-r border-gray-400 font-semibold text-center text-sm whitespace-nowrap transition-colors duration-200">${fuel.label}</th>`; }).join(''); const subHeaders = allFuels.map(fuel => { const isAvailable = availableFuels.includes(fuel.id); const bgColorClass = isAvailable ? 'bg-accent' : 'bg-gray-300'; const textColorClass = isAvailable ? 'text-white' : 'text-gray-500'; return `<th class="${bgColorClass} ${textColorClass} px-1 py-1 text-xs font-semibold text-center border-r border-gray-400 transition-colors duration-200" style="width: 70px;">Centre €</th><th class="${bgColorClass} ${textColorClass} px-1 py-1 text-xs font-semibold text-center border-r border-gray-400 transition-colors duration-200" style="width: 70px;">Web €</th><th class="${bgColorClass} ${textColorClass} px-1 py-1 text-xs font-semibold text-center border-r border-gray-400 transition-colors duration-200" style="width: 70px;">min</th>`; }).join(''); const tableRows = applicableRowItems.map((item, rowIndex) => { const rowBgClass = rowIndex % 2 === 0 ? 'bg-white' : 'bg-soft-gray'; const itemId = item.id; const dataCells = allFuels.map(fuel => { const isAvailable = availableFuels.includes(fuel.id); const disabledAttr = isAvailable ? '' : 'disabled'; const cellBgClass = isAvailable ? '' : 'bg-gray-100 cursor-not-allowed'; const tariffHistory = state.config.tariffs[category]?.[prestationId]?.[itemId]?.[fuel.id]; const activeTariff = getCurrentConfig(tariffHistory); const durationHistory = state.config.durations[category]?.[prestationId]?.[itemId]?.[fuel.id]; const activeDuration = getCurrentConfig(durationHistory); const tariffCentre = activeTariff?.centre ?? ''; const tariffWeb = activeTariff?.web ?? ''; const duration = activeDuration?.unique ?? ''; return `<td class="p-1 text-center border-r border-gray-200 ${cellBgClass} transition-colors duration-200"><input type="text" value="${tariffCentre}" class="config-input text-center text-sm w-full border border-gray-300 rounded-md shadow-sm p-1 focus:ring-accent focus:border-accent ${cellBgClass}" data-category="${category}" data-presta="${prestationId}" data-vehicle="${itemId}" data-fuel="${fuel.id}" data-channel="centre" data-type="tariff" ${disabledAttr}></td><td class="p-1 text-center border-r border-gray-200 ${cellBgClass} transition-colors duration-200"><input type="text" value="${tariffWeb}" class="config-input text-center text-sm w-full border border-gray-300 rounded-md shadow-sm p-1 focus:ring-accent focus:border-accent ${cellBgClass}" data-category="${category}" data-presta="${prestationId}" data-vehicle="${itemId}" data-fuel="${fuel.id}" data-channel="web" data-type="tariff" ${disabledAttr}></td><td class="p-1 text-center border-r border-gray-200 ${cellBgClass} transition-colors duration-200"><input type="text" value="${duration}" class="config-input text-center text-sm w-full border border-gray-300 rounded-md shadow-sm p-1 focus:ring-accent focus:border-accent ${cellBgClass}" data-category="${category}" data-presta="${prestationId}" data-vehicle="${itemId}" data-fuel="${fuel.id}" data-channel="unique" data-type="duration" ${disabledAttr}></td>`; }).join(''); return `<tr class="hover:bg-gray-100 transition duration-150"><td class="sticky-col px-4 py-2 border-r border-gray-200 font-medium text-gray-800 ${rowBgClass} truncate" style="width: 210px;">${item.label}</td>${dataCells}</tr>`; }).join(''); return `<div class="overflow-x-auto rounded-lg shadow-lg border border-gray-200"><table class="min-w-full text-left border-collapse"><thead class="sticky top-0 z-20"><tr><th rowspan="2" class="sticky-col sticky-header px-4 py-2 bg-primary text-white text-sm font-semibold border-r border-gray-400 z-30" style="width: 210px;">${rowHeaderLabel}</th>${fuelHeaders}</tr><tr>${subHeaders}</tr></thead><tbody class="divide-y divide-gray-200 table-container">${tableRows}</tbody></table></div>`; };
+        const renderConfigAccordions = (category) => { const containerId = `prestation-list-${category.toLowerCase()}`; const container = document.getElementById(containerId); if (!container) return; const prestations = state.config.prestations[category]; const allVehicleTypesInCategory = state.config.vehicleTypes[category]; if (!prestations || !prestations.length) { container.innerHTML = `<p class="text-gray-500 p-4">Aucune prestation définie pour la catégorie ${category}.</p>`; renderSummaryLinks(category); return; } if (!allVehicleTypesInCategory || allVehicleTypesInCategory.length === 0) { container.innerHTML = `<p class="text-gray-500 p-4">Aucun type de véhicule défini pour la catégorie ${category}.</p>`; renderSummaryLinks(category); return; } container.innerHTML = prestations.map(prestation => { const sectionId = `presta-${category.toLowerCase()}-${prestation.id}`; return `<div id="${sectionId}" class="bg-white p-6 rounded-lg shadow-xl border border-gray-200 scroll-mt-[130px]"><div class="flex justify-between items-center mb-2 gap-2"><h4 class="text-lg font-bold text-primary">${prestation.label} (${prestation.id})</h4><div class="flex space-x-2 flex-shrink-0"><button class="reset-table-btn px-3 py-1 bg-gray-200 text-gray-700 text-sm font-semibold rounded-md hover:bg-gray-300 transition duration-150" data-category="${category}" data-presta-id="${prestation.id}"><i class="fas fa-undo mr-1"></i> Réinitialiser</button><button class="schedule-btn px-3 py-1 bg-blue-100 text-blue-700 text-sm font-semibold rounded-md hover:bg-blue-200 transition duration-150" data-category="${category}" data-presta-id="${prestation.id}"><i class="fas fa-calendar-alt mr-1"></i> Gérer planifications</button></div></div><div class="border-b pb-3 mb-4"><h5 class="text-sm font-semibold text-gray-700 mb-1">Carburants à configurer :</h5>${renderFuelCheckboxes(prestation, category)}</div>${renderPrestaTable(category, prestation, allVehicleTypesInCategory)}</div>`; }).join(''); renderSummaryLinks(category); };
+        const renderVehicleManagementList = (category) => { const data = state.config.vehicleTypes[category]; const containerId = `current-vehicle-types-list-${category.toLowerCase()}`; const columns = [ { header: 'Code (ID)', field: 'id' }, { header: 'Nom du Type', field: 'label' }, { header: 'Actions', isActionColumn: true, render: (item) => { const editIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block" viewBox="0 0 20 20" fill="currentColor"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" /><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" /></svg>`; const deleteIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>`; const deleteBtnHtml = `<button class="text-danger hover:text-red-700 px-2 py-1 delete-btn" data-type="vehicle" data-category="${category}" data-id="${item.id}" title="Supprimer">${deleteIcon}</button>`; return `<button class="text-accent hover:text-orange-600 px-2 py-1 edit-btn" data-type="vehicle" data-category="${category}" data-id="${item.id}" title="Modifier le nom">${editIcon}</button>${deleteBtnHtml}`; } }, ]; renderManagementTable(data, containerId, columns, `Types existants (${category}):`); };
+        const renderPrestationManagementList = () => { const renderEligibilityInfo = (presta, category) => { const allTypes = state.config.vehicleTypes[category]; if (!allTypes) return '<span class="text-xs text-red-500">Erreur cat!</span>'; const eligibleIds = presta.eligibleVehicleTypeIds || []; if (eligibleIds.length === 0) { return `<span class="text-xs text-gray-500 italic">Tous (${allTypes.length})</span>`; } const eligibleInCategory = eligibleIds.filter(id => allTypes.some(vt => vt.id === id)).length; if (eligibleInCategory === allTypes.length) { return `<span class="text-xs text-green-600">Tous (${allTypes.length})</span>`; } else { return `<span class="text-xs text-blue-600 font-semibold">${eligibleInCategory} / ${allTypes.length}</span>`; } }; const columnsVL = [ { header: 'Code (ID)', field: 'id' }, { header: 'Nom Prestation (VL)', field: 'label' }, { header: 'Véhicules VL Éligibles', render: (item) => renderEligibilityInfo(item, 'VL') }, { header: 'Actions', isActionColumn: true, render: (item) => { const editIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block" viewBox="0 0 20 20" fill="currentColor"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" /><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" /></svg>`; const deleteIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>`; const eligibilityIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" /></svg>`; const deleteBtnHtml = `<button class="text-danger hover:text-red-700 px-2 py-1 delete-btn" data-type="prestation" data-id="${item.id}" title="Supprimer">${deleteIcon}</button>`; const eligibilityBtnHtml = `<button class="text-gray-500 hover:text-gray-700 px-2 py-1 eligibility-btn" data-presta-id="${item.id}" title="Gérer l'éligibilité des véhicules">${eligibilityIcon}</button>`; return `<button class="text-accent hover:text-orange-600 px-2 py-1 edit-btn" data-type="prestation" data-id="${item.id}" title="Modifier">${editIcon}</button>${eligibilityBtnHtml}${deleteBtnHtml}`; } }, ]; const columnsL = [ { header: 'Code (ID)', field: 'id' }, { header: 'Nom Prestation (L)', field: 'label' }, { header: 'Véhicules L Éligibles', render: (item) => renderEligibilityInfo(item, 'L') }, { header: 'Actions', isActionColumn: true, render: (item) => { const eligibilityIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" /></svg>`; return `<button class="text-gray-500 hover:text-gray-700 px-2 py-1 eligibility-btn" data-presta-id="${item.id}" title="Gérer l'éligibilité des véhicules">${eligibilityIcon}</button>`; }} ]; renderManagementTable(state.config.prestations.VL, 'presta-table-vl', columnsVL, "Prestations VL :"); renderManagementTable(state.config.prestations.L, 'presta-table-l', columnsL, "Prestations Catégorie L :"); };
+        const renderCarburantManagementList = () => { const data = state.config.carburants; const containerId = 'current-carburants-list'; const columns = [ { header: 'Code (ID)', field: 'id' }, { header: 'Nom du Carburant', field: 'label' }, { header: 'Actions', isActionColumn: true, render: (item) => { const editIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block" viewBox="0 0 20 20" fill="currentColor"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" /><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" /></svg>`; const deleteIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>`; const deleteBtnHtml = `<button class="text-danger hover:text-red-700 px-2 py-1 delete-btn" data-type="carburant" data-id="${item.id}" title="Supprimer">${deleteIcon}</button>`; return `<button class="text-accent hover:text-orange-600 px-2 py-1 edit-btn" data-type="carburant" data-id="${item.id}" title="Modifier le nom">${editIcon}</button>${deleteBtnHtml}`; } }, ]; renderManagementTable(data, containerId, columns, ""); };
+        const renderControleursList = () => { const filteredData = state.config.controleurs.filter(c => { if (state.controleurStatusFilter === 'actifs') return c.actif; if (state.controleurStatusFilter === 'inactifs') return !c.actif; return true; }); const titleMap = { actifs: 'Contrôleurs Actifs', inactifs: 'Contrôleurs Inactifs', tous: 'Tous les Contrôleurs' }; const titleElement = document.getElementById('controleurs-list-title'); if(titleElement) { titleElement.textContent = titleMap[state.controleurStatusFilter]; } const columns = [ { header: 'Code', field: 'id' }, { header: 'Nom', field: 'nom' }, { header: 'Prénom', field: 'prenom' }, { header: 'Matricule Workday', field: 'workdayId' }, { header: 'Statut', render: (c) => `<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${c.actif ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">${c.actif ? 'Actif' : 'Inactif'}</span>` }, { isCentered: true, header: 'Agrément VL', render: (c) => { const active = getActiveAccreditation(c.accreditations?.vl); return renderStatusIndicator(!!active, active ? `N° ${active.numero} (Expire le ${active.endDate ? formatDate(active.endDate) : 'Indéterminé'})` : 'Aucun agrément VL actif'); }}, { isCentered: true, header: 'Agrément L', render: (c) => { const active = getActiveAccreditation(c.accreditations?.l); return renderStatusIndicator(!!active, active ? `N° ${active.numero} (Expire le ${active.endDate ? formatDate(active.endDate) : 'Indéterminé'})` : 'Aucun agrément L actif'); }}, { isCentered: true, header: 'Agrément Gaz', render: (c) => { const active = getActiveAccreditation(c.accreditations?.gaz); return renderStatusIndicator(!!active, active ? `Valide jusqu'au ${active.endDate ? formatDate(active.endDate) : 'Indéterminé'}` : 'Aucun agrément Gaz actif'); }}, { isCentered: true, header: 'Habilitation Élec.', render: (c) => { const active = getActiveAccreditation(c.accreditations?.elec); return renderStatusIndicator(!!active, active ? `Valide jusqu'au ${active.endDate ? formatDate(active.endDate) : 'Indéterminé'}` : 'Aucune habilitation électrique active'); }}, { header: 'Actions', render: (c) => `<button data-id="${c.id}" class="edit-controleur-btn px-3 py-1 text-sm text-white font-semibold rounded-lg bg-blue-500 hover:bg-blue-600 transition duration-200 shadow-md">Modifier</button>` }, ]; renderManagementTable(filteredData, 'current-controleurs-list', columns, ""); };
+        const renderManagementTable = (data, containerId, columns, title) => { const container = document.getElementById(containerId); if (!container) return; let tableHTML = title ? `<h4 class="font-medium text-gray-700 mb-2">${title}</h4>` : ''; if (!data || data.length === 0) { tableHTML += `<p class="text-center text-gray-500 italic py-4">Aucun élément à afficher.</p>`; container.innerHTML = tableHTML; return; } const headerRow = columns.map(col => { const headerAlignClass = col.isActionColumn ? 'text-right' : (col.isCentered ? 'text-center' : 'text-left'); return `<th class="px-4 py-3 ${headerAlignClass} text-xs font-medium text-gray-500 uppercase tracking-wider">${col.header}</th>`; }).join(''); const bodyRows = data.map((item, index) => { const rowClass = `${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-gray-100`; const cells = columns.map(col => { const tdClass = (col.isActionColumn ? "px-4 py-2 text-sm text-gray-700 action-cell" : "px-4 py-2 whitespace-nowrap text-sm text-gray-700") + (col.isCentered ? " text-center" : ""); const content = col.render ? col.render(item) : (item[col.field] || ''); return `<td class="${tdClass}">${content}</td>`; }).join(''); return `<tr class="${rowClass}">${cells}</tr>`; }).join(''); container.innerHTML = tableHTML + `<div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg"><table class="min-w-full divide-y divide-gray-200"><thead class="bg-gray-50"><tr>${headerRow}</tr></thead><tbody class="bg-white divide-y divide-gray-200">${bodyRows}</tbody></table></div>`; };
+        const renderStatusIndicator = (status, tooltipText) => { const colorClass = status ? 'text-green-500' : 'text-red-500'; const iconClass = status ? 'fa-check-circle' : 'fa-times-circle'; return `<div class="tooltip-container"><i class="fas ${iconClass} ${colorClass} text-lg"></i><span class="tooltip-text">${tooltipText}</span></div>`; };
+        const renderSummaryLinks = (category) => { const containerId = `summary-links-${category.toLowerCase()}`; const linkContainer = document.getElementById(containerId); if (!linkContainer) return; const prestations = state.config.prestations[category]; if (!prestations || prestations.length === 0) { linkContainer.innerHTML = '<p class="text-xs text-gray-500 italic">Aucune prestation.</p>'; return; } linkContainer.innerHTML = prestations.map(presta => { const targetId = `presta-${category.toLowerCase()}-${presta.id}`; return `<a href="#${targetId}" class="text-blue-600 hover:text-blue-800 hover:underline truncate inline-block px-2 py-1 rounded hover:bg-gray-100" title="${presta.label}">${presta.label} (${presta.id})</a>`; }).join(''); };
+        const renderControllerStats = () => { const statsElement = document.getElementById('controleurs-stats'); if (!statsElement) return; const actifs = state.config.controleurs.filter(c => c.actif).length; const inactifs = state.config.controleurs.length - actifs; statsElement.innerHTML = `<span class="font-bold text-green-600">${actifs}</span> contrôleur(s) actif(s) / <span class="font-bold text-red-600">${inactifs}</span> inactif(s)`; };
+
+        // --- FONCTION switchView ---
+        const switchView = (viewId, skipRender = false) => { state.currentView = viewId; document.querySelectorAll('main > section[id^="view-"], main > div[id^="view-"]').forEach(el => el.classList.add('hidden')); const viewToShow = document.getElementById(`view-${viewId}`); if (viewToShow) { viewToShow.classList.remove('hidden'); } else { console.warn(`Vue avec ID "view-${viewId}" non trouvée.`); } document.querySelectorAll('nav#sidebar-nav a').forEach(a => { a.classList.remove('active-nav-link'); }); const activeLink = document.getElementById(`nav-${viewId}`); if (activeLink) { activeLink.classList.add('active-nav-link'); } if (skipRender) return; if (viewId === 'accueil') { renderControllerStats(); } else if (viewId === 'configuration') { renderConfigAccordions('VL'); renderConfigAccordions('L'); renderSummaryLinks('VL'); renderSummaryLinks('L'); switchTab('vl'); } else if (viewId === 'prestations') { renderPrestationManagementList(); } else if (viewId === 'types-vehicules') { renderVehicleManagementList('VL'); renderVehicleManagementList('L'); } else if (viewId === 'controleurs') { renderControleursList(); renderCompetencyMatrix(); } else if (viewId === 'carburants') { renderCarburantManagementList(); } };
+        const switchTab = (category) => { const categories = ['vl', 'l']; const summaryVL = document.getElementById('summary-vl'); const summaryL = document.getElementById('summary-l'); categories.forEach(cat => { const tab = document.getElementById(`tab-${cat}`); const content = document.getElementById(`content-${cat}`); const summary = cat === 'vl' ? summaryVL : summaryL; if (cat === category) { tab.classList.add('border-accent', 'text-primary'); tab.classList.remove('border-transparent', 'text-gray-500'); content.classList.remove('hidden'); if (summary) summary.classList.remove('hidden'); } else { tab.classList.remove('border-accent', 'text-primary'); tab.classList.add('border-transparent', 'text-gray-500'); content.classList.add('hidden'); if (summary) summary.classList.add('hidden'); } }); };
+        
+        // --- Fonctions de Gestion (Edit/Delete/Reset) ---
+        const handleEditAction = (btn) => { const { type, id, category } = btn.dataset; if (type === 'prestation') { openEditPrestationModal(id); return; } let item; let stateList; if (type === 'carburant') { stateList = state.config.carburants; item = stateList.find(i => i.id === id); } else if (type === 'vehicle') { stateList = state.config.vehicleTypes[category]; item = stateList.find(i => i.id === id); } if (!item) return; const newLabel = prompt(`Modifier le nom pour "${item.id}":`, item.label); if (newLabel && newLabel.trim() !== item.label) { item.label = newLabel.trim(); if (type === 'vehicle') { renderVehicleManagementList(category); } else if (type === 'carburant') { renderCarburantManagementList(); } if (state.currentView === 'configuration') { renderConfigAccordions('VL'); renderConfigAccordions('L'); } showMessage('Succès', 'Le nom a été mis à jour.'); } };
+        const handleDeleteAction = (btn) => { const { type, id, category } = btn.dataset; if (!confirm(`Voulez-vous vraiment supprimer l'élément "${id}" ?\nCette action est irréversible.`)) { return; } let success = false; if (type === 'carburant') { state.config.carburants = state.config.carburants.filter(i => i.id !== id); renderCarburantManagementList(); success = true; } else if (type === 'vehicle') { state.config.vehicleTypes[category] = state.config.vehicleTypes[category].filter(i => i.id !== id); renderVehicleManagementList(category); success = true; } else if (type === 'prestation') { state.config.prestations.VL = state.config.prestations.VL.filter(i => i.id !== id); state.config.prestations.L = state.config.prestations.L.filter(i => i.id !== id); renderPrestationManagementList(); success = true; } if (success) { if (state.currentView === 'configuration') { renderConfigAccordions('VL'); renderConfigAccordions('L'); } showMessage('Succès', `L'élément "${id}" a été supprimé.`); } };
+        const handleResetTable = (btn) => { const { category, prestaId } = btn.dataset; const prestation = state.config.prestations[category]?.find(p => p.id === prestaId); if (!prestation) return; if (!confirm(`Voulez-vous vraiment réinitialiser les tarifs et durées ACTIFS pour la prestation "${prestation.label}" ?\nCela n'affectera pas les planifications futures.`)) { return; } const todayStr = new Date().toISOString().split('T')[0]; let changesMade = false; const tariffs = state.config.tariffs[category]?.[prestaId]; if (tariffs) { for (const vehicleId in tariffs) { for (const fuelId in tariffs[vehicleId]) { const history = tariffs[vehicleId][fuelId]; const activeConfig = getCurrentConfig(history, todayStr); if (activeConfig) { activeConfig.centre = ''; activeConfig.web = ''; changesMade = true; } } } } const durations = state.config.durations[category]?.[prestaId]; if (durations) { for (const vehicleId in durations) { for (const fuelId in durations[vehicleId]) { const history = durations[vehicleId][fuelId]; const activeConfig = getCurrentConfig(history, todayStr); if (activeConfig) { activeConfig.unique = ''; changesMade = true; } } } } if (changesMade) { renderConfigAccordions(category); showMessage('Réinitialisé', `Les tarifs et durées actifs pour "${prestation.label}" ont été effacés.`); } else { showMessage('Information', `Aucun tarif/durée actif trouvé pour "${prestation.label}".`, false); } };
+        
+        // --- MODAL & CONTROLLERS LOGIC ---
+        const handleConfigInput = (e) => { const { category, presta: prestaId, vehicle: vehicleId, fuel: fuelId, channel, type, isSchedule, targetDate } = e.target.dataset; const value = e.target.value.replace(',', '.'); if (value && isNaN(parseFloat(value))) { e.target.classList.add('border-red-500'); return; } e.target.classList.remove('border-red-500'); const todayStr = new Date().toISOString().split('T')[0]; const configKey = type === 'tariff' ? 'tariffs' : 'durations'; if (!state.config[configKey][category]?.[prestaId]?.[vehicleId]?.[fuelId]) { if (!state.config[configKey][category]) state.config[configKey][category] = {}; if (!state.config[configKey][category][prestaId]) state.config[configKey][category][prestaId] = {}; if (!state.config[configKey][category][prestaId][vehicleId]) state.config[configKey][category][prestaId][vehicleId] = {}; state.config[configKey][category][prestaId][vehicleId][fuelId] = []; console.warn(`Initialisation du chemin manquant pour ${configKey}/${category}/${prestaId}/${vehicleId}/${fuelId}`); } const history = state.config[configKey][category][prestaId][vehicleId][fuelId]; let targetConfig; if (isSchedule === 'true' && targetDate) { targetConfig = history.find(c => c.startDate === targetDate); if (!targetConfig) { console.error(`Impossible de trouver la config planifiée pour ${targetDate}`); return; } } else { targetConfig = getCurrentConfig(history, todayStr); if (!targetConfig) { console.warn(`Aucune config active trouvée pour ${category}/${prestaId}/${vehicleId}/${fuelId}. Création d'une nouvelle entrée pour aujourd'hui.`); targetConfig = { startDate: todayStr }; history.unshift(targetConfig); history.sort((a, b) => b.startDate.localeCompare(a.startDate)); } } targetConfig[channel] = value; };
+        const handleFuelCheckboxChange = (e) => { const checkbox = e.target; const { category, presta: prestationId, fuel: fuelId } = checkbox.dataset; const presta = state.config.prestations[category].find(p => p.id === prestationId); if (!presta) return; if (!presta.fuels) { presta.fuels = state.config.carburants.map(f => f.id); } if (checkbox.checked) { if (!presta.fuels.includes(fuelId)) { presta.fuels.push(fuelId); } } else { presta.fuels = presta.fuels.filter(f => f !== fuelId); } renderConfigAccordions(category); };
+        const openControleurModal = (controllerId) => { const controller = state.config.controleurs.find(c => c.id === controllerId); if (!controller) return; const modal = document.getElementById('edit-controleur-modal'); const modalContent = document.getElementById('edit-modal-content'); const form = document.getElementById('edit-controleur-form'); document.getElementById('edit-controleur-modal-title').textContent = `Modifier le Contrôleur: ${controller.prenom} ${controller.nom}`; form.elements['edit-controleur-id'].value = controllerId; form.elements['prenom'].value = controller.prenom; form.elements['nom'].value = controller.nom; form.elements['code'].value = controller.id; form.elements['workdayId'].value = controller.workdayId || ''; form.elements['actif'].checked = controller.actif; renderControllerAccreditationTable(controller); const typeSelect = document.getElementById('new-accred-type'); typeSelect.innerHTML = '<option value="">Choisir un type...</option>' + Object.entries(ACCREDITATION_TYPES).map(([id, {label}]) => `<option value="${id}">${label}</option>`).join(''); document.getElementById('new-accred-numero-group').classList.add('hidden'); modal.classList.remove('hidden'); modal.classList.add('flex'); setTimeout(() => { modalContent.classList.remove('scale-95', 'opacity-0'); modalContent.classList.add('scale-100', 'opacity-100'); }, 10); };
+        const closeControleurModal = () => { const modal = document.getElementById('edit-controleur-modal'); const modalContent = document.getElementById('edit-modal-content'); modalContent.classList.add('scale-95', 'opacity-0'); modalContent.classList.remove('scale-100'); setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300); };
+        const handleUpdateControleur = (e) => { e.preventDefault(); const form = e.target; const id = form.elements['edit-controleur-id'].value; const controllerIndex = state.config.controleurs.findIndex(c => c.id === id); if (controllerIndex > -1) { const controller = state.config.controleurs[controllerIndex]; controller.prenom = form.elements['prenom'].value.trim(); controller.nom = form.elements['nom'].value.trim(); controller.workdayId = form.elements['workdayId'].value.trim(); controller.actif = form.elements['actif'].checked; showMessage('Succès', `Les informations de ${controller.prenom} ${controller.nom} ont été mises à jour.`); renderControleursList(); renderCompetencyMatrix(); closeControleurModal(); } else { showMessage('Erreur', 'Contrôleur non trouvé.', false); } };
+        const renderControllerAccreditationTable = (controller) => { const container = document.getElementById('controller-accreditations-list'); const allItems = []; const nowStr = new Date().toISOString().split('T')[0]; for (const [typeId, typeInfo] of Object.entries(ACCREDITATION_TYPES)) { (controller.accreditations[typeId] || []).forEach(item => { allItems.push({ ...item, typeId, typeLabel: typeInfo.label }); }); } allItems.sort((a, b) => (b.startDate || '').localeCompare(a.startDate)); if (allItems.length === 0) { container.innerHTML = `<p class="text-gray-500 italic p-4 text-center">Aucun agrément ou formation enregistré.</p>`; return; } const rowsHtml = allItems.map(item => { const startDate = item.startDate; const endDate = item.endDate; let status = ''; let statusClass = ''; if (!startDate) { status = 'Invalide'; statusClass = 'text-gray-500'; } else if (startDate > nowStr) { status = 'Planifié'; statusClass = 'text-blue-600'; } else if (!endDate || endDate >= nowStr) { status = 'Actif'; statusClass = 'text-green-600 font-semibold'; } else if (endDate < nowStr) { status = 'Expiré'; statusClass = 'text-red-600'; } const numeroDisplay = ACCREDITATION_TYPES[item.typeId].hasNumero ? (item.numero || '<i class="text-gray-400">N/A</i>') : '<span class="text-gray-400">-</span>'; const fileDisplay = item.file ? `<a href="#" class="text-blue-500 hover:underline" title="${item.file}" onclick="alert('Simulation: téléchargement de ${item.file}')"><i class="fas fa-file-alt"></i></a>` : ''; const actionsHtml = `<button type="button" class="text-danger hover:text-red-700 px-2 py-1 delete-accreditation-btn" data-type-id="${item.typeId}" data-item-id="${item.id}" title="Supprimer"><i class="fas fa-trash-alt fa-fw"></i></button>`; return `<tr class="hover:bg-gray-50"><td class="px-4 py-2 text-sm">${item.typeLabel}</td><td class="px-4 py-2 text-sm ${statusClass}">${status}</td><td class="px-4 py-2 text-sm">${numeroDisplay}</td><td class="px-4 py-2 text-sm">${formatDate(startDate)}</td><td class="px-4 py-2 text-sm">${formatDate(endDate) || 'N/A'}</td><td class="px-4 py-2 text-sm text-center">${fileDisplay}</td><td class="px-4 py-2 text-sm text-right action-cell">${actionsHtml}</td></tr>`; }).join(''); container.innerHTML = `<table class="min-w-full divide-y divide-gray-200 text-sm"><thead class="bg-gray-50"><tr><th class="px-4 py-2 text-left font-medium text-gray-500 uppercase tracking-wider">Type</th><th class="px-4 py-2 text-left font-medium text-gray-500 uppercase tracking-wider">Statut</th><th class="px-4 py-2 text-left font-medium text-gray-500 uppercase tracking-wider">Numéro</th><th class="px-4 py-2 text-left font-medium text-gray-500 uppercase tracking-wider">Début</th><th class="px-4 py-2 text-left font-medium text-gray-500 uppercase tracking-wider">Fin</th><th class="px-4 py-2 text-left font-medium text-gray-500 uppercase tracking-wider">Doc.</th><th class="px-4 py-2 text-right font-medium text-gray-500 uppercase tracking-wider">Actions</th></tr></thead><tbody class="bg-white divide-y divide-gray-200">${rowsHtml}</tbody></table>`; };
+        const handleAddNewAccreditation = (form) => { const id = form.elements['edit-controleur-id'].value; const controller = state.config.controleurs.find(c => c.id === id); if (!controller) { showMessage('Erreur', 'Contrôleur non trouvé.', false); return; } const typeSelect = document.getElementById('new-accred-type'); const typeId = typeSelect.value; const startDate = document.getElementById('new-accred-start').value; const endDate = document.getElementById('new-accred-end').value || null; const numeroInput = document.getElementById('new-accred-numero'); const numero = numeroInput.value.trim() || ''; const fileInput = document.getElementById('new-accred-file'); const file = fileInput.files.length > 0 ? fileInput.files[0].name : null; const typeInfo = ACCREDITATION_TYPES[typeId]; if (!typeId) { showMessage('Erreur', 'Veuillez sélectionner un type d\'élément.', false); return; } if (!startDate) { showMessage('Erreur', 'La date de début est obligatoire.', false); return; } if (typeInfo.hasNumero && !numero) { showMessage('Erreur', `Le champ "N° Agrément" est obligatoire pour ${typeInfo.label}.`, false); return; } if (startDate && endDate && new Date(startDate) >= new Date(endDate)) { showMessage('Erreur', 'La date de fin doit être postérieure à la date de début.', false); return; } if (!controller.accreditations[typeId]) controller.accreditations[typeId] = []; controller.accreditations[typeId].push({ id: `${typeId}${Date.now()}`, startDate, endDate, numero, file }); renderControllerAccreditationTable(controller); renderControleursList(); renderCompetencyMatrix(); showMessage('Succès', `${typeInfo.label} ajouté.`); document.getElementById('add-accreditation-form').reset(); typeSelect.value = ''; document.getElementById('new-accred-numero-group').classList.add('hidden'); fileInput.value = ''; };
+        const handleDeleteAccreditation = (controller, typeId, itemId) => { if (!controller || !controller.accreditations[typeId]) return; const typeLabel = ACCREDITATION_TYPES[typeId]?.label || 'Élément'; if (!confirm(`Voulez-vous vraiment supprimer cet élément (${typeLabel}) ?`)) return; controller.accreditations[typeId] = controller.accreditations[typeId].filter(item => item.id !== itemId); renderControllerAccreditationTable(controller); renderControleursList(); renderCompetencyMatrix(); showMessage('Succès', `${typeLabel} supprimé.`); };
+        const renderCompetencyMatrix = () => { const lists = { vl: document.getElementById('matrix-vl-list'), l: document.getElementById('matrix-l-list'), gaz: document.getElementById('matrix-gaz-list'), elec: document.getElementById('matrix-elec-list') }; for (const key in lists) { if (lists[key]) lists[key].innerHTML = ''; } const activeControleurs = state.config.controleurs.filter(c => c.actif); let count = { vl: 0, l: 0, gaz: 0, elec: 0 }; activeControleurs.forEach(controller => { const checkAndRender = (typeId) => { const activeAccred = getActiveAccreditation(controller.accreditations?.[typeId]); if (activeAccred) { count[typeId]++; const endDateDisplay = activeAccred.endDate ? `(exp. ${formatDate(activeAccred.endDate)})` : '(permanent)'; lists[typeId].innerHTML += `<span class="bg-gray-200 text-gray-800 text-sm font-medium px-3 py-1 rounded-full shadow-sm">${controller.prenom} ${controller.nom} <span class="text-xs text-gray-600">${endDateDisplay}</span></span>`; } }; checkAndRender('vl'); checkAndRender('l'); checkAndRender('gaz'); checkAndRender('elec'); }); for (const key in lists) { if (lists[key] && count[key] === 0) { lists[key].innerHTML = '<p class="text-sm text-gray-500 italic">Aucun contrôleur avec habilitation active.</p>'; } } };
+
+        // --- FONCTIONS MODALE PLANIFICATION ---
+        const openScheduleModal = (category, prestaId) => { const prestation = state.config.prestations[category]?.find(p => p.id === prestaId); if (!prestation) return; state.scheduleModalData = { isOpen: true, category, prestaId, editingDate: null }; const modal = document.getElementById('schedule-modal'); const modalContent = document.getElementById('schedule-modal-content'); const title = document.getElementById('schedule-modal-title'); title.textContent = `Planification Tarifs/Durées pour "${prestation.label}" (${category})`; document.getElementById('schedule-edit-grid-container').classList.add('hidden'); document.getElementById('create-schedule-form').classList.remove('hidden'); document.getElementById('schedule-list-container').classList.remove('hidden'); document.getElementById('create-schedule-form').reset(); renderScheduleList(category, prestaId); modal.classList.remove('hidden'); modal.classList.add('flex'); setTimeout(() => { modalContent.classList.remove('scale-95', 'opacity-0'); modalContent.classList.add('scale-100', 'opacity-100'); }, 10); };
+        const closeScheduleModal = () => { const modal = document.getElementById('schedule-modal'); const modalContent = document.getElementById('schedule-modal-content'); modalContent.classList.add('scale-95', 'opacity-0'); modalContent.classList.remove('scale-100'); setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); state.scheduleModalData = { isOpen: false, category: null, prestaId: null, editingDate: null }; }, 300); };
+        const renderScheduleList = (category, prestaId) => { const container = document.getElementById('schedule-list-container'); const todayStr = new Date().toISOString().split('T')[0]; const dateMap = new Map(); const tariffs = state.config.tariffs[category]?.[prestaId] || {}; const durations = state.config.durations[category]?.[prestaId] || {}; const populateDateMap = (configType) => { Object.values(configType).forEach(vehicles => { Object.values(vehicles).forEach(fuels => { fuels.forEach(config => { if (!dateMap.has(config.startDate) || (config.endDate && !dateMap.get(config.startDate))) { dateMap.set(config.startDate, config.endDate || null); } }); }); }); }; populateDateMap(tariffs); populateDateMap(durations); if (dateMap.size === 0) { container.innerHTML = `<p class="text-gray-500 italic p-4 text-center">Aucune configuration tarifaire trouvée pour cette prestation.</p>`; return; } const sortedDates = Array.from(dateMap.keys()).sort((a, b) => b.localeCompare(a)); let html = '<table class="min-w-full divide-y divide-gray-200 text-sm"><thead class="bg-gray-50"><tr><th class="px-4 py-2 text-left font-medium text-gray-500 uppercase tracking-wider">Date d\'effet</th><th class="px-4 py-2 text-left font-medium text-gray-500 uppercase tracking-wider">Date de fin</th><th class="px-4 py-2 text-left font-medium text-gray-500 uppercase tracking-wider">Statut</th><th class="px-4 py-2 text-right font-medium text-gray-500 uppercase tracking-wider">Actions</th></tr></thead><tbody class="bg-white divide-y divide-gray-200">'; let activeDateFound = false; sortedDates.forEach((startDate, index) => { const endDate = dateMap.get(startDate); let status = ''; let statusClass = ''; let isFuture = startDate > todayStr; let isActive = false; let endDateDisplay = ''; if (isFuture) { status = 'Planifié'; statusClass = 'text-blue-600 font-semibold'; endDateDisplay = endDate ? formatDate(endDate) : '<span class="italic text-gray-500">Indéterminé</span>'; } else { if (!activeDateFound) { status = 'Actif'; statusClass = 'text-green-600 font-semibold'; isActive = true; activeDateFound = true; endDateDisplay = endDate ? formatDate(endDate) : '<span class="italic text-green-600">En cours</span>'; } else { status = 'Passé'; statusClass = 'text-gray-500'; endDateDisplay = endDate ? formatDate(endDate) : '<span class="italic text-gray-500">N/A</span>'; } } let actionsHtml = ''; if (isFuture) { actionsHtml = `<button class="text-blue-500 hover:text-blue-700 px-2 py-1 edit-schedule-btn" data-start-date="${startDate}" title="Modifier cette planification"><i class="fas fa-edit fa-fw"></i></button><button class="text-red-500 hover:text-red-700 px-2 py-1 delete-schedule-btn" data-start-date="${startDate}" title="Supprimer cette planification"><i class="fas fa-trash-alt fa-fw"></i></button>`; } else { actionsHtml = `<span class="px-2 py-1 text-gray-400 italic text-xs">Aucune action</span>`; } html += `<tr class="${isActive ? 'bg-green-50' : ''}"><td class="px-4 py-2 whitespace-nowrap">${formatDate(startDate)}</td><td class="px-4 py-2 whitespace-nowrap">${endDateDisplay}</td><td class="px-4 py-2 whitespace-nowrap ${statusClass}">${status}</td><td class="px-4 py-2 whitespace-nowrap text-right">${actionsHtml}</td></tr>`; }); html += '</tbody></table>'; container.innerHTML = html; };
+        const renderEditableScheduleGrid = (category, prestaId, targetDate) => { const prestation = state.config.prestations[category]?.find(p => p.id === prestaId); const allVehicleTypesInCategory = state.config.vehicleTypes[category]; if (!prestation) return '<p class="text-red-500">Erreur: Prestation non trouvée.</p>'; const isCvPrestation = CV_PRESTA_IDS.includes(prestaId); let applicableRowItems; let rowHeaderLabel; if (isCvPrestation) { applicableRowItems = CV_SERVICE_TYPES; rowHeaderLabel = "Type de Contre-Visite"; } else { const prestaConfig = state.config.prestations[category].find(p => p.id === prestaId); if (prestaConfig?.eligibleVehicleTypeIds && prestaConfig.eligibleVehicleTypeIds.length > 0) { applicableRowItems = allVehicleTypesInCategory.filter(vt => prestaConfig.eligibleVehicleTypeIds.includes(vt.id)); } else { applicableRowItems = allVehicleTypesInCategory; } rowHeaderLabel = "Type Véhicule"; if (!applicableRowItems || applicableRowItems.length === 0) { return `<div class="p-4 bg-yellow-50 text-center text-yellow-700 rounded-lg">Aucun type de véhicule n'est configuré comme éligible pour cette prestation (${prestaId}) dans cette catégorie (${category}).</div>`; } } const availableFuels = prestation.fuels || state.config.carburants.map(f => f.id); const allFuels = state.config.carburants; const fuelHeaders = allFuels.map((fuel, index) => { const isAvailable = availableFuels.includes(fuel.id); const bgColorClass = isAvailable ? (index % 2 === 0 ? 'bg-gray-800' : 'bg-gray-700') : 'bg-gray-400'; return `<th colspan="3" class="${bgColorClass} text-white px-2 py-2 border-r border-gray-400 font-semibold text-center text-sm whitespace-nowrap transition-colors duration-200">${fuel.label}</th>`; }).join(''); const subHeaders = allFuels.map(fuel => { const isAvailable = availableFuels.includes(fuel.id); const bgColorClass = isAvailable ? 'bg-accent' : 'bg-gray-300'; const textColorClass = isAvailable ? 'text-white' : 'text-gray-500'; return `<th class="${bgColorClass} ${textColorClass} px-1 py-1 text-xs font-semibold text-center border-r border-gray-400 transition-colors duration-200" style="width: 70px;">Centre €</th><th class="${bgColorClass} ${textColorClass} px-1 py-1 text-xs font-semibold text-center border-r border-gray-400 transition-colors duration-200" style="width: 70px;">Web €</th><th class="${bgColorClass} ${textColorClass} px-1 py-1 text-xs font-semibold text-center border-r border-gray-400 transition-colors duration-200" style="width: 70px;">min</th>`; }).join(''); const tableRows = applicableRowItems.map((item, rowIndex) => { const rowBgClass = rowIndex % 2 === 0 ? 'bg-white' : 'bg-soft-gray'; const itemId = item.id; const dataCells = allFuels.map(fuel => { const isAvailable = availableFuels.includes(fuel.id); const disabledAttr = isAvailable ? '' : 'disabled'; const cellBgClass = isAvailable ? '' : 'bg-gray-100 cursor-not-allowed'; const tariffHistory = state.config.tariffs[category]?.[prestaId]?.[itemId]?.[fuel.id] || []; const targetTariff = tariffHistory.find(c => c.startDate === targetDate); const durationHistory = state.config.durations[category]?.[prestaId]?.[itemId]?.[fuel.id] || []; const targetDuration = durationHistory.find(c => c.startDate === targetDate); const tariffCentre = targetTariff?.centre ?? ''; const tariffWeb = targetTariff?.web ?? ''; const duration = targetDuration?.unique ?? ''; return `<td class="p-1 text-center border-r border-gray-200 ${cellBgClass} transition-colors duration-200"><input type="text" value="${tariffCentre}" class="config-input text-center text-sm w-full border border-gray-300 rounded-md shadow-sm p-1 focus:ring-accent focus:border-accent ${cellBgClass}" data-category="${category}" data-presta="${prestaId}" data-vehicle="${itemId}" data-fuel="${fuel.id}" data-channel="centre" data-type="tariff" data-is-schedule="true" data-target-date="${targetDate}" ${disabledAttr}></td><td class="p-1 text-center border-r border-gray-200 ${cellBgClass} transition-colors duration-200"><input type="text" value="${tariffWeb}" class="config-input text-center text-sm w-full border border-gray-300 rounded-md shadow-sm p-1 focus:ring-accent focus:border-accent ${cellBgClass}" data-category="${category}" data-presta="${prestaId}" data-vehicle="${itemId}" data-fuel="${fuel.id}" data-channel="web" data-type="tariff" data-is-schedule="true" data-target-date="${targetDate}" ${disabledAttr}></td><td class="p-1 text-center border-r border-gray-200 ${cellBgClass} transition-colors duration-200"><input type="text" value="${duration}" class="config-input text-center text-sm w-full border border-gray-300 rounded-md shadow-sm p-1 focus:ring-accent focus:border-accent ${cellBgClass}" data-category="${category}" data-presta="${prestaId}" data-vehicle="${itemId}" data-fuel="${fuel.id}" data-channel="unique" data-type="duration" data-is-schedule="true" data-target-date="${targetDate}" ${disabledAttr}></td>`; }).join(''); return `<tr class="hover:bg-gray-100 transition duration-150"><td class="sticky-col px-4 py-2 border-r border-gray-200 font-medium text-gray-800 ${rowBgClass} truncate" style="width: 210px;">${item.label}</td>${dataCells}</tr>`; }).join(''); return `<div class="overflow-x-auto rounded-lg shadow-lg border border-gray-200"><table class="min-w-full text-left border-collapse"><thead class="sticky top-0 z-20"><tr><th rowspan="2" class="sticky-col sticky-header px-4 py-2 bg-primary text-white text-sm font-semibold border-r border-gray-400 z-30" style="width: 210px;">${rowHeaderLabel}</th>${fuelHeaders}</tr><tr>${subHeaders}</tr></thead><tbody class="divide-y divide-gray-200 table-container">${tableRows}</tbody></table></div>`; };
+        const showScheduleEditGrid = (category, prestaId, targetDate) => { state.scheduleModalData.editingDate = targetDate; const gridContainer = document.getElementById('schedule-edit-grid-container'); const titleElement = document.getElementById('schedule-edit-title'); const gridElement = document.getElementById('schedule-edit-grid'); titleElement.textContent = `Modification pour le ${formatDate(targetDate)}`; gridElement.innerHTML = renderEditableScheduleGrid(category, prestaId, targetDate); gridContainer.classList.remove('hidden'); document.getElementById('create-schedule-form').classList.add('hidden'); document.getElementById('schedule-list-container').classList.add('hidden'); gridContainer.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+        const handleDeleteSchedule = (category, prestaId, startDate) => { if (!confirm(`Voulez-vous vraiment supprimer la planification du ${formatDate(startDate)} pour "${prestaId}" ?`)) return; let deleted = false; const tariffs = state.config.tariffs[category]?.[prestaId]; if (tariffs) { for (const vehicleId in tariffs) { for (const fuelId in tariffs[vehicleId]) { const initialLength = tariffs[vehicleId][fuelId].length; tariffs[vehicleId][fuelId] = tariffs[vehicleId][fuelId].filter(config => config.startDate !== startDate); if(tariffs[vehicleId][fuelId].length < initialLength) deleted = true; } } } const durations = state.config.durations[category]?.[prestaId]; if (durations) { for (const vehicleId in durations) { for (const fuelId in durations[vehicleId]) { const initialLength = durations[vehicleId][fuelId].length; durations[vehicleId][fuelId] = durations[vehicleId][fuelId].filter(config => config.startDate !== startDate); if(durations[vehicleId][fuelId].length < initialLength) deleted = true; } } } if(deleted) { renderScheduleList(category, prestaId); renderConfigAccordions(category); showMessage('Supprimé', `Planification du ${formatDate(startDate)} supprimée.`); } else { showMessage('Erreur', `Impossible de trouver la planification du ${formatDate(startDate)}.`, false); } };
+        const handleCreateSchedule = (category, prestaId, futureDate) => { const tariffs = state.config.tariffs[category]?.[prestaId] || {}; const durations = state.config.durations[category]?.[prestaId] || {}; const dateExists = Object.values(tariffs).some(v => Object.values(v).some(f => f.some(c => c.startDate === futureDate))) || Object.values(durations).some(v => Object.values(v).some(f => f.some(c => c.startDate === futureDate))); if (dateExists) { showMessage('Erreur', `Une planification existe déjà pour le ${formatDate(futureDate)}. Modifiez-la ou supprimez-la d'abord.`, false); return; } const newEndDateForPrevious = getYesterday(futureDate); if (!newEndDateForPrevious) { showMessage('Erreur', 'Impossible de calculer la date de fin pour la configuration précédente.', false); return; } const todayStr = new Date().toISOString().split('T')[0]; const vehicleTypes = state.config.vehicleTypes[category]; const allFuels = state.config.carburants; vehicleTypes.forEach(vehicle => { allFuels.forEach(fuel => { if (!state.config.tariffs[category]?.[prestaId]?.[vehicle.id]?.[fuel.id]) { if (!state.config.tariffs[category]) state.config.tariffs[category] = {}; if (!state.config.tariffs[category][prestaId]) state.config.tariffs[category][prestaId] = {}; if (!state.config.tariffs[category][prestaId][vehicle.id]) state.config.tariffs[category][prestaId][vehicle.id] = {}; state.config.tariffs[category][prestaId][vehicle.id][fuel.id] = []; } if (!state.config.durations[category]?.[prestaId]?.[vehicle.id]?.[fuel.id]) { if (!state.config.durations[category]) state.config.durations[category] = {}; if (!state.config.durations[category][prestaId]) state.config.durations[category][prestaId] = {}; if (!state.config.durations[category][prestaId][vehicle.id]) state.config.durations[category][prestaId][vehicle.id] = {}; state.config.durations[category][prestaId][vehicle.id][fuel.id] = []; } const tariffHistory = state.config.tariffs[category][prestaId][vehicle.id][fuel.id]; const durationHistory = state.config.durations[category][prestaId][vehicle.id][fuel.id]; const activeTariff = getCurrentConfig(tariffHistory, todayStr); const activeDuration = getCurrentConfig(durationHistory, todayStr); const newTariffEntry = { startDate: futureDate, centre: activeTariff?.centre ?? '', web: activeTariff?.web ?? '' }; const newDurationEntry = { startDate: futureDate, unique: activeDuration?.unique ?? '' }; tariffHistory.push(newTariffEntry); tariffHistory.sort((a, b) => b.startDate.localeCompare(a.startDate)); durationHistory.push(newDurationEntry); durationHistory.sort((a, b) => b.startDate.localeCompare(a.startDate)); const previousTariffConfig = getCurrentConfig(tariffHistory, newEndDateForPrevious); if (previousTariffConfig && !previousTariffConfig.endDate) { previousTariffConfig.endDate = newEndDateForPrevious; } const previousDurationConfig = getCurrentConfig(durationHistory, newEndDateForPrevious); if (previousDurationConfig && !previousDurationConfig.endDate) { previousDurationConfig.endDate = newEndDateForPrevious; } }); }); renderScheduleList(category, prestaId); showScheduleEditGrid(category, prestaId, futureDate); };
+        const handleSaveSchedule = () => { const { category, prestaId, editingDate } = state.scheduleModalData; if (!category || !prestaId || !editingDate) { console.error("Données manquantes pour sauvegarder la planification."); return; } document.getElementById('schedule-edit-grid-container').classList.add('hidden'); document.getElementById('create-schedule-form').classList.remove('hidden'); document.getElementById('schedule-list-container').classList.remove('hidden'); renderScheduleList(category, prestaId); state.scheduleModalData.editingDate = null; showMessage('Sauvegardé', `La planification pour le ${formatDate(editingDate)} a été enregistrée.`); renderConfigAccordions(category); };
+        const openEligibilityModal = (prestaId) => { const prestation = state.config.prestations.VL.find(p => p.id === prestaId); if (!prestation) { showMessage('Erreur', `Prestation ${prestaId} non trouvée.`); return; } const modal = document.getElementById('eligibility-modal'); const modalContent = document.getElementById('eligibility-modal-content'); const title = document.getElementById('eligibility-modal-title'); title.textContent = `Gérer l'éligibilité pour "${prestation.label}" (${prestaId})`; document.getElementById('eligibility-presta-id').value = prestaId; const currentEligibleIds = prestation.eligibleVehicleTypeIds || []; document.getElementById('eligibility-vl-list').innerHTML = renderEligibilityCheckboxes('VL', currentEligibleIds); document.getElementById('eligibility-l-list').innerHTML = renderEligibilityCheckboxes('L', currentEligibleIds); modal.classList.remove('hidden'); modal.classList.add('flex'); setTimeout(() => { modalContent.classList.remove('scale-95', 'opacity-0'); modalContent.classList.add('scale-100', 'opacity-100'); }, 10); };
+        const closeEligibilityModal = () => { const modal = document.getElementById('eligibility-modal'); const modalContent = document.getElementById('eligibility-modal-content'); modalContent.classList.add('scale-95', 'opacity-0'); modalContent.classList.remove('scale-100'); setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300); };
+        const renderEligibilityCheckboxes = (category, currentEligibleIds) => { const vehicleTypes = state.config.vehicleTypes[category]; if (!vehicleTypes || vehicleTypes.length === 0) { return '<p class="text-sm text-gray-500 col-span-full">Aucun type de véhicule défini pour cette catégorie.</p>'; } return vehicleTypes.map(vt => `<label class="inline-flex items-center space-x-2 cursor-pointer"><input type="checkbox" name="eligibleTypes" value="${vt.id}" data-category="${category}" ${currentEligibleIds.includes(vt.id) ? 'checked' : ''} class="form-checkbox h-4 w-4 text-accent border-gray-300 rounded focus:ring-accent eligibility-checkbox"><span class="text-sm text-gray-700">${vt.label} (${vt.id})</span></label>`).join(''); };
+        const handleSaveEligibility = (e) => { e.preventDefault(); const form = e.target; const prestaId = form.elements['eligibility-presta-id'].value; const prestaVL = state.config.prestations.VL.find(p => p.id === prestaId); const prestaL = state.config.prestations.L.find(p => p.id === prestaId); if (!prestaVL || !prestaL) { showMessage('Erreur', `Prestation ${prestaId} non trouvée lors de la sauvegarde.`); return; } const selectedIds = Array.from(form.querySelectorAll('.eligibility-checkbox:checked')).map(checkbox => checkbox.value); prestaVL.eligibleVehicleTypeIds = selectedIds.length > 0 ? selectedIds : []; renderPrestationManagementList(); if (state.currentView === 'configuration') { renderConfigAccordions('VL'); renderConfigAccordions('L'); } closeEligibilityModal(); showMessage('Succès', `L'éligibilité des véhicules pour "${prestaVL.label}" a été mise à jour.`); };
+        const openEditPrestationModal = (prestaId) => { const prestation = state.config.prestations.VL.find(p => p.id === prestaId); if (!prestation) { showMessage('Erreur', `Prestation ${prestaId} non trouvée.`); return; } const modal = document.getElementById('edit-prestation-modal'); const modalContent = document.getElementById('edit-prestation-modal-content'); const title = document.getElementById('edit-prestation-modal-title'); const codeInput = document.getElementById('edit-presta-code'); const nameInput = document.getElementById('edit-presta-name'); const originalIdInput = document.getElementById('edit-prestation-original-id'); const codeWarning = document.getElementById('edit-presta-code-warning'); const codeDefaultMsg = document.getElementById('edit-presta-code-default-msg'); title.textContent = `Modifier la Prestation "${prestation.label}" (${prestaId})`; originalIdInput.value = prestaId; codeInput.value = prestation.id; nameInput.value = prestation.label; if (prestation.isDefault) { codeInput.disabled = true; codeWarning.classList.add('hidden'); codeDefaultMsg.classList.remove('hidden'); } else { codeInput.disabled = false; codeWarning.classList.remove('hidden'); codeDefaultMsg.classList.add('hidden'); } const currentEligibleIds = prestation.eligibleVehicleTypeIds || []; document.getElementById('edit-eligibility-vl-list').innerHTML = renderEligibilityCheckboxes('VL', currentEligibleIds); document.getElementById('edit-eligibility-l-list').innerHTML = renderEligibilityCheckboxes('L', currentEligibleIds); modal.classList.remove('hidden'); modal.classList.add('flex'); setTimeout(() => { modalContent.classList.remove('scale-95', 'opacity-0'); modalContent.classList.add('scale-100', 'opacity-100'); }, 10); };
+        const closeEditPrestationModal = () => { const modal = document.getElementById('edit-prestation-modal'); const modalContent = document.getElementById('edit-prestation-modal-content'); modalContent.classList.add('scale-95', 'opacity-0'); modalContent.classList.remove('scale-100'); setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300); };
+        const handleUpdatePrestation = (e) => { e.preventDefault(); const form = e.target; const originalId = form.elements['edit-prestation-original-id'].value; const newId = form.elements['id'].value.trim().toUpperCase(); const newName = form.elements['name'].value.trim(); const prestaVL = state.config.prestations.VL.find(p => p.id === originalId); const prestaL = state.config.prestations.L.find(p => p.id === originalId); if (!prestaVL || !prestaL) { showMessage('Erreur', `Prestation originale ${originalId} non trouvée.`); return; } if (!newName) { showMessage('Erreur', 'Le nom de la prestation ne peut pas être vide.', false); return; } if (!newId) { showMessage('Erreur', 'Le code de la prestation ne peut pas être vide.', false); return; } if (newId !== originalId && (state.config.prestations.VL.some(p => p.id === newId) || state.config.prestations.L.some(p => p.id === newId))) { showMessage('Erreur', `Le code "${newId}" est déjà utilisé par une autre prestation.`, false); return; } const selectedEligibleIds = Array.from(form.querySelectorAll('.eligibility-checkbox:checked')).map(checkbox => checkbox.value); prestaVL.label = newName; prestaVL.eligibleVehicleTypeIds = selectedIds.length > 0 ? selectedIds : []; let idChanged = false; if (newId !== originalId && !prestaVL.isDefault) { console.warn(`Le code de la prestation ${originalId} a été changé en ${newId}. Les tarifs existants liés à ${originalId} ne sont PAS migrés automatiquement.`); prestaVL.id = newId; prestaL.id = newId; idChanged = true; } renderPrestationManagementList(); if (state.currentView === 'configuration') { renderConfigAccordions('VL'); renderConfigAccordions('L'); } closeEditPrestationModal(); showMessage('Succès', `Prestation "${newName}" mise à jour.`); };
+
+        // --- GEMINI API ---
+        async function callGeminiAPI(prompt, schema) { const apiKey = "AIzaSyCiZkp1_cjd8oXRVPAQimkqFqnEGEeAKSU"; if (apiKey === "VOTRE_CLÉ_API_DE_GOOGLE_AI_STUDIO_ICI" || !apiKey) { throw new Error("Clé API non configurée dans le code (fonction callGeminiAPI)."); } const url = `https://generativanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`; const payload = { contents: [{ parts: [{ text: prompt }] }], generationConfig: { responseMimeType: "application/json", responseSchema: schema } }; try { const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); if (!response.ok) { const errorBody = await response.text(); console.error("Réponse d'erreur de l'API:", errorBody); throw new Error(`Erreur API: ${response.status} ${response.statusText}`); } const result = await response.json(); if (result.candidates && result.candidates.length > 0 && result.candidates[0].content?.parts?.[0]?.text) { const jsonText = result.candidates[0].content.parts[0].text; return JSON.parse(jsonText); } else { console.error("Réponse API invalide:", result); throw new Error("Réponse de l'API invalide ou vide."); } } catch (error) { console.error("Erreur lors de l'appel à l'API Gemini:", error); throw error; } }
+
+        // --- LOGIQUE POUR LE CHAT DE CONFIGURATION ---
+        const applyModifications = (modifications) => { let changesMade = 0; const allCategories = ['VL', 'L']; const ensureConfigPath = (cat, prestaId, vehicleId, fuelId) => { if (!state.config.tariffs[cat]) state.config.tariffs[cat] = {}; if (!state.config.tariffs[cat][prestaId]) state.config.tariffs[cat][prestaId] = {}; if (!state.config.tariffs[cat][prestaId][vehicleId]) state.config.tariffs[cat][prestaId][vehicleId] = {}; if (!state.config.tariffs[cat][prestaId][vehicleId][fuelId]) state.config.tariffs[cat][prestaId][vehicleId][fuelId] = []; if (!state.config.durations[cat]) state.config.durations[cat] = {}; if (!state.config.durations[cat][prestaId]) state.config.durations[cat][prestaId] = {}; if (!state.config.durations[cat][prestaId][vehicleId]) state.config.durations[cat][prestaId][vehicleId] = {}; if (!state.config.durations[cat][prestaId][vehicleId][fuelId]) state.config.durations[cat][prestaId][vehicleId][fuelId] = []; }; const todayStr = new Date().toISOString().split('T')[0]; for (const mod of modifications) { const categories = mod.categories.includes('all') ? allCategories : mod.categories; for (const cat of categories) { const allPrestas = state.config.prestations[cat].map(p => p.id); const allVehicles = state.config.vehicleTypes[cat].map(v => v.id); const prestas = mod.prestationIds.includes('all') ? allPrestas : mod.prestationIds.filter(pId => allPrestas.includes(pId)); const vehicles = mod.vehicleTypeIds.includes('all') ? allVehicles : mod.vehicleTypeIds.filter(vId => allVehicles.includes(vId)); for (const prestaId of prestas) { const allFuels = (state.config.prestations[cat].find(p => p.id === prestaId)?.fuels || state.config.carburants.map(f => f.id)); const fuels = mod.fuelIds.includes('all') ? allFuels : mod.fuelIds.filter(fId => allFuels.includes(fId)); for (const vehicleId of vehicles) { for (const fuelId of fuels) { ensureConfigPath(cat, prestaId, vehicleId, fuelId); const configKey = mod.type === 'tariff' ? 'tariffs' : 'durations'; const history = state.config[configKey][cat][prestaId][vehicleId][fuelId]; let activeConfig = getCurrentConfig(history, todayStr); if (!activeConfig) { activeConfig = { startDate: todayStr }; history.unshift(activeConfig); history.sort((a, b) => b.startDate.localeCompare(a.startDate)); } const channels = mod.type === 'tariff' ? mod.channels : ['unique']; channels.forEach(channel => { activeConfig[channel] = mod.value; changesMade++; }); } } } } } return changesMade; };
+        async function processChatQuery(query) { const steps = [ "Analyse de la demande", "Traduction en actions par l'IA", "Application des modifications" ]; showLoadingProcess(steps); let currentStep = 0; try { currentStep = 0; updateLoadingStep(currentStep, 'loading'); const context = { prestations: { VL: state.config.prestations.VL.map(p => ({ id: p.id, label: p.label })), L: state.config.prestations.L.map(p => ({ id: p.id, label: p.label })) }, vehicleTypes: { VL: state.config.vehicleTypes.VL.map(v => ({ id: v.id, label: v.label })), L: state.config.vehicleTypes.L.map(v => ({ id: v.id, label: v.label })) }, fuels: state.config.carburants.map(f => ({ id: f.id, label: f.label })) }; const prompt = `Contexte : Vous êtes un assistant de configuration pour un centre de contrôle technique. Votre tâche est de traduire une requête en langage naturel en un objet JSON structuré pour modifier la configuration des tarifs et des durées.\n\nVoici les données de référence (vos "dictionnaires" pour mapper les noms aux ID) :\n${JSON.stringify(context, null, 2)}\n\nRequête de l'utilisateur : "${query}"\n\nTâche : Analysez la requête et générez un objet JSON contenant une liste de modifications ("modifications").\n- 'type' : doit être "tariff" (pour un prix) ou "duration" (pour une durée).\n- 'value' : la valeur numérique (ex: 80, 30).\n- 'categories' : un tableau d'ID de catégorie ("VL", "L"). Si la requête s'applique à un type de véhicule (ex: 'VP', 'MOTO'), déduisez la bonne catégorie. Si non spécifié, utilisez ["all"].\n- 'prestationIds' : un tableau d'ID de prestation (ex: "CTP", "CVP"). Utilisez le contexte. Si "toutes les visites" ou non spécifié, utilisez ["all"].\n- 'vehicleTypeIds' : un tableau d'ID de type de véhicule (ex: "VP", "MOTO"). Utilisez le contexte. Si non spécifié, utilisez ["all"].\n- 'fuelIds' : un tableau d'ID de carburant (ex: "essence", "diesel"). Si non spécifié, utilisez ["all"].\n- 'channels' : Pour un 'tariff', si l'utilisateur dit "tarif" ou "prix", utilisez ["centre", "web"]. S'il précise "centre" ou "web", utilisez le tableau correspondant. Pour 'duration', utilisez toujours ["unique"].\n\nNe générez QUE l'objet JSON, sans aucun texte avant ou après.`; const modificationSchema = { type: "OBJECT", properties: { type: { type: "STRING", enum: ["tariff", "duration"] }, value: { type: "NUMBER" }, categories: { type: "ARRAY", items: { type: "STRING" } }, prestationIds: { type: "ARRAY", items: { type: "STRING" } }, vehicleTypeIds: { type: "ARRAY", items: { type: "STRING" } }, fuelIds: { type: "ARRAY", items: { type: "STRING" } }, channels: { type: "ARRAY", items: { type: "STRING" } } }, required: ["type", "value", "categories", "prestationIds", "vehicleTypeIds", "fuelIds", "channels"] }; const schema = { type: "OBJECT", properties: { modifications: { type: "ARRAY", items: modificationSchema } }, required: ["modifications"] }; updateLoadingStep(currentStep, 'done'); currentStep = 1; updateLoadingStep(currentStep, 'loading'); const result = await callGeminiAPI(prompt, schema); updateLoadingStep(currentStep, 'done'); currentStep = 2; updateLoadingStep(currentStep, 'loading'); if (result && result.modifications) { const changesCount = applyModifications(result.modifications); renderConfigAccordions('VL'); renderConfigAccordions('L'); updateLoadingStep(currentStep, 'done'); setTimeout(() => { showMessage('Succès !', `${changesCount} modification(s) ont été appliquées.`); }, 500); } else { throw new Error("La réponse de l'IA était vide ou mal formée."); } } catch (error) { updateLoadingStep(currentStep, 'error'); setTimeout(() => { showMessage('Erreur', `Échec à l'étape "${steps[currentStep]}": ${error.message}`, false); }, 500); } }
+        
+        // --- Event Listeners Setup ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderUI();
+            const themeSwitcher = document.getElementById('theme-switcher');
+            themeSwitcher.addEventListener('change', (e) => { applyTheme(e.target.value); });
+            const savedTheme = localStorage.getItem('piloteAdminTheme') || 'pilote';
+            applyTheme(savedTheme);
+            document.querySelectorAll('nav#sidebar-nav a').forEach(link => { link.addEventListener('click', (e) => { e.preventDefault(); const viewId = e.currentTarget.id.replace('nav-', ''); switchView(viewId); }); });
+            document.getElementById('tab-vl').addEventListener('click', e => { e.preventDefault(); switchTab('vl'); });
+            document.getElementById('tab-l').addEventListener('click', e => { e.preventDefault(); switchTab('l'); });
+            document.getElementById('message-close-btn').addEventListener('click', () => hideMessage());
+            document.body.addEventListener('input', e => { if (e.target.classList.contains('config-input')) handleConfigInput(e); });
+            document.body.addEventListener('change', e => { if (e.target.classList.contains('fuel-checkbox')) { handleFuelCheckboxChange(e); } if(e.target.matches('.file-input')) { const type = e.target.dataset.type; const accId = e.target.dataset.accId; const spanId = accId ? `file-name-${type}-${accId}` : `new-file-name-${type}`; const fileNameSpan = document.getElementById(spanId); if (fileNameSpan && e.target.files.length > 0) { fileNameSpan.textContent = e.target.files[0].name; if(accId) { const controllerId = document.getElementById('edit-controleur-id').value; const controller = state.config.controleurs.find(c => c.id === controllerId); const acc = controller.accreditations[type]?.find(a => a.id === accId); if(acc) { acc.file = e.target.files[0].name; showMessage('Fichier prêt', 'Le fichier sera enregistré lors de la validation.'); } } } else if (fileNameSpan) { fileNameSpan.textContent = ''; } } });
+            document.body.addEventListener('click', (e) => { const editBtn = e.target.closest('.edit-btn'); const deleteBtn = e.target.closest('.delete-btn'); const resetBtn = e.target.closest('.reset-table-btn'); const scheduleBtn = e.target.closest('.schedule-btn'); const eligibilityBtn = e.target.closest('.eligibility-btn'); if (editBtn) { handleEditAction(editBtn); } else if (deleteBtn) { handleDeleteAction(deleteBtn); } else if (resetBtn) { handleResetTable(resetBtn); } else if (scheduleBtn) { openScheduleModal(scheduleBtn.dataset.category, scheduleBtn.dataset.prestaId); } else if (eligibilityBtn) { openEligibilityModal(eligibilityBtn.dataset.prestaId); } });
+            document.getElementById('config-chat-submit').addEventListener('click', () => { const input = document.getElementById('config-chat-input'); const query = input.value.trim(); if (query) { processChatQuery(query); input.value = ''; } else { showMessage('Erreur', 'Veuillez saisir une demande.', false); } });
+            document.getElementById('config-chat-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') { document.getElementById('config-chat-submit').click(); } });
+            document.getElementById('view-controleurs').addEventListener('click', e => { const editBtn = e.target.closest('.edit-controleur-btn'); if (editBtn) { openControleurModal(editBtn.dataset.id); return; } const filterBtn = e.target.closest('.status-filter-btn'); if (filterBtn) { const status = filterBtn.dataset.status; state.controleurStatusFilter = status; document.querySelectorAll('.status-filter-btn').forEach(b => { b.classList.remove('bg-accent', 'text-white'); b.classList.add('bg-gray-200', 'text-gray-700'); }); filterBtn.classList.add('bg-accent', 'text-white'); filterBtn.classList.remove('bg-gray-200', 'text-gray-700'); renderControleursList(); } });
+            document.getElementById('save-config-btn-vl').addEventListener('click', () => { showMessage('Sauvegardé', 'Configuration VL sauvegardée (simulation).'); });
+            document.getElementById('save-config-btn-l').addEventListener('click', () => { showMessage('Sauvegardé', 'Configuration L sauvegardée (simulation).'); });
+            document.getElementById('add-vehicle-type-form-vl').addEventListener('submit', (e) => { e.preventDefault(); const form = e.target, label = form.label.value.trim(), id = form.id.value.trim().toUpperCase(); if (label && id && !state.config.vehicleTypes.VL.some(v => v.id === id)) { state.config.vehicleTypes.VL.push({ id, label, isDefault: false }); renderVehicleManagementList('VL'); if (state.currentView === 'configuration') renderConfigAccordions('VL'); form.reset(); showMessage('Succès', 'Nouveau type de véhicule VL ajouté.'); } else showMessage('Erreur', 'Le nom et le code sont requis, et le code doit être unique.', false); });
+            document.getElementById('add-vehicle-type-form-l').addEventListener('submit', (e) => { e.preventDefault(); const form = e.target, label = form.label.value.trim(), id = form.id.value.trim().toUpperCase(); if (label && id && !state.config.vehicleTypes.L.some(v => v.id === id)) { state.config.vehicleTypes.L.push({ id, label, isDefault: false }); renderVehicleManagementList('L'); if (state.currentView === 'configuration') renderConfigAccordions('L'); form.reset(); showMessage('Succès', 'Nouveau type de véhicule L ajouté.'); } else showMessage('Erreur', 'Le nom et le code sont requis, et le code doit être unique.', false); });
+            document.getElementById('add-prestation-form').addEventListener('submit', e => { e.preventDefault(); const form = e.target, newLabel = form.name.value.trim(), newId = form.id.value.trim().toUpperCase(); if (newLabel && newId && !state.config.prestations.VL.some(p => p.id === newId) && !state.config.prestations.L.some(p => p.id === newId)) { const newPresta = { id: newId, label: newLabel, fuels: state.config.carburants.map(f => f.id), isDefault: false, eligibleVehicleTypeIds: [] }; state.config.prestations.VL.push(newPresta); state.config.prestations.L.push(newPresta); renderPrestationManagementList(); if (state.currentView === 'configuration') { renderConfigAccordions('VL'); renderConfigAccordions('L'); } form.reset(); showMessage('Succès', 'Nouvelle prestation ajoutée aux deux catégories.'); } else showMessage('Erreur', 'Le nom et le code sont requis, et le code doit être unique.', false); });
+            document.getElementById('add-controleur-form').addEventListener('submit', (e) => { e.preventDefault(); const form = e.target; const id = form.elements.id.value.trim().toUpperCase(); const prenom = form.elements.prenom.value.trim(); const nom = form.elements.nom.value.trim(); const workdayId = form.elements.workdayId.value.trim(); if (prenom && nom && id && !state.config.controleurs.some(c => c.id === id)) { state.config.controleurs.unshift({ id, prenom, nom, workdayId, actif: true, accreditations: { vl: [], l: [], gaz: [], elec: [], formations: [] } }); renderControleLur(); renderControleursList(); form.reset(); showMessage('Succès', 'Nouveau contrôleur ajouté.'); } else { showMessage('Erreur', 'Le nom, le prénom et le code sont requis. Le code doit être unique.', false); } });
+            document.getElementById('add-carburant-form').addEventListener('submit', (e) => { e.preventDefault(); const form = e.target; const label = form.elements.name.value.trim(); const id = form.elements.id.value.trim().toLowerCase(); if (label && id && !state.config.carburants.some(c => c.id === id)) { state.config.carburants.push({ id, label }); renderCarburantManagementList(); if (state.currentView === 'configuration') { renderConfigAccordions('VL'); renderConfigAccordions('L'); } form.reset(); showMessage('Succès', 'Nouveau carburant ajouté.'); } else { showMessage('Erreur', 'Le nom et le code sont requis. Le code doit être unique.', false); } });
+            document.getElementById('edit-controleur-modal').addEventListener('click', (e) => { if (e.target.id === 'close-modal-btn' || e.target.id === 'cancel-edit-btn') { closeControleurModal(); } if (e.target.id === 'add-accreditation-btn') { handleAddNewAccreditation(document.getElementById('edit-controleur-form')); } const deleteBtn = e.target.closest('.delete-accreditation-btn'); if (deleteBtn) { const { typeId, itemId } = deleteBtn.dataset; const controllerId = document.getElementById('edit-controleur-id').value; const controller = state.config.controleurs.find(c => c.id === controllerId); handleDeleteAccreditation(controller, typeId, itemId); } });
+            document.getElementById('edit-controleur-form').addEventListener('submit', handleUpdateControleur); 
+            document.getElementById('new-accred-type').addEventListener('change', (e) => { const typeId = e.target.value; const numeroGroup = document.getElementById('new-accred-numero-group'); const numeroInput = document.getElementById('new-accred-numero'); if (typeId && ACCREDITATION_TYPES[typeId].hasNumero) { numeroGroup.classList.remove('hidden'); numeroInput.required = true; } else { numeroGroup.classList.add('hidden'); numeroInput.required = false; } });
+            const eligibilityModal = document.getElementById('eligibility-modal'); eligibilityModal.addEventListener('click', (e) => { if (e.target.id === 'close-eligibility-modal-btn' || e.target.id === 'cancel-eligibility-btn') { closeEligibilityModal(); } const selectAllBtn = e.target.closest('.select-all-btn'); if (selectAllBtn) { const category = selectAllBtn.dataset.category; const listId = `eligibility-${category.toLowerCase()}-list`; const checkboxes = eligibilityModal.querySelectorAll(`#${listId} .eligibility-checkbox`); const shouldCheck = !checkboxes[0]?.checked; checkboxes.forEach(cb => cb.checked = shouldCheck); } }); document.getElementById('eligibility-form').addEventListener('submit', handleSaveEligibility);
+            const scheduleModal = document.getElementById('schedule-modal'); scheduleModal.addEventListener('click', (e) => { if (e.target.id === 'close-schedule-modal-btn' || e.target.id === 'cancel-schedule-btn') { closeScheduleModal(); } const deleteScheduleBtn = e.target.closest('.delete-schedule-btn'); if(deleteScheduleBtn) { const { category, prestaId } = state.scheduleModalData; handleDeleteSchedule(category, prestaId, deleteScheduleBtn.dataset.startDate); } const editScheduleBtn = e.target.closest('.edit-schedule-btn'); if(editScheduleBtn) { const { category, prestaId } = state.scheduleModalData; showScheduleEditGrid(category, prestaId, editScheduleBtn.dataset.startDate); } if(e.target.id === 'save-schedule-btn') { handleSaveSchedule(); } }); document.getElementById('create-schedule-form').addEventListener('submit', (e) => { e.preventDefault(); const newDateInput = document.getElementById('new-schedule-date'); const newDate = newDateInput.value; const todayStr = new Date().toISOString().split('T')[0]; if (newDate <= todayStr) { showMessage('Erreur', 'Veuillez sélectionner une date future.', false); newDateInput.classList.add('border-red-500'); return; } newDateInput.classList.remove('border-red-500'); const { category, prestaId } = state.scheduleModalData; handleCreateSchedule(category, prestaId, newDate); newDateInput.value = ''; });
+            const editPrestationModal = document.getElementById('edit-prestation-modal'); editPrestationModal.addEventListener('click', (e) => { if (e.target.id === 'close-edit-prestation-modal-btn' || e.target.id === 'cancel-edit-prestation-btn') { closeEditPrestationModal(); } const selectAllBtn = e.target.closest('.select-all-edit-btn'); if (selectAllBtn) { const category = selectAllBtn.dataset.category; const listId = `edit-eligibility-${category.toLowerCase()}-list`; const checkboxes = editPrestationModal.querySelectorAll(`#${listId} .eligibility-checkbox`); const shouldCheck = !checkboxes[0]?.checked; checkboxes.forEach(cb => cb.checked = shouldCheck); } }); document.getElementById('edit-prestation-form').addEventListener('submit', handleUpdatePrestation);
+        });
+  </script>
+  <script>
+   // Fonction pour envoyer la hauteur au parent
+            function sendHeightToParent() {
+                const height = document.documentElement.scrollHeight;
+                window.parent.postMessage({ type: 'resize-iframe', height: height }, '*');
+            }
+
+            // On écoute tout ce qui peut changer la taille de la page
+            window.addEventListener('load', sendHeightToParent);
+            window.addEventListener('resize', sendHeightToParent);
+            
+            // Observer les changements dans le DOM (ex: ouverture d'un accordéon)
+            const observer = new MutationObserver(sendHeightToParent);
+            observer.observe(document.body, { attributes: true, childList: true, subtree: true });
+            
+            // Envoi périodique par sécurité (toutes les secondes)
+            setInterval(sendHeightToParent, 1000);
+  </script>
+ </body>
+</html>
